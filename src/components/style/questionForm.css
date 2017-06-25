@@ -1,0 +1,135 @@
+.form .to-right {
+    float: right;
+}
+
+.form .FormChoice {
+
+}
+
+.form .FormChoice > * {
+    display: block !important;
+    margin: 5px 0px;
+}
+
+.form div.CustomRadio {
+    color: #888888 !important;
+    border-color: #888888 !important;
+}
+.form div.CustomRadio:hover {
+    color: #5080FC !important;
+    border-color: #5080FC !important;
+}
+.form div.CustomRadio:active {
+    color: #376AFC !important;
+    border-color: #376AFC !important;
+}
+.form div.CustomRadio input[type="radio"].state-circle ~ label:before {
+  content: "\2022";
+  font-size: calc(17px);
+  text-align: center;
+  line-height: calc(17px - 5px);
+}
+.form div.CustomRadio input[type="radio"].state-square ~ label:before {
+  background-color: #888888;
+}
+
+.form div.CustomRadio:hover input[type="radio"].state-square ~ label:before {
+  background-color: #5080FC;
+}
+.form div.CustomRadio:active input[type="radio"].state-square ~ label:before {
+  background-color: #376AFC;
+}
+
+.form {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.form .bin {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+}
+
+.form .list-choices > span {
+    display: block;
+    margin: 5px 0px;
+}
+
+.form .top-color {
+    width: calc(100% + 40px);
+    position: relative;
+    left: -20px;
+    top: -20px;
+    height: 250px;
+}
+
+.form textarea {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+}
+
+.form span.icon-plus::before {
+    display: inline-block;
+    height: 22px;
+    width: 22px;
+    border-radius: 50%;
+    background-color: #353535;
+    content: "+";
+    font-size: 18px;
+    line-height: 20px;
+    text-align: center;
+    color: #FFF;
+    margin-left: 10px;
+    box-sizing: border-box;
+    /*padding-right: 1px;*/
+    font-family: sans-serif;
+}
+
+.form span.icon-plus.big::before {
+    height: 30px;
+    width: 30px;
+    background-color: #289CF9;
+    font-size: 22px;
+    line-height: 27px;
+    margin-right: 10px;
+    margin-left: 0px;
+}
+
+.form span.icon-plus:hover::before {
+    filter: brightness(2);
+}
+.form span.icon-plus:active::before {
+    filter: brightness(1.2);
+}
+.form span.icon-plus.big:hover::before {
+    filter: brightness(1.1);
+}
+.form span.icon-plus.big:active::before {
+    filter: brightness(0.9);
+}
+
+.question-type {
+    display: inline-block;
+}
+
+.form .added-zone {
+    height: 50px;
+}
+
+.form .fullwidth {
+    width: calc(100% + 40px) !important;
+    position: relative;
+    left: -20px;
+}
+
+.form .top-bar {
+    height: 30px;
+}
+
+.form .question-item {
+    padding: 10px 30px 30px 30px;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(128,128,128,0.7);
+}

@@ -1,0 +1,125 @@
+body {
+    background-color: #FFF;
+}
+
+.signup-page {
+    a {
+        text-decoration: none;
+        color: #688ed2;
+    }
+
+    a:hover {
+        color: #99aeff;
+    }
+
+    .login-card {
+        min-height: 300px;
+        min-width: 300px;
+
+        max-width: 400px;
+        max-height: 400px;
+
+        width: 380px;
+        height: 380px;
+
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translateX(-50%) translateY(-60%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        border-radius: 10px;
+        box-shadow: (0, 0, 0, 0.5);
+
+        img[alt="icon"] {
+            width: 270px;
+            margin-bottom: 30px;
+        }
+
+        $button-height: 50px;
+
+        button[alt="fb-login"]::before {
+            position: absolute;
+            width: 70%;
+            height: $button-height;
+            background-color: #FFF;
+            // background: -webkit-linear-gradient(#000, #FFF); /* For Safari 5.1 to 6.0 */
+            // background: -o-linear-gradient(#000, #FFF); /* For Opera 11.1 to 12.0 */
+            // background: -moz-linear-gradient(#000, #FFF); /* For Firefox 3.6 to 15 */
+            // background: linear-gradient(#000, #FFF);
+            opacity: 0;
+            content: ""
+        }
+        button[alt="fb-login"]:hover::before {
+            opacity: 0.2;
+        }
+
+        button[alt="fb-login"] {
+            height: $button-height;
+            width: 70%;
+            padding: 0px;
+            margin: 0px;
+            margin-bottom: 10px;
+            border: none;
+            background-color: #688ed2;
+            display: flex;
+            align-items: center;
+
+            div[alt="fb-icon-container"] {
+                display: inline-block;
+                height: $button-height;
+                width: $button-height;
+                display: flex;
+                background-color: #3c57a0;
+
+                img[alt="fb-icon"] {
+                    height: calc(0.7 * #{$button-height});
+                    width: calc(0.7 * #{$button-height});
+                    margin: auto;
+                }
+            }
+
+            div[alt="fb-icon-container"] + div {
+                flex: 1;
+                display: flex;
+                width: calc(100% - #{$button-height});
+                font-size: 17px;
+                color: #FFF;
+                background-color: #688ed2;
+            }
+            div[alt="fb-icon-container"] + div > span {
+                margin: auto;
+            }
+        }
+    }
+
+    $footer-height: 70px;
+
+    footer[alt="login-footer"] {
+        position: absolute;
+        bottom: 0px;
+
+        height: $footer-height;
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        background-color: #F1F1F1;
+        color: #999;
+
+        div[alt="icon-zone"] {
+            margin-right: 20px;
+            margin-left: 10px;
+        }
+
+        img {
+            height: calc(0.7 * #{$footer-height});
+            display: inline;
+        }
+    }
+}

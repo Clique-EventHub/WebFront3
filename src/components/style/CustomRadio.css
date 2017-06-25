@@ -1,0 +1,66 @@
+@charset "UTF-8";
+div.CustomRadio {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.CustomRadio input[type="radio"] {
+  display: none;
+}
+
+div.CustomRadio input[type="radio"] ~ label {
+  display: inline-block;
+  vertical-align: text-bottom;
+  vertical-align: bottom;
+  font-size: calc(17px);
+  line-height: 17px;
+}
+
+div.CustomRadio input[type="radio"] ~ label:before {
+  width: 17px;
+  height: 17px;
+  float: left;
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid;
+  margin-right: 5px;
+  vertical-align: middle;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+}
+
+div.CustomRadio input[type="radio"].state-none ~ label:before {
+  content: " ";
+}
+
+div.CustomRadio input[type="radio"].state-circle ~ label:before {
+  content: "\2022";
+  font-size: calc(17px + 11px);
+  text-align: center;
+  line-height: calc(17px - 7px);
+}
+
+div.CustomRadio input[type="radio"].state-square ~ label:before {
+  content: '■';
+  font-size: calc(17px + 3px);
+  text-align: center;
+  line-height: calc(17px - 1px);
+}
+
+div.CustomRadio input[type="radio"].state-triangle ~ label:before {
+  content: "\25B6";
+  font-size: calc(17px - 4px);
+  text-align: center;
+  padding-left: 1px;
+  line-height: calc(17px);
+}
+
+div.CustomRadio input[type="radio"].state-diamond ~ label:before {
+  content: "\25C8";
+  font-size: calc(17px - 5px);
+  text-align: center;
+  line-height: calc(17px - 1px);
+}

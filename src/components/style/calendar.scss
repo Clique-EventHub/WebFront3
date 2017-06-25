@@ -1,0 +1,294 @@
+@import url('https://fonts.googleapis.com/css?family=Mitr');
+
+$color-dark-blue: #99ccff;
+$color-dark-yellow: #ff6;
+$color-dark-pink: #ffccff;
+$color-dark-green: #99ff33;
+$color-dark-red: #ff6600;
+$calendar-cell-height: 130px;
+//$blob-size: 40px;
+$blob-size: 60px;
+//popopoopopopopopopopopopopopopopoopopopopopopo
+.Calendar-Container {
+    font-family: Mitr;
+    padding: 30px;
+    border-radius: 5px !important;
+    margin: auto;
+    min-width: calc(400px);
+    max-width: calc(900px + 2*30px);
+
+    background: #FFF;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25)!important;
+}
+
+.Calendar {
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    min-width: calc(400px - 2*30px);
+    margin: auto;
+}
+
+.Calendar .Head {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.Calendar .Head span {
+    font-size: 2em;
+}
+
+.Calendar .Head button {
+    font-size: 1.75em;
+    color: rgba(0, 0, 0, 0.25);
+}
+
+.Calendar .Head button:hover {
+    color: rgba(0, 0, 0, 0.33);
+}
+.Calendar .Head button:active {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.Calendar .Head div {
+    position: relative;
+    font-size: 0.8em;
+    top: -8px;
+}
+
+.Calendar .Body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.Calendar .Body .Week {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.Calendar .Body .Days {
+    width: 100%;
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.Calendar .Body .Days.d-4 {
+    height: calc(4*#{$calendar-cell-height}) !important;
+}
+
+.Calendar .Body .Days.d-5 {
+    height: calc(5*#{$calendar-cell-height}) !important;
+}
+.Calendar .Body .Days.d-6 {
+    height: calc(6*#{$calendar-cell-height}) !important;
+}
+
+
+.Calendar .Body .Week .Day,
+.Calendar .Body .Days .Day {
+    width: calc(100%/7);
+    border: 1px solid rgba(0,0,0,0.15);
+    border-top: 0px;
+    border-right: 0px;
+    background: rgb(255, 255, 255);
+    box-sizing: border-box;
+    text-align: right;
+    padding: 5px 10px 0px 0px;
+    position: relative;
+}
+
+.Calendar .Body .Week .Day {
+    border: none;
+}
+
+.Calendar .Body .Days .Day:nth-child(7n) {
+    border-right: 1px solid rgba(0,0,0,0.15);
+}
+
+.Calendar .Body .Week .Day {
+    padding: 5px;
+    font-size: 0.5em;
+}
+
+.Calendar .Body .Days .Day.Today {
+    background: rgb(240, 240, 255);
+}
+
+.Calendar .Body .Days .Day:hover {
+    background: rgb(240, 240, 240);
+}
+
+.Calendar .Body .Days .Day:active {
+    background: rgb(230, 230, 230);
+}
+
+.Calendar .Body .Days .Day.Disabled,
+.Calendar .Body .Days .Day.Disabled:hover,
+.Calendar .Body .Days .Day.Disabled:active, {
+    background: #FFF;
+}
+
+.EventRange {
+    position: absolute;
+    border-radius: 0.5em;
+    font-size: calc(1em - 2*3px);
+    padding: 3px;
+    box-sizing: border-box;
+    background-color: #AAA;
+    text-align: left;
+    color: #555;
+}
+
+.EventRange-Container:hover > * {
+    box-shadow: 0px 0px 20px rgba(93, 189, 240, 0.5);
+}
+
+.EventRange-Container:active > * {
+    box-shadow: 0px 0px 20px rgba(93, 189, 240, 1);
+}
+
+.EventRange.BuntStart {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.EventRange.BuntEnd {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.color-blue {
+    background: $color-dark-blue !important;
+}
+.color-yellow {
+    background: $color-dark-yellow !important;
+}
+.color-pink {
+    background: $color-dark-pink !important;
+}
+.color-green {
+    background: $color-dark-green !important;
+}
+.color-red {
+    background: $color-dark-red !important;
+}
+
+.Display-None {
+    display: none !important;
+}
+
+.DayInfo {
+    position: absolute;
+    background-color: #FFF;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    width: calc(150%/7);
+    z-index: 402;
+    height: #{$calendar-cell-height};
+    overflow-y: scroll;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25)!important;
+
+    /*Second design*/
+    text-align: center;
+    padding: 25px 10px 20px 10px;
+    top: -10px;
+    transform: translateX(-10px);
+    color: #FFF;
+    width: calc(100% + 2*10px);
+    display: flex;
+    flex-wrap: wrap;
+    height: calc(#{$calendar-cell-height} + 2*10px);
+}
+
+.DayInfo > * {
+    // flex: 1 1 50%;
+    box-sizing: border-box;
+    margin: auto;
+    // white-space: nowrap;
+    // border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.DayInfo {
+    .Continuous,
+    .Oneday {
+        height: 50%;
+        .Scroll {
+            height: calc(#{$blob-size} + 10px);
+            overflow-x: scroll;
+            overflow-y: hidden;
+            display: flex;
+        }
+    }
+
+    .EventBlob {
+        font-size: 0.75em;
+        padding-left: 5px;
+        padding-right: 5px;
+        box-sizing: border-box;
+        height: $blob-size;
+        width: $blob-size;
+        min-width: $blob-size;
+        min-height: $blob-size;
+        max-width: $blob-size;
+        max-height: $blob-size;
+        overflow: hidden;
+
+        line-height: $blob-size;
+        white-space: nowrap;
+
+        border-radius: 50%;
+        background-color: #AAA;
+        display: inline-block;
+        margin: 5px;
+        color: #555;
+    }
+
+    .EventBlob:hover {
+        box-shadow: 0px 0px 20px rgba(93, 189, 240, 0.5);
+    }
+
+    .EventBlob:active {
+        box-shadow: 0px 0px 20px rgba(93, 189, 240, 1);
+    }
+}
+
+.DayInfo.inactive {
+    display: none;
+}
+
+@for $i from 1 through 3 {
+    .EventRange.Nudge-#{$i} {
+        transform: translateY(calc(#{$i}*(100% + 1px)));
+    }
+}
+
+@for $i from 1 through 7 {
+    .EventRange.w-#{$i} {
+        width: calc(#{$i}*100%/7);
+    }
+}
+
+@for $i from 1 through 6 {
+    @for $j from 1 through 7 {
+        @if $j == 7 {
+            .DayInfo.pos-#{$i}-#{$j} {
+                top: calc( #{$i - 1}*#{$calendar-cell-height} + 23px);
+                left: calc(#{$j - 1}*100%/7 - 50%/7);
+            }
+        } @else {
+            .DayInfo.pos-#{$i}-#{$j} {
+                top: calc( #{$i - 1}*#{$calendar-cell-height} + 23px);
+                left: calc(#{$j - 1}*100%/7 - 25%/7);
+            }
+        }
+
+        .EventRange.pos-#{$i}-#{$j} {
+            top: calc( #{$i - 1}*#{$calendar-cell-height} + 60px);
+            left: calc(#{$j - 1}*100%/7);
+        }
+    }
+}

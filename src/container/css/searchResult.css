@@ -1,0 +1,38 @@
+div.search-box-container {
+	overflow: scroll;
+	position: fixed;
+	top: 65px;
+	left: 0px;
+	box-sizing: border-box;
+	padding-bottom: 40px;
+	height: calc(100vh - 65px);
+}
+
+article.event-search {
+	position: relative;
+	padding-top: 40px;
+	z-index: 551;
+	margin-left: 10%;
+	margin-right: 10%;
+	overflow: scroll;
+}
+
+div.keyword {
+	font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+	font-size: 60px;
+	font-weight: bold;
+	color: #FFF;
+	display: inline;
+}
+
+div.found {
+	font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+	font-size: 30px;
+	color: #FFF;
+	display: inline;
+	margin-left: 70px;
+}
+
+div.event-found {
+	margin-top: 50px;
+}

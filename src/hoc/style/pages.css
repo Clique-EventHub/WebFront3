@@ -1,0 +1,98 @@
+.blur {
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
+
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+
+    transition-property: filter;
+    -moz-transition-property: -moz-filter;
+    -webkit-transition-property: -webkit-filter;
+    -o-transition-property: -o-filter;
+
+    transition-timing-function: ease-in-out;
+    -moz-transition-timing-function: ease-in-out;
+    -webkit-transition-timing-function: ease-in-out;
+    -o-transition-timing-function: ease-in-out;
+
+    transition-duration: .2s;
+    -moz-transition-duration: .2s;
+    -webkit-transition-duration: .2s;
+    -o-transition-duration: .2s;
+
+}
+
+.no-blur {
+
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
+
+    -webkit-filter: blur(0px);
+    -moz-filter: blur(0px);
+    -o-filter: blur(0px);
+    -ms-filter: blur(0px);
+    filter: blur(0px);
+
+    transition-property: filter;
+    -moz-transition-property: -moz-filter;
+    -webkit-transition-property: -webkit-filter;
+    -o-transition-property: -o-filter;
+
+    transition-timing-function: ease-in-out;
+    -moz-transition-timing-function: ease-in-out;
+    -webkit-transition-timing-function: ease-in-out;
+    -o-transition-timing-function: ease-in-out;
+
+    transition-duration: .2s;
+    -moz-transition-duration: .2s;
+    -webkit-transition-duration: .2s;
+    -o-transition-duration: .2s;
+
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+#modal {
+    position: absolute;
+    z-index: 1000;
+}
+
+#modal > *{
+    overflow-y: scroll !important;
+}
+
+#modal.active {
+    opacity: 1;
+    transition: 0.2s;
+}
+
+#modal.inactive {
+    opacity: 0;
+    transition: 0.2s;
+}
+
+
+.shift {
+    padding-top: 65px;
+}
+
+.opacity-0 {
+    opacity: 0;
+    transition: 0.2s;
+}
+
+.opacity-1 {
+    opacity: 1;
+    transition: 0.2s;
+}

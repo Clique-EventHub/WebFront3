@@ -1,0 +1,100 @@
+$main-bubble-radius: 100px;
+
+.tags-menu-active {
+    .Bubble {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        top: -18px;
+
+        .main-bubble {
+            border-radius: 50%;
+            background-color: #AAA;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            height: $main-bubble-radius;
+            width: $main-bubble-radius;
+            z-index: 1000;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3em;
+            color: #FFF;
+            transition: 0.2s;
+        }
+
+        .main-bubble:hover {
+            background-color: #BBB;
+        }
+
+        .main-bubble:active {
+            background-color: #CCC;
+        }
+
+        .child-bubble-container {
+            height: 100%;
+            width: 50px;
+            left: 50%;
+            transform: translate(-50%) rotateZ(0deg);
+            position: absolute;
+            z-index: 999;
+
+            .child-bubble::before {
+                content: "";
+                background: rgba(210, 210, 210, 0.2);
+                position: absolute;
+                height: calc(#{$main-bubble-radius});
+                width: calc(#{$main-bubble-radius});
+                left: 50%;
+                border-radius: 50%;
+                transform: translateX(-50%) translateY(0px);
+                z-index: 998;
+                opacity: 0;
+                transition: 0.1s;
+            }
+
+            .child-bubble {
+                border-radius: 50%;
+                background-color: #AAA;
+                position: absolute;
+                top: 18%;
+                /*
+                Initial state
+                top: calc(50% - 0.1 * #{$main-bubble-radius});
+                */
+                left: 50%;
+                transform: translateX(-50%) translateY(-50%);
+                height: calc(0.8 * #{$main-bubble-radius});
+                width: calc(0.8 * #{$main-bubble-radius});
+                z-index: 998;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2em;
+                color: #FFF;
+            }
+
+            .child-bubble:active {
+                box-shadow: 0px 0px 20px #5dbdf0;
+            }
+
+            .child-bubble:hover::before {
+                opacity: 1;
+                transition: 0.1s;
+            }
+        }
+    }
+}
+
+/*
+    Color palette;
+    blue: #008bdb to #37c6f0
+    yellow: #ffab00 to #fff200
+    green: #568d0c to #74fa00
+    pink: #be2f7d to #f84994
+    red: #fe2000 to #ff7200
+*/

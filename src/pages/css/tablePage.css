@@ -1,0 +1,171 @@
+div.table-page {
+    font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+    padding: 0 35px;
+    border-top: 1px solid #DDDDDD;
+    color: #555555;
+}
+
+div.table-page section {
+    margin-bottom: 20px;
+}
+
+section.table-top h1 {
+   font-size: 1.5em;
+}
+
+section.table-top i {
+    margin-top: 6px;
+}
+
+section.table-top div.table-search div {
+    width: 35px;
+    height: 30px;
+    text-align: center;
+    color: #888888;
+    border: 1.5px solid #AAAAAA;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    position: absolute;
+}
+
+section.table-top input {
+    height: 28px;
+    width: 490px;
+    border: 1.5px solid #AAAAAA;
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    margin-left: 35px;
+}
+
+/*
+section.table-center table {
+    text-align: center;
+    border-collapse: separate;
+    border-spacing: 0px;
+    border: 3px solid #AAAA00;
+    border-radius: 20px;
+}
+*/
+section.table-center table {
+    display: block;
+    text-align: center;
+    border-collapse: collapse;
+    height: 400px;
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+section.table-center thead {
+    background-color: #FF0000;
+}
+
+section.table-center td,th {
+    border: 1px solid #AAAAAA;
+    padding: 15px;
+}
+
+section.table-center th {
+    height: 30px;
+    background-color: #555555;
+    color: #FFFFFF;
+    font-weight: normal;
+    border-bottom: 1.5px solid #AAAAAA;
+}
+
+section.table-center td {
+    border-bottom: 1px solid #F0F0F0;
+}
+
+section.table-center tr:nth-child(odd) {
+    background-color: #f5f5f5;
+}
+
+section.table-center th:nth-child(4), td:nth-child(4), th:nth-child(5), td:nth-child(5), th:nth-child(9), td:nth-child(9) {
+    min-width: 100px;
+}
+
+section.table-center th:nth-child(9), td:nth-child(9){
+    min-width: 130px;
+}
+
+section.table-center th:nth-child(10), td:nth-child(10) {
+    min-width: 200px;
+}
+
+section.table-center th:nth-child(11), td:nth-child(11) {
+    min-width: 230px;
+}
+
+section.table-center th:nth-child(12), td:nth-child(12) {
+    min-width: 175px;
+}
+
+section.table-bottom div.table-add {
+    margin-bottom: 35px;
+}
+
+section.table-bottom div.table-add table {
+    position: absolute;
+    border-spacing: 0px;
+}
+
+section.table-bottom div.table-add td {
+    width: 50px;
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #888888;
+    border: 1.5px solid #AAAAAA;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+}
+
+section.table-bottom div.table-add input {
+    height: 25.4px;
+    width: 480px;
+    border: 1.5px solid #AAAAAA;
+    border-radius: 0 10px 10px 0;
+}
+
+section.table-bottom div.table-add button:not(.invisible) {
+    border: 1.5px solid #AAAAAA;
+    border-radius: 10px;
+    width: 110px;
+    height: 30.2px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #888888;
+    background-color: #FFFFFF;
+    margin-left: 545px;
+}
+
+section.table-bottom div.table-add button.invisible {
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #888888;
+}
+
+section.table-bottom div.table-button button {
+    border: 1.8px solid;
+    border-radius: 10px;
+    width: 150px;
+    height: 40px;
+    font-size: 0.9em;
+    font-weight: normal;
+    border-color: #555555;
+    color: #FFFFFF;
+    background-color: #555555;
+    margin-right: 20px;
+}
+
+
+/*
+thead:first-child tr:first-child th:first-child, tbody:first-child tr:first-child td:first-child {
+    border-radius: 20px 0 0 0;
+}
+
+thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td:first-child {
+    border-radius: 0 0 0 20px;
+}
+*/

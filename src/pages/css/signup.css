@@ -1,0 +1,110 @@
+body {
+  background-color: #FFF;
+}
+
+.signup-page a {
+  text-decoration: none;
+  color: #688ed2;
+}
+
+.signup-page a:hover {
+  color: #99aeff;
+}
+
+.signup-page .login-card {
+  min-height: 300px;
+  min-width: 300px;
+  max-width: 400px;
+  max-height: 400px;
+  width: 380px;
+  height: 380px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0, 0, 0, 0.5;
+}
+
+.signup-page .login-card img[alt="icon"] {
+  width: 270px;
+  margin-bottom: 30px;
+}
+
+.signup-page .login-card button[alt="fb-login"]::before {
+  position: absolute;
+  width: 70%;
+  height: 50px;
+  background-color: #FFF;
+  opacity: 0;
+  content: "";
+}
+
+.signup-page .login-card button[alt="fb-login"]:hover::before {
+  opacity: 0.2;
+}
+
+.signup-page .login-card button[alt="fb-login"] {
+  height: 50px;
+  width: 70%;
+  padding: 0px;
+  margin: 0px;
+  margin-bottom: 10px;
+  border: none;
+  background-color: #688ed2;
+  display: flex;
+  align-items: center;
+}
+
+.signup-page .login-card button[alt="fb-login"] div[alt="fb-icon-container"] {
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  background-color: #3c57a0;
+}
+
+.signup-page .login-card button[alt="fb-login"] div[alt="fb-icon-container"] img[alt="fb-icon"] {
+  height: calc(0.7 * 50px);
+  width: calc(0.7 * 50px);
+  margin: auto;
+}
+
+.signup-page .login-card button[alt="fb-login"] div[alt="fb-icon-container"] + div {
+  flex: 1;
+  display: flex;
+  width: calc(100% - 50px);
+  font-size: 17px;
+  color: #FFF;
+  background-color: #688ed2;
+}
+
+.signup-page .login-card button[alt="fb-login"] div[alt="fb-icon-container"] + div > span {
+  margin: auto;
+}
+
+.signup-page footer[alt="login-footer"] {
+  position: absolute;
+  bottom: 0px;
+  height: 70px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: #F1F1F1;
+  color: #999;
+}
+
+.signup-page footer[alt="login-footer"] div[alt="icon-zone"] {
+  margin-right: 20px;
+  margin-left: 10px;
+}
+
+.signup-page footer[alt="login-footer"] img {
+  height: calc(0.7 * 70px);
+  display: inline;
+}

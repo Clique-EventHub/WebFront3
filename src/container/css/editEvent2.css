@@ -1,0 +1,360 @@
+article.edit-event {
+  /*top: 30px;*/
+  /*width: 50%;*/
+  /*padding: 20px 30px;*/
+  /*margin: auto;*/
+  font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+  color: #555555;
+  margin-bottom: 40px;
+}
+
+article.edit-event p.l1 {
+  width: 100% + 80px;
+  height: 1px;
+  background-color: rgba(128, 128, 128, 0.7);
+  display: block;
+  padding: 0px;
+  margin: 10px -30px;
+}
+
+article.edit-event p.l2 {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(128, 128, 128, 0.7);
+  display: block;
+  padding: 0px;
+  margin: 10px 0px;
+}
+
+article.edit-event p.ltag {
+  margin-bottom: 20px;
+}
+
+article.edit-event div.flex {
+  display: flex;
+}
+
+article.edit-event div.w55 {
+  width: 55%;
+}
+
+article.edit-event div.w30 {
+  width: 30%;
+  margin-left: 15px;
+}
+
+article.edit-event div.w30 > * {
+    display: block;
+    margin: 10px 0px;
+}
+
+article.edit-event h1 {
+  font-size: 1em;
+  margin-bottom: 10px;
+  margin-right: 15px;
+}
+
+article.edit-event div.admin button {
+  width: 35px;
+  margin-left: 10px;
+  margin-top: 1px;
+  margin-bottom: 100px;
+}
+
+article.edit-event .add div {
+    margin: 0px 20px;
+    /*text-align: center;*/
+}
+
+article.edit-event .add button {
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+article.edit-event button.tag {
+  border: 1.8px solid;
+  border-radius: 5px;
+  font-size: 0.9em;
+  font-weight: normal;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  width: 90px;
+  height: 35px;
+  border-color: #CCCCCC;
+  color: #999999;
+  background-color: #FFFFFF;
+}
+
+article.edit-event button.fill {
+  border: 1.8px solid;
+  border-radius: 5px;
+  font-size: 0.9em;
+  font-weight: normal;
+  margin-right: 50px;
+  margin-bottom: 10px;
+  width: 180px;
+  height: 30px;
+  border-color: #CCCCCC;
+  color: #999999;
+  background-color: #FFFFFF;
+}
+
+article.edit-event button.long {
+  font-size: 0.7em;
+}
+
+article.edit-event button.tg {
+  width: 135px;
+}
+
+article.edit-event button.bl {
+  border: 1.8px solid;
+  border-radius: 5px;
+  font-size: 0.9em;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-right: 20px;
+  margin-bottom: 15px;
+  padding: 0px 12px;
+  height: 35px;
+  border-color: #888888;
+  color: #555555;
+  background-color: #FFFFFF;
+}
+
+article.edit-event button.bt {
+  position: relative;
+  top: -80px;
+  float: right;
+  right: 10px;
+  border: 1.8px solid;
+  border-radius: 20px;
+  width: 120px;
+  height: 35px;
+  font-size: 1em;
+  border-color: #AAAAAA;
+  color: #888888;
+  background-color: #FFFFFF;
+  margin-right: 15px;
+  margin-top: 40px;
+}
+
+article.edit-event button.blue {
+  border-color: #00BFF0;
+  color: #FFFFFF;
+  background-color: #00BFF0;
+}
+
+article.edit-event textarea.detail {
+  width: 65%;
+  height: 100px;
+  border: 1.8px solid #ccc;
+  border-radius: 5px;
+  font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+}
+
+article.edit-event div.add textarea {
+  width: 65%;
+  height: 40px;
+  margin-top: 5px;
+  border: 1.8px solid #ccc;
+  border-radius: 5px;
+}
+
+article.edit-event div.add input[type="text"] {
+  width: 35%;
+  margin-right: 20px;
+}
+
+article.edit-event input[type="text"] {
+  display: block;
+  border: 1.8px solid #ccc;
+  border-radius: 5px;
+  height: 26px;
+  font-family: inherit;
+  font-size: 1em;
+  margin-bottom: 5px;
+}
+
+article.edit-event div.w55 input[type="text"] {
+  width: 80%
+}
+
+article.edit-event div.admin input[type="text"] {
+  width: 40%;
+  margin-bottom: 10px;
+}
+
+article.edit-event input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  margin-bottom: 10px;
+}
+
+article.edit-event div.add input.list {
+  width: 25%;
+  height: 16px;
+  margin-right: 20px;
+  border: 1.8px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  color: #555555;
+}
+
+article.edit-event div.add option {
+  font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+  font-weight: normal;
+  color: #555555;
+}
+
+article.edit-event .tag-container-parent {
+    flex-wrap: wrap;
+}
+
+article.edit-event .tag-container {
+    width: 100%;
+    flex: 1;
+}
+
+article.edit-event ::-webkit-input-placeholder {
+   text-align:center;
+   font-size: 0.8em;
+}
+
+article.edit-event :-moz-placeholder { /* Firefox 18- */
+   text-align:center;
+   font-size: 0.8em;
+}
+
+article.edit-event ::-moz-placeholder {  /* Firefox 19+ */
+   text-align:center;
+   font-size: 0.8em;
+}
+
+article.edit-event :-ms-input-placeholder {
+   text-align:center;
+   font-size: 0.8em;
+}
+
+
+/* Three state Start */
+.ThreeStateRadio-Container {
+    position: relative;
+}
+
+input.ThreeStateRadio {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: 6px;
+
+    color: #008bdb;
+    border-color: #008bdb;
+}
+
+input.ThreeStateRadio + label:before {
+    content: "";
+    display: inline-block;
+
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    background-color: #FFF;
+    border: 1px solid rgba(160,160,160,0.5);
+    /*box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);*/
+}
+
+input.ThreeStateRadio:checked {
+    display: none;
+}
+
+input.ThreeStateRadio:checked.state-0 + label:before {
+    content: "";
+    font-size: 30px;
+    color: #000;
+
+    text-align: center;
+    line-height: 24px;
+}
+
+input.ThreeStateRadio:checked.state-1 + label:before {
+    content: "\2022";
+    font-size: 30px;
+    color: #AAA;
+    position: relative;
+    /*left: -10px;*/
+
+    text-align: center;
+    line-height: 24px;
+}
+
+input.ThreeStateRadio:checked.state-2 + label:before {
+    content: "\2022";
+    font-size: 30px;
+    color: #000;
+
+    text-align: center;
+    line-height: 24px;
+}
+
+/* Three state end */
+
+article.edit-event div.CustomRadio {
+    color: #888888 !important;
+    border-color: #888888 !important;
+}
+article.edit-event div.CustomRadio:hover {
+    color: #5080FC !important;
+    border-color: #5080FC !important;
+}
+article.edit-event div.CustomRadio:active {
+    color: #376AFC !important;
+    border-color: #376AFC !important;
+}
+article.edit-event div.CustomRadio input[type="radio"].state-circle ~ label:before {
+  content: "\2022";
+  font-size: calc(17px);
+  text-align: center;
+  line-height: calc(17px - 5px);
+}
+article.edit-event div.CustomRadio input[type="radio"].state-square ~ label:before {
+  background-color: #888888;
+}
+
+article.edit-event div.CustomRadio:hover input[type="radio"].state-square ~ label:before {
+  background-color: #5080FC;
+}
+article.edit-event div.CustomRadio:active input[type="radio"].state-square ~ label:before {
+  background-color: #376AFC;
+}
+
+article.edit-event button.Btn {
+    border-color: #CCCCCC;
+    color: #999999;
+    background-color: #FFFFFF;
+}
+
+article.edit-event button.Btn-active {
+    border-color: #EEE;
+    color: #FFF;
+    background-color: #729afd;
+}
+
+article.edit-event button.Btn:hover,
+article.edit-event button.Btn-active:hover {
+   border-color: #EEE;
+   color: #FFF;
+}
+
+article.edit-event button.Btn:hover {
+    background-color: #4caf50;
+}
+
+article.edit-event button.Btn-active:hover {
+    background-color: #ff636d;
+}
