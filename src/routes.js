@@ -7,6 +7,7 @@ import normPage from './hoc/normPage';
 import LoginPage from './pages/loginPage';
 import HomePage from './pages/homePage';
 import ChannelPage from './pages/channelPage';
+import EditChannel from './pages/editChannel';
 import EditProfile from './pages/myEventPage';
 import tag from './pages/tagPage';
 import TablePage from './pages/tablePage';
@@ -67,6 +68,7 @@ export default (
         <Route path="calendar" component={CalendarPage} />
         <Route path="event" component={EditEvent}/>
         <Route path="focuskuy" component={ChannelInfo} />
+        <Route path="testtt" component={EditChannel} />
         <Route path="form" component={QuestionForm} />
         <Route path="*" component={FallbackPageNorm} />
     </Route>

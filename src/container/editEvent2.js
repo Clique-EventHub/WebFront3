@@ -93,37 +93,74 @@ class EditEvent extends Component {
 
         let _this = this;
 
-        axios.get('http://128.199.208.0:1111/event?id=5946245c4b908f001403aba6').then((data) => {
-            console.log("get!!!");
-            console.log(JSON.stringify(data.data.title))
-            _this.state = {
-                'name': data.data.title,
-                'loc': data.data.location,
-                'date': data.data.date_start,
-                'detail': data.data.about,
-                'new_name': data.data.title,
-                'new_loc': data.data.location,
-                'new_date': data.data.date_start,
-                'new_detail': data.data.about,
-            }
-        }, (error) => {
-            console.log("get event error");
-        });
-
         this.state = {
-
+            'event_id': "594bf476e374d100140f04ec",
+            'isLoading': true,
         }
 
         this.onKeyPressed = this.onKeyPressed.bind(this);
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({updated: nextProps.updated});
+    }
+
+    componentWillMount() {
+        let _this = this;
+
+        axios.get('http://128.199.208.0:1111/event?id=' + _this.state.event_id).then((data) => {
+            console.log("get!!!");
+            console.log(JSON.stringify(data.data.title))
+            _this.setState({
+                'title': data.data.title,
+                'about': data.data.about,
+                'channel': data.data.channel,
+                'video': data.data.video,
+                'location': data.data.location,
+                'date_start': data.data.date_start,
+                'date_end': data.data.date_end,
+                'picture': data.data.picture,
+                'picture_large': data.data.picture_large,
+                'year_require': data.data.year_require,
+                'faculty_require': data.data.faculty_require,
+                'tags': data.data.tags,
+                'forms': data.data.forms,
+
+                'new_title': data.data.title,
+                'new_about': data.data.about,
+                'new_channel': data.data.channel,
+                'new_video': data.data.video,
+                'new_location': data.data.location,
+                'new_date_start': data.data.date_start,
+                'new_date_end': data.data.date_end,
+                'new_picture': data.data.picture,
+                'new_picture_large': data.data.picture_large,
+                'new_year_require': data.data.year_require,
+                'new_faculty_require': data.data.faculty_require,
+                'new_tags': data.data.tags,
+                'new_forms': data.data.forms,
+            })
+        }, (error) => {
+            console.log("get event error");
+        });
+    }
+
     onKeyPressed() {
         const newState = {
             ...this.state,
-            new_name: this.refs.name.value,
-            new_loc: this.refs.loc.value,
-            new_date: this.refs.date.value,
-            new_detail: this.refs.detail.vaule,
+            'new_title': this.refs.title.value,
+            'new_about': this.refs.about.value,
+            'new_channel': this.refs.channel.value,
+            'new_video': this.refs.video.value,
+            'new_location': this.refs.location.value,
+            'new_date_start': this.refs.date_start.value,
+            'new_date_end': this.refs.date_end.value,
+            'new_picture': this.refs.picture.value,
+            'new_picture_large': this.refs.picture_large.value,
+            'new_year_require': this.refs.year_require.value,
+            'new_faculty_require': this.refs.faculty_require.value,
+            'new_tags': this.refs.tags.value,
+            'new_forms': this.refs.forms.value,
         };
         this.setState(newState);
     }
@@ -131,10 +168,19 @@ class EditEvent extends Component {
     save() {
         const newState = {
             ...this.state,
-            name: this.refs.id.value,
-            loc: this.refs.birth.value,
-            data: this.refs.nickname.value,
-            detail: this.refs.line.value,
+            'title': this.refs.title.value,
+            'about': this.refs.about.value,
+            'channel': this.refs.channel.value,
+            'video': this.refs.video.value,
+            'location': this.refs.location.value,
+            'date_start': this.refs.date_start.value,
+            'date_end': this.refs.date_end.value,
+            'picture': this.refs.picture.value,
+            'picture_large': this.refs.picture_large.value,
+            'year_require': this.refs.year_require.value,
+            'faculty_require': this.refs.faculty_require.value,
+            'tags': this.refs.tags.value,
+            'forms': this.refs.forms.value,
         };
         this.setState(newState);
 
@@ -145,20 +191,24 @@ class EditEvent extends Component {
         }
 
         let responseBody = {
-            title: this.state.name,
-            about: this.state.detail,
-            location: this.state.loc,
-            date_start: this.state.date,
+            'title': this.refs.title.value,
+            'about': this.refs.about.value,
+            'channel': this.refs.channel.value,
+            'video': this.refs.video.value,
+            'location': this.refs.location.value,
+            'date_start': this.refs.date_start.value,
+            'date_end': this.refs.date_end.value,
+            'picture': this.refs.picture.value,
+            'picture_large': this.refs.picture_large.value,
+            'year_require': this.refs.year_require.value,
+            'faculty_require': this.refs.faculty_require.value,
+            'tags': this.refs.tags.value,
+            'forms': this.refs.forms.value,
         }
 
-        // axios.get('http://128.199.208.0:1111/event?id=5946245c4b908f001403aba6').then((data) => {
-        //     console.log("get!!!");
-        //     responseBody = data;
-        // }, (error) => {
-        //     console.log("get event error");
-        // });
+        let _this = this;
 
-        axios.put('http://128.199.208.0:1111/event?id=5946245c4b908f001403aba6', responseBody, config).then((response) => {
+        axios.put('http://128.199.208.0:1111/event?id='+ _this.state.event_id, responseBody, config).then((response) => {
             console.log("saved!!!");
             return true;
         }, (error) => {
@@ -172,15 +222,19 @@ class EditEvent extends Component {
     cancel() {
         const newState = {
             ...this.state,
-            new_id: this.state.id,
-            new_birth: this.state.birth,
-            new_nickname: this.state.nickname,
-            new_line: this.state.line,
-            new_email: this.state.email,
-            new_mobile: this.state.mobile,
-            new_size: this.state.size,
-            new_med: this.state.med,
-            new_food: this.state.food,
+            'new_title': this.state.title,
+            'new_about': this.state.about,
+            'new_channel': this.state.channel,
+            'new_video': this.state.video,
+            'new_location': this.state.location,
+            'new_date_start': this.state.date_start,
+            'new_date_end': this.state.date_end,
+            'new_picture': this.state.picture,
+            'new_picture_large': this.state.picture_large,
+            'new_year_require': this.state.year_require,
+            'new_faculty_require': this.state.faculty_require,
+            'new_tags': this.state.tags,
+            'new_forms': this.state.forms,
         };
         this.setState(newState);
         this.props.toggle_pop_item();
@@ -203,9 +257,9 @@ class EditEvent extends Component {
                     <p className="l1"></p>
                     <div className="flex">
                     <div className="w55">
-                        <h1>EVENT NAME</h1> <input ref="name" type="text" placeholder="" value={this.state.new_name} onChange={this.onKeyPressed}/>
-                        <h1>EVENT LOCATION</h1> <input ref="loc" type="text" placeholder="" value={this.state.new_loc} onChange={this.onKeyPressed}/>
-                        <h1>DATE & TIME</h1> <input ref="date" type="text" placeholder="" value={this.state.new_date} onChange={this.onKeyPressed}/>
+                        <h1>EVENT NAME</h1> <input ref="title" type="text" placeholder="" value={this.state.new_title} onChange={this.onKeyPressed}/>
+                        <h1>EVENT LOCATION</h1> <input ref="location" type="text" placeholder="" value={this.state.new_location} onChange={this.onKeyPressed}/>
+                        <h1>DATE & TIME</h1> <input ref="date_start" type="text" placeholder="" value={this.state.new_date_start} onChange={this.onKeyPressed}/>
                     </div>
                     <div>
                         <h1>ADD A POSTER</h1> <button className="fill">UPLOAD</button>
@@ -213,7 +267,7 @@ class EditEvent extends Component {
                     </div>
                     <p className="l1"></p>
                     <div>
-                        <h1>EVENT DETAIL</h1> <textarea className="detail" ref="detail" type="text" placeholder="" value={this.state.new_detail} onChange={this.onKeyPressed}/>
+                        <h1>EVENT DETAIL</h1> <textarea className="detail" ref="detail" type="text" placeholder="" value={this.state.new_about} onChange={this.onKeyPressed}/>
                         <div className="flex add">
                             <div className="flex-1"><h1>ADD URL</h1> <button className="fill">URL</button></div>
                             <div className="flex-1"><h1>ADD FILE</h1> <button className="fill">FILE</button></div>
@@ -324,7 +378,7 @@ class EditEvent extends Component {
                     <div>
                         <button className="bt blue">PUBLIC</button>
                         <button className="bt" onClick={this.save.bind(this)}>SAVE</button>
-                        <button className="bt" onClick={this.cancel.bind(this)}>CANCLE</button>
+                        <button className="bt" onClick={this.cancel.bind(this)}>CANCEL</button>
                     </div>
                 </article>
                 <div className="background-overlay"/>
