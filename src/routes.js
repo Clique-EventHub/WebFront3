@@ -67,7 +67,7 @@ export default (
         <Route path="calendar" component={CalendarPage} />
         <Route path="event" component={EditEvent}/>
         <Route path="focuskuy" component={ChannelInfo} />
-        <Route path="form" component={QuestionForm} />
+        <Route path="forms" component={QuestionForm} />
         <Route path="*" component={FallbackPageNorm} />
     </Route>
 );
