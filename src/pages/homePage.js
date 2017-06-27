@@ -44,7 +44,7 @@ class homePage extends Component {
                 <h1 className="display-none">Main body</h1>
                 <section role="carousel">
                     <h2 className="display-none">Carousel</h2>
-                    <SlickCarousel onItemPopUpClick={this.onItemPopUpClick} onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                    <SlickCarousel onItemPopUpClick={this.onItemPopUpClick} />
                 </section>
                 <div className="below-carousel">
                     <section content="upcomming">

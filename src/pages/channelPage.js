@@ -1,6 +1,6 @@
 import React , { Component } from 'react';
 import EventItem from '../container/eventItem';
-import EditEvent from '../container/editEvent2';
+import EditEvent from '../container/editEvent';
 // import CardList from '../components/cardList';
 // import SlickCarousel from '../components/slickCarousel';
 import Circle from '../components/circle';

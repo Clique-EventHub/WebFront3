@@ -1,14 +1,16 @@
 /* eslint-disable */
 
-import React , { Component } from 'react';
-import EventItem from '../container/eventItem';
-import CardList from '../components/cardList';
-import SlickCarousel from '../components/slickCarousel';
-import CircleList from '../components/circleList';
-import ChannelList from '../components/channelList';
 import './css/tagstyle.css';
-import pages from '../hoc/pages';
+
+import React , { Component } from 'react';
+
+import CardList from '../components/cardList';
+import ChannelList from '../components/channelList';
+import CircleList from '../components/circleList';
+import EventItem from '../container/eventItem';
+import SlickCarousel from '../components/slickCarousel';
 import normalPage from '../hoc/normPage';
+import pages from '../hoc/pages';
 
 class homePage extends Component {
 
@@ -42,7 +44,7 @@ class homePage extends Component {
 
                 <div className="below-carousel">
                         <article className="tag-proflie basic-card">
-                            <img className="photo" href="../../resource/images/poster_dummy/dummyProflie.png" />
+                            <img className="photo"  />
                             <div className=" "><h2>TAG NAME</h2></div>
                             <div className="like-button">LIKE</div>
                         </article>

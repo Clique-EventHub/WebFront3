@@ -1,0 +1,16 @@
+.modal-container2 {
+  position: fixed;
+  overflow: scroll;
+  top: 65px;
+  width: 100vw;
+  height: calc(100vh - 65px);
+}
+
+.chan-img {
+  height: 100%;
+  width: 135px;
+  margin-right: 50px;
+  border-radius: 100%;
+  background-color: pink;
+
+}
