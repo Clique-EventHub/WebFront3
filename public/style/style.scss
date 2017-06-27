@@ -12,6 +12,8 @@ $color-dark-pink: #be2f7d;
 $color-dark-green: #568d0c;
 $color-dark-red: #fe2000;
 
+/*test*/
+
 body {
     padding: 0px;
     margin: 0px;
@@ -27,6 +29,65 @@ body {
 
 button {
     padding-bottom: 0px;
+}
+
+select {
+    /* styling */
+    background-color: white;
+    border: thin solid #878787;
+    border-radius: 4px;
+    display: inline-block;
+    font: inherit;
+    line-height: 1.5em;
+    box-sizing: border-box;
+    padding: 0.2em 3.5em 0.1em 1em;
+
+    /* reset */
+
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, gray 50%),
+        linear-gradient(135deg, gray 50%, transparent 50%),
+        linear-gradient(to right, #ccc, #ccc);
+    background-position:
+        calc(100% - 20px) calc(1em - 3px),
+        calc(100% - 15px) calc(1em - 3px),
+        calc(100% - 2.5em) 0.15em;
+    background-size:
+        5px 5px,
+        5px 5px,
+        1px 1.5em;
+    background-repeat: no-repeat;
+}
+
+select:focus {
+    background-image:
+        linear-gradient(45deg, #{$color-dark-blue} 50%, transparent 50%),
+        linear-gradient(135deg, transparent 50%, #{$color-dark-blue} 50%),
+        linear-gradient(to right, #ccc, #ccc);
+    background-position:
+        calc(100% - 15px) calc(1em - 3px),
+        calc(100% - 20px) calc(1em - 3px),
+        calc(100% - 2.5em) 0.15em;
+    background-size:
+        5px 5px,
+        5px 5px,
+        1px 1.5em;
+    background-repeat: no-repeat;
+    border-color: $color-dark-blue;
+    color: $color-dark-blue;
+    outline: 0;
+}
+
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
 }
 
 .text-center {
@@ -121,8 +182,8 @@ $i: 10;
     }
 
     .mar-v-#{$i} {
-        margin-top: 0px + $i;
-        margin-bottom: 0px + $i;
+        margin-top: 0px + $i !important;
+        margin-bottom: 0px + $i !important;
     }
 
     .mar-h-#{$i} {

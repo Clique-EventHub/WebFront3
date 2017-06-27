@@ -25,9 +25,11 @@
 }
 .form div.CustomRadio input[type="radio"].state-circle ~ label:before {
   content: "\2022";
-  font-size: calc(17px);
+  font-size: 1.5em;
   text-align: center;
-  line-height: calc(17px - 5px);
+  box-sizing: border-box;
+  line-height: calc(0.7em);
+  font-family: sans-serif;
 }
 .form div.CustomRadio input[type="radio"].state-square ~ label:before {
   background-color: #888888;
@@ -43,12 +45,114 @@
 .form {
     padding: 20px;
     box-sizing: border-box;
+    font-family: sans-serif !important;
 }
 
-.form .bin {
+.form span.tab {
+    margin-left: 30px;
+}
+
+/*.form .bin {
     position: absolute;
     top: 0px;
     right: 10px;
+}*/
+
+.form section.question {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form section.question span,
+.form section.question input {
+    flex: 1;
+    font-size: 1.1em;
+    outline: none;
+    border: none;
+    font-family: sans-serif !important;
+}
+
+.form section.question textarea {
+    flex: 1;
+    font-size: 1.1em;
+    outline: none;
+    border: none;
+    font-family: sans-serif !important;
+    max-width: 100%;
+    min-width: 200px;
+    box-sizing: border-box;
+    resize: none;
+    background-color: #FAFAFA;
+    /*width: 70% !important;*/
+}
+
+.form .edit-choices {
+    display: flex;
+    flex-wrap: wrap;
+}
+.form .edit-choices > *{
+    flex: 1 1 100%;
+    display: flex;
+    align-items: center;
+}
+.form .edit-choices input {
+    display: inline-block;
+    /*width: 100%;*/
+    font-size: 1em;
+    outline: none;
+    border: none;
+    font-family: sans-serif !important;
+    order: 2;
+    flex: 1;
+}
+.form .edit-choices input ~ button {
+    order: 3;
+    height: 1em;
+    width: 1em;
+}
+.form .edit-choices input ~ button:hover {
+    filter: brightness(1.2);
+}
+.form .edit-choices input ~ button:active {
+    filter: brightness(0.8);
+}
+
+.form .edit-choices input ~ button > img {
+    height: 1em;
+    width: 1em;
+}
+
+.form .edit-choices input.bullet + span.icon:before {
+    order: 1;
+    display: inline-block;
+    content: "\25CF";
+    margin-right: 10px;
+}
+.form .edit-choices input.check.box + span.icon:before {
+    order: 1;
+    display: inline-block;
+    content: "\25A0";
+    margin-right: 10px;
+}
+.form .edit-choices input.spinner + span.icon:before {
+    order: 1;
+    display: inline-block;
+    content: "\25B6";
+    margin-right: 10px;
+}
+
+.form .add {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+.form .add input {
+    display: inline-block;
+    flex: 1;
+    font-size: 1em;
+    outline: none;
+    font-family: sans-serif !important;
 }
 
 .form .list-choices > span {
@@ -132,4 +236,27 @@
     padding: 10px 30px 30px 30px;
     box-sizing: border-box;
     border-bottom: 1px solid rgba(128,128,128,0.7);
+    /*transition: background 0.2s ease-in;
+    background-color: #FFF;
+    color: #000;*/
+}
+
+.form .question-item::before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 10px;
+    height: calc(100% - 10px);
+    top: 5px;
+    left: 0px;
+    background-color: #FC4D11;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.1s linear;
+}
+
+.form .question-item.onError::before {
+    opacity: 1;
+    visibility: visible;
+    transition: 0.05s ease-in;
 }

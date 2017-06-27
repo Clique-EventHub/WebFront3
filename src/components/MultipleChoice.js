@@ -94,7 +94,7 @@ class MultipleChoice extends Component {
                 {
                     this.props.options.map((text, index) => {
                         return (
-                            <div>
+                            <div key={index}>
                                 <CustomRadio key={index} text={text} state={this.props.state} isBlockedAction={
                                     this.onEvalBlock(index)
                                 } onClick={(new_mode) => {
