@@ -256,12 +256,12 @@ $profile-menu-color: #FCFCFC;
     border-bottom: 30px solid $profile-menu-color;
     position: relative;
     top: -34px;
-    left: 305px;
+    left: 370px;
     animation: dissoveIn 0.1s ease-in-out;
 }
 .profile-menu-active {
     position: absolute;
-    width: 350px;
+    width: 450px;
     height: 500px;
     top: 70px;
     right: 15px;
@@ -583,7 +583,7 @@ div.event-name p {
 /*tm*/
 div.profile-head {
     margin-bottom: 40px;
-    margin-left: 125px;
+    margin-left: 135px;
     height: 70px;
 }
 
@@ -606,7 +606,7 @@ div.profile-head div[alt="faculty-icon"] {
 }
 
 div.profile-head p {
-    margin-left: 20px;
+    margin-left: 25px;
     margin-top: 5px;
 }
 
@@ -618,7 +618,7 @@ div.profile-popup {
 /*tm*/
 div.profile-popup img[alt="profile-pic"] {
     height: calc(85px);
-    margin-left: 20px;
+    margin-left: 25px;
     border-radius: 50%;
     border: 1px solid #000;
     display: inline-block;
@@ -627,7 +627,7 @@ div.profile-popup img[alt="profile-pic"] {
 
 /*tm*/
 div.profile-section {
-    width: 300px;
+    width: 400px;
     height: 110px;
     background-color: #F0F0F0;
     margin-left: 20px;
@@ -724,23 +724,31 @@ div.my-event3 div[alt="event-icon"] {
     position: absolute;
 }
 
+div.my-noti {
+    overflow-y: scroll;
+    height: 75px;
+}
+
+div.my-noti div {
+    display: flex;
+}
+
 /*tm*/
 div.my-noti p {
     color: #555555;
-    margin-left: 30px;
+    margin: 0 0 7px 5px;
     font-size: 0.9em;
 }
 
 /*tm*/
 div.my-noti img[alt="noti-icon"] {
     height: calc(12px);
+    width: calc(12px);
     margin-left: 10px;
     margin-right: 6px;
     margin-top: 3px;
     border-radius: 50%;
     border: 1px solid #000;
-    display: inline-block;
-    position: absolute;
 }
 
 /*tm*/
@@ -758,8 +766,8 @@ div.btn-profile button {
     border-radius: 20px;
     height: 40px;
     margin-top: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
     font-size: 1.1em;
 }
 

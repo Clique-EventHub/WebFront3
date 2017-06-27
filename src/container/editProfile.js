@@ -9,21 +9,6 @@ class editProfile extends Component {
     constructor(props) {
         super(props);
 
-        let config = {
-            'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
-            }
-        }
-
-        // _id, firstName, lastName, picture, picture_200px, email, gender, shirt_size, phone, regId, facebookId, twitterUsername, lineId, disease, birth_day, allergy,
-        // notification, firstNameTH, lastNameTH, major, emer_phone, admin_events, admin_channels, join_events, interest_events, subscribe_channels, already_joined_events,
-        // tag_like, dorm_bed, dorm_building, dorm_room
-        //
-        // nick_name, picture, picture_200px, birth_da, twitterUsername, phone, shirt_size, allergy, disease, emer_phone, tag_like, dorm_room, dorm_building, dorm_bed,
-        // twitterUsername, lineId, notification
-
-        let _this = this;
-
         this.state = {
           'isLoading': true
         };
@@ -162,7 +147,7 @@ class editProfile extends Component {
     }
 
     render() {
-        if(true) {return (
+        return (
             <div className="modal-container">
                 <div className="edit-profile basic-card-no-glow modal-main mar-h-auto mar-v-40">
                     {(this.state.isLoading) ? (<div>Loading...</div>) : (
@@ -224,7 +209,7 @@ class editProfile extends Component {
                 </div>
                 <div className="background-overlay" />
             </div>
-        );}
+        );
     }
 }
 

@@ -968,8 +968,6 @@ div.my-noti img[alt="noti-icon"] {
   margin-top: 3px;
   border-radius: 50%;
   border: 1px solid #000;
-  display: inline-block;
-  position: absolute;
 }
 
 /*tm*/
