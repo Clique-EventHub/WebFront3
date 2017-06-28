@@ -49,9 +49,9 @@ class topNavBar extends Component {
         window.removeEventListener("resize", this.onWindowResize);
     }
 
-    componentDidUpdate() {
-        console.log(this.state);
-    }
+    // componentDidUpdate() {
+    //     console.log(this.state);
+    // }
 
     onSearchToggleState(value) {
         let tmp = (typeof(value) === "boolean") ? value : !this.state.isSearchActive;

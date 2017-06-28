@@ -49,9 +49,9 @@ class eventDetailFix extends Component {
         this.onGetInfo();
     }
 
-    componentDidUpdate() {
-        console.log(this.state);
-    }
+    // componentDidUpdate() {
+    //     console.log(this.state);
+    // }
 
     onGetInfo() {
         this.setState({
@@ -304,7 +304,7 @@ class eventDetailFix extends Component {
                 </div>
                 Loading
                 <div style={{'margin': 'auto', 'width': '50px', 'display': 'inline-block', 'position': 'relative', 'top': '12px', 'marginLeft': '5px'}}>
-                    <ReactLoading type={'bars'} color={'#878787'} height='40' width='40' />
+                    <ReactLoading type={'bars'} color={'#878787'} height='40px' width='40px' />
                 </div>
             </div>
         );

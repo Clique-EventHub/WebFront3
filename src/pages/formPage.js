@@ -6,6 +6,8 @@ import { getRandomShade, getCookie, getEventThumbnail, getChannelThumbnail } fro
 import ReactLoading from 'react-loading';
 import { hostname } from '../actions/index';
 import axios from 'axios';
+import ErrorPopUp from '../components/ErrorPopUp';
+import MsgPopUp from '../components/MsgPopUp';
 
 class formPage extends Component {
 
@@ -16,20 +18,30 @@ class formPage extends Component {
             'eventShade': getRandomShade(),
             'channelShade': getRandomShade(),
             'questions': null,
-            'formTitle': null,
+            'formTitle': '',
             'event': null,
-            'channel': null
+            'channel': null,
+            'isError': false,
+            'error': null,
+            'meta': {
+                'formId': (this.props.location.query.id) ? this.props.location.query.id : this.props.formId,
+                'eventId': (this.props.location.query.eid) ? this.props.location.query.eid : this.props.eventId,
+                'channelId': (this.props.location.query.cid) ? this.props.location.query.cid : this.props.channelId,
+                'isAdmin': (typeof(this.props.location.query.state) === "undefined") ? this.props.isAdmin : (this.props.location.query.state === "0")
+            }
         }
+
+        console.log(this.state);
 
         this.onStart = this.onStart.bind(this);
         this.onSent = this.onSent.bind(this);
         this.onSave = this.onSave.bind(this);
+        this.onPopUpError = this.onPopUpError.bind(this);
+        this.onPopUpMsg = this.onPopUpMsg.bind(this);
     }
 
     componentWillMount() {
-        setTimeout(() => {
-            this.onStart();
-        }, 1000);
+        this.onStart();
     }
 
     onStart() {
@@ -39,19 +51,41 @@ class formPage extends Component {
             }
         }
 
-        axios.get(`${hostname}form?id=${this.props.formId}`, config).then((data) => {
+        if(this.state.meta.formId) {
+            //Answering form or edit old form
+            axios.get(`${hostname}form?id=${this.state.meta.formId}`, config).then((data) => {
+                this.setState({
+                    ...this.state,
+                    'questions': data.data.form.questions,
+                    'formTitle': data.data.form.title
+                });
+                return true;
+            }, (error) => {
+                // console.log(error);
+                this.onPopUpError(error);
+                return false;
+            });
+        } else if(this.state.meta.isAdmin) {
+            //Create new form
             this.setState({
                 ...this.state,
-                'questions': data.data.form.questions,
-                'formTitle': data.data.form.title
-            });
-            return true;
-        }, (error) => {
-            console.log(error);
-            return false;
-        });
+                'questions': [],
+                'formTitle': 'Untitled'
+            })
+        } else {
+            //No formId and is Not Admin
+            let error = {
+                response: {
+                    status: 403,
+                    data: {
+                        err: "You are not authorized"
+                    }
+                },
+            }
+            this.onPopUpError(error);
+        }
 
-        getEventThumbnail(this.props.eventId, {
+        getEventThumbnail(this.state.meta.eventId, {
             isUseAuthorize: true,
             onSuccess: (data) => {
                 this.setState({
@@ -61,7 +95,7 @@ class formPage extends Component {
             }
         })
 
-        getChannelThumbnail(this.props.channelId, {
+        getChannelThumbnail(this.state.meta.channelId, {
             isUseAuthorize: true,
             onSuccess: (data) => {
                 this.setState({
@@ -102,18 +136,76 @@ class formPage extends Component {
             }
         }
 
-        axios.put(`${hostname}form?id=${this.props.formId}`, {'response': new_response}, config).then((data) => {
-            this.props.context.router.push('/');
-        }, (error) => {
-            console.log(error);
-        });
+        console.log(`${hostname}form?id=${this.state.meta.formId}`);
 
+        axios.put(`${hostname}form?id=${this.state.meta.formId}`, {'response': new_response}, config).then((data) => {
+            this.onPopUpMsg(["Thank you for answer our question(s)", "Have a nice day!"], () => {
+                this.props.context.router.push('/');
+            });
+        }, (error) => {
+            this.onPopUpError(error);
+        });
     }
 
     onSave(questions) {
         //Admin
-        console.log("Questions Form");
-        console.log(questions);
+
+        let config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            }
+        }
+
+        if(this.state.meta.formId) {
+            axios.post(`${hostname}form?id=${this.state.meta.formId}`, {
+                'title': questions.formTitle,
+                'questions': questions.questions,
+                'event': this.state.meta.eventId,
+                'channel': this.state.meta.channelId
+            }, config).then((data) => {
+                this.onPopUpMsg(["You successfully uploaded Form to server", "Congradulation"], () => {this.props.context.router.push('/')});
+            }, (error) => {
+                this.onPopUpError(error);
+            });
+        } else {
+            axios.post(`${hostname}form`, {
+                'title': questions.formTitle,
+                'questions': questions.questions,
+                'event': this.state.meta.eventId,
+                'channel': this.state.meta.channelId
+            }, config).then((data) => {
+                this.onPopUpMsg(["You successfully uploaded Form to server", "Congradulation"], () => {this.props.context.router.push('/')});
+            }, (error) => {
+                this.onPopUpError(error);
+            });
+        }
+    }
+
+    onPopUpMsg(ArrayOfMessage, callback) {
+        let new_onExit = () => {
+            this.props.toggle_pop_item();
+            if(typeof(callback) === "function") callback();
+        }
+
+        new_onExit = new_onExit.bind(this);
+
+        this.props.blur_bg();
+        this.props.set_pop_up_item(<MsgPopUp onExit={new_onExit} colourStr="green">
+            {
+                ArrayOfMessage.map((string, index) => <span key={index}>{string}<br /></span>)
+            }
+        </MsgPopUp>);
+        this.props.display_pop_item();
+    }
+
+    onPopUpError(error) {
+        this.props.blur_bg();
+        if(error.response) {
+            this.props.set_pop_up_item(<ErrorPopUp onExit={this.props.toggle_pop_item} errorMsg={`Oh! Ow! something went wrong!`} errorDetail={`Got Error code: ${error.response.status} with message "${error.response.data.err}"`} />);
+        } else {
+            this.props.set_pop_up_item(<ErrorPopUp onExit={this.props.toggle_pop_item} errorMsg={`Oh! Ow! something went wrong!`} errorDetail="Please check your internet connection" />);
+        }
+        this.props.display_pop_item();
     }
 
     render() {
@@ -133,7 +225,7 @@ class formPage extends Component {
                             </div>
                         </div>
                     ) : (
-                        <QuestionForm questions={this.state.questions} event={this.state.event} channel={this.state.channel} isAdmin={false} onSent={this.onSent} onSave={this.onSave} formTitle={this.state.formTitle} shadeColor={this.state.shadeColor} eventShade={this.state.eventShade} channelShade={this.state.channelShade} />
+                        <QuestionForm questions={this.state.questions} event={this.state.event} channel={this.state.channel} isAdmin={this.state.meta.isAdmin} onSent={this.onSent} onSave={this.onSave} formTitle={this.state.formTitle} shadeColor={this.state.shadeColor} eventShade={this.state.eventShade} channelShade={this.state.channelShade} />
                     )
                 }
             </section>
@@ -142,9 +234,20 @@ class formPage extends Component {
 }
 
 formPage.defaultProps = {
-    'formId': '595330d746643c4fda2f464f',
+    'formId': '5953991b46643c4fda2f4679',
     'eventId': '594bf476e374d100140f04ec',
-    'channelId': '5946205a4b908f001403aba5'
+    'channelId': '5946205a4b908f001403aba5',
+    'isAdmin': false
 }
+
+/*
+    Case props
+        - With 'formId'
+            - isAdmin is true - Edit past form
+            - isAdmin is false - Answering form
+        - Without 'formId'
+            - isAdmin is true - Create new form
+            - isAdmin is false - This should mot happen
+*/
 
 export default normalPage(pages(formPage, true));
