@@ -1,9 +1,80 @@
+/*.form .icon-edit::before {
+    content: "\f044";
+    font-family: FontAwesome;
+    display: inline-block;
+    font-size: 22px;
+}*/
+
+
+
+.form button.round {
+    border: 1px solid #878787;
+    border-radius: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 3px;
+    outline: none;
+    box-sizing: border-box;
+    height: 35px;
+    font-size: 1em;
+    text-align: center;
+    background-color: #FFF;
+    color: #000;
+}
+
+.form button.round.small {
+    font-size: 0.7em;
+    margin: 0px 3px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.form button.round.red:hover {
+    background-color: #FC4D11;
+    color: #FFF;
+    border-color: #EEE;
+}
+
+.form button.round:hover {
+    background-color: #31BAEC;
+    color: #FFF;
+    border-color: #EEE;
+}
+.form button.round:active {
+    filter: brightness(0.9);
+}
+
+.form .fa {
+    font-size: 22px;
+    color: #878787;
+}
+
+.form .fa:hover {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.form .fa:active,
+.form .fa.active {
+    color: #376AFC;
+}
+
+.form .fa.fa-trash-o:active {
+    color: #FC4D11;
+}
+
+.form .title-name {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+    white-space: nowrap;
+}
+
 .form .to-right {
     float: right;
 }
 
-.form .FormChoice {
-
+.form .FormChoice.circle div.CustomRadio input[type="radio"] ~ label:before {
+    border-radius: 50%;
 }
 
 .form .FormChoice > * {
@@ -30,6 +101,7 @@
   box-sizing: border-box;
   line-height: calc(0.7em);
   font-family: sans-serif;
+  border-radius: 50%;
 }
 .form div.CustomRadio input[type="radio"].state-square ~ label:before {
   background-color: #888888;
@@ -46,6 +118,16 @@
     padding: 20px;
     box-sizing: border-box;
     font-family: sans-serif !important;
+    margin: 20px auto;
+    min-width: 400px;
+    border-radius: 5px;
+    /*margin-top: 20px;*/
+}
+
+@media all and (max-width: 480px) {
+    .form {
+        margin: 20px 0px;
+    }
 }
 
 .form span.tab {
@@ -62,6 +144,16 @@
     display: flex;
     align-items: center;
     margin-bottom: 15px;
+}
+
+.form input.title-name {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+    white-space: nowrap;
+    outline: none;
+    border: none;
+    width: 100%;
 }
 
 .form section.question span,
@@ -215,11 +307,14 @@
 }
 
 .question-type {
-    display: inline-block;
+    display: inline-flex;
+    flex-wrap: nowrap;
 }
 
 .form .added-zone {
     height: 50px;
+    flex-wrap: nowrap;
+    margin-top: 10px;
 }
 
 .form .fullwidth {
@@ -229,7 +324,40 @@
 }
 
 .form .top-bar {
+    display: flex;
+    align-items: center;
+}
+
+.form .top-bar .event-container {
+    flex: 1 1 50%;
+    font-size: 1.6rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.form .top-bar .event-container::after {
+    content: " ";
+    height: 2rem;
+    width: 1px;
+    margin-left: 5px;
+    background-color: #878787;
+    display: inline-block;
+}
+
+.form .top-bar .channel-container {
+    font-size: 1rem;
+    font-weight: 200;
+    display: flex;
+    align-items: center;
+}
+
+.form .top-bar .thumbnail {
+    border-radius: 50%;
+    width: 30px;
     height: 30px;
+    display: inline-block;
+    margin-right: 5px;
 }
 
 .form .question-item {

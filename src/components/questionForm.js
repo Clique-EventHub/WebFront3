@@ -6,6 +6,13 @@ import './style/questionForm.css';
 
 const enableTestFeature = false;
 
+/*
+    Test feature
+        - Set Maximum Choices for Bullet point
+        - Move cursor up with edit choices and delete if that choices is empty
+        - Multiple state for Both Bullet point and CheckBox
+*/
+
 /* Individual Question format
 
 {
@@ -16,19 +23,19 @@ const enableTestFeature = false;
 
 */
 
-const CheckBoxState= [{
-    'type': 'none',
-    'value': 'false'
-}, {
-    'type': 'square',
-    'value': 'true'
-}];
-
-const BulletState = [{
+const BulletState= [{
     'type': 'none',
     'value': 'false'
 }, {
     'type': 'circle',
+    'value': 'true'
+}];
+
+const CheckBoxState = [{
+    'type': 'none',
+    'value': 'false'
+}, {
+    'type': 'square',
     'value': 'true'
 }];
 
@@ -37,14 +44,10 @@ class QuestionItem extends Component {
         super(props);
         this.state = {
             'isEdit': false,
-            'text': (this.props.defaultText) ? this.props.defaultText : '',
-            'type': (this.props.type) ? this.props.type : 'short answer',
-            'choices': (this.props.choices) ? this.props.choices : null,
-            'index': (typeof(this.props.index) === "number") ? this.props.index : 0,
             'isEnter': false,
             'choicesIndex': 0,
             'isLast': false,
-            'maxCheckBox': 1,
+            'maxBullet': 1,
             'response': null
         }
 
@@ -59,6 +62,7 @@ class QuestionItem extends Component {
         this.updateMax = this.updateMax.bind(this);
         this.onGetResponse = this.onGetResponse.bind(this);
         this.onUpdateResponseSpinner = this.onUpdateResponseSpinner.bind(this);
+        this.onQuestionDelete = this.onQuestionDelete.bind(this);
     }
 
     resizeTextArea(refName) {
@@ -75,37 +79,28 @@ class QuestionItem extends Component {
     }
 
     onChange(refName) {
-        this.setState({
-            ...this.state,
-            'text': this.refs[refName].value
-        });
-
-        if(typeof(this.props.onChangeText) === "function") this.props.onChangeText(this.refs[refName].value, this.state.index);
+        if(typeof(this.props.onChangeText) === "function") this.props.onChangeText(this.refs[refName].value, this.props.index);
     }
 
     onChangeChoice(index, refName) {
-        let new_choices = this.state.choices;
+        let new_choices = this.props.question.choices;
         new_choices[index] = this.refs[refName].value;
-        this.setState({
-            ...this.state,
-            'choices': new_choices
-        });
+
+        if(typeof(this.props.onChangeChoices) === "function") this.props.onChangeChoices(new_choices);
     }
 
     onDelete(index) {
-        let new_choices = this.state.choices.slice(0, index).concat(this.state.choices.slice(index+1, this.state.choices.length));
-        this.setState({
-            ...this.state,
-            'choices': new_choices
-        });
+        let new_choices = this.props.question.choices.slice(0, index).concat(this.props.question.choices.slice(index+1, this.props.question.choices.length));
+        if(typeof(this.props.onChangeChoices) === "function") this.props.onChangeChoices(new_choices);
     }
 
     onAdd(isEnter, choicesIndex, isLast) {
-        let new_choices = this.state.choices.concat(this.refs["add-choice"].value);
+        let new_choices = this.props.question.choices.concat(this.refs["add-choice"].value);
         this.refs["add-choice"].value = '';
+
+        if(typeof(this.props.onChangeChoices) === "function") this.props.onChangeChoices(new_choices);
         this.setState({
             ...this.state,
-            'choices': new_choices,
             'isEnter': (isEnter) ? isEnter : false,
             'choicesIndex': (isLast) ? choicesIndex + 1 : this.state.choicesIndex + 1,
             'isLast': isLast
@@ -114,26 +109,29 @@ class QuestionItem extends Component {
 
     onKeyPress(currentIndex, key) {
         if(key === 'Enter') {
-            if(this.state.choicesIndex < this.state.choices.length-1) {
+            if(this.state.choicesIndex < this.props.question.choices.length-1) {
                 this.onInputClick(this.state.choicesIndex+1);
                 this.refs[`input-${this.state.choicesIndex+1}`].focus();
             } else {
                 this.onAdd(true, currentIndex, true);
             }
         }
-        // if(key === 'Backspace') {
-        //     if(this.refs[`input-${this.state.choicesIndex}`].value === '') {
-        //         this.onDelete(this.state.choicesIndex-1);
-        //         this.refs[`input-${this.state.choicesIndex-1}`].focus();
-        //         this.onInputClick(this.state.choicesIndex-1);
-        //     }
-        // }
     }
 
     onInputClick(targetIndex) {
         this.setState({
             ...this.state,
             'choicesIndex': targetIndex
+        })
+    }
+
+    onQuestionDelete() {
+        this.props.onDelete();
+        this.setState({
+            ...this.state,
+            'text': (this.props.question.question) ? this.props.question.question : '',
+            'type': (this.props.type) ? this.props.type : 'short answer',
+            'index': (typeof(this.props.index) === "number") ? this.props.index : 0
         })
     }
 
@@ -144,7 +142,7 @@ class QuestionItem extends Component {
 
         if(this.state.isEnter) {
             if(this.state.isLast) {
-                this.refs[`input-${this.state.choices.length-1}`].focus();
+                this.refs[`input-${this.props.question.choices.length-1}`].focus();
             }
 
             this.setState({
@@ -170,25 +168,21 @@ class QuestionItem extends Component {
     updateMax() {
         this.setState({
             ...this.state,
-            'maxCheckBox': (this.refs["maxCheckBox"].value) ? this.refs["maxCheckBox"].value : 0
+            'maxBullet': (this.refs["maxBullet"].value) ? this.refs["maxBullet"].value : 0
         })
     }
 
     onGetResponse(response) {
-        this.setState({
-            ...this.state,
-            'response': response
-        });
-        if(typeof(this.props.onGetResponse) === "function") this.props.onGetResponse(response, this.state.index);
+        if(typeof(this.props.onGetResponse) === "function") this.props.onGetResponse(response, this.props.index);
     }
 
     onUpdateResponseSpinner() {
-        if(this.state.type === "spinner") {
-            if(this.state.response === null || (this.state.response === '' && this.state.choices[0] !== this.state.response)){
-                if(this.state.choices.length > 0) {
+        if(this.props.question.type === "spinner") {
+            if(this.props.response === null || (this.props.response === '' && this.props.question.choices[0] !== this.props.response)){
+                if(this.props.question.choices.length > 0) {
                     this.setState({
                         ...this.state,
-                        'response': this.state.choices[0]
+                        'response': this.props.question.choices[0]
                     })
                 }
             }
@@ -198,16 +192,16 @@ class QuestionItem extends Component {
     render() {
         if(this.state.isEdit) {
             let answerItem;
-            if(this.state.type === 'short answer') {
+            if(this.props.question.type === 'short answer') {
                 answerItem = null;
             } else {
                 answerItem = (
                     <div className="edit-choices">
                         {
-                            this.state.choices.map((item, index) => {
+                            this.props.question.choices.map((item, index) => {
                                 return (
                                     <div key={index}>
-                                        <input className={this.state.type} type="text" value={item} onClick={() => {this.onInputClick(index);}} onChange={(e) => {this.onChangeChoice(index, `input-${index}`);}} onKeyDown={(e) => {this.onKeyPress(index, e.key);}} ref={`input-${index}`} />
+                                        <input className={this.props.question.type} type="text" value={item} onClick={() => {this.onInputClick(index);}} onChange={(e) => {this.onChangeChoice(index, `input-${index}`);}} onKeyDown={(e) => {this.onKeyPress(index, e.key);}} ref={`input-${index}`} />
                                         <span className="icon" />
                                         <button className="invisible square-round" onClick={() => {this.onDelete(index)}}>
                                             <img src="../../resource/images/X.svg" alt="Delete" />
@@ -222,13 +216,13 @@ class QuestionItem extends Component {
             return (
                 <div className={`question-item fullwidth ${this.props.isError ? 'onError': ''}`}>
                     <section className="question">
-                        <textarea rows="1" value={this.state.text} onChange={() => {this.onChange("me"); this.resizeTextArea("me");}} ref="me" />
-                        {(this.props.isEditable) ? (<button className="edit invisible square-round" onClick={this.onEditClick}>Done</button>) : null}
-                        {(this.props.isEditable) ? (<button className="bin invisible square-round" onClick={this.props.onDelete}>Bin</button>) : null}
+                        <textarea rows="1" value={this.props.question.question} onChange={() => {this.onChange("me"); this.resizeTextArea("me");}} ref="me" />
+                        {(this.props.isEditable) ? (<button className="edit invisible square-round" onClick={this.onEditClick}><i className="fa fa-pencil-square-o active" aria-hidden="true"></i></button>) : null}
+                        {(this.props.isEditable) ? (<button className="bin invisible square-round" onClick={this.onQuestionDelete}><i className="fa fa-trash-o" aria-hidden="true"></i></button>) : null}
                     </section>
                     {answerItem}
                     {
-                        (this.state.type !== 'short answer') ? (
+                        (this.props.question.type !== 'short answer') ? (
                             <section className="add">
                                 <input ref="add-choice" onKeyPress={(e) => {
                                         if(e.charCode === 13) {
@@ -236,10 +230,10 @@ class QuestionItem extends Component {
                                         }
                                     }}/><span className="icon-plus" onClick={this.onAdd}/>
                                 {
-                                    (this.state.type === 'check box' && enableTestFeature) ? (
-                                        <select value={this.state.maxCheckBox} style={{'marginLeft': '10px'}} onChange={this.updateMax} ref="maxCheckBox">
+                                    (this.props.question.type === 'bullet' && enableTestFeature) ? (
+                                        <select value={this.state.maxBullet} style={{'marginLeft': '10px'}} onChange={this.updateMax} ref="maxBullet">
                                             {
-                                                this.range(1, this.state.choices.length + 1, 1).map((num) => {
+                                                this.range(1, this.props.question.choices.length + 1, 1).map((num) => {
                                                     return <option value={num} key={num}>{num}</option>
                                                 })
                                             }
@@ -254,31 +248,21 @@ class QuestionItem extends Component {
         }
 
         let answerItem;
-        switch (this.state.type) {
+        switch (this.props.question.type) {
             case 'short answer':
                 answerItem = (<textarea ref="me" onKeyUp={() => {this.resizeTextArea("me"); this.onGetResponse(this.refs.me.value); this.setState({ ...this.state, 'response': this.refs.me.value}); }}/>);
                 break;
             case 'bullet':
-                answerItem = (<MultipleChoice state={BulletState} options={this.state.choices} maxActive={this.state.choices.length} containerClass="FormChoice" onUpdate={this.onGetResponse} />);
+                answerItem = (<MultipleChoice state={BulletState} options={this.props.question.choices} maxActive={this.state.maxBullet} containerClass="FormChoice circle" onUpdate={this.onGetResponse} />);
                 break;
             case 'check box':
-                answerItem = (<MultipleChoice state={CheckBoxState} options={this.state.choices} maxActive={this.state.maxCheckBox} containerClass="FormChoice" onUpdate={this.onGetResponse} />);
+                answerItem = (<MultipleChoice state={CheckBoxState} options={this.props.question.choices} maxActive={this.props.question.choices.length} containerClass="FormChoice" onUpdate={this.onGetResponse} />);
                 break;
             case 'spinner':
-                let onUpdateSpinner = function() {
-                    this.onGetResponse(this.refs.spinner.value);
-                    this.setState({
-                        ...this.state,
-                        'response': this.refs.spinner.value
-                    });
-                }
-
-                onUpdateSpinner = onUpdateSpinner.bind(this);
-
                 answerItem = (
                     <div>
-                        <select value={this.state.response} onChange={onUpdateSpinner} onClick={onUpdateSpinner} ref="spinner">
-                            { this.state.choices.map((text, index) => {
+                        <select value={this.props.response.answer ? this.props.response.answer : 0} onChange={() => {this.onGetResponse(this.refs.spinner.value);}} onClick={() => {this.onGetResponse(this.refs.spinner.value);}} ref="spinner">
+                            { this.props.question.choices.map((text, index) => {
                                 return (<option value={text} key={index}>{text}</option>)
                             }) }
                         </select>
@@ -289,7 +273,7 @@ class QuestionItem extends Component {
                 answerItem = null;
         }
 
-        let new_text = this.state.text.split("\n");
+        let new_text = this.props.question.question.split("\n");
 
         return (
             <div className={`question-item fullwidth ${this.props.isError ? 'onError': ''}`}>
@@ -311,8 +295,8 @@ class QuestionItem extends Component {
                             }
                             return <span key={index}>{item}<br /></span>;
                         })}</span>
-                    {(this.props.isEditable) ? (<button className="edit invisible square-round" onClick={this.onEditClick}>Edit</button>) : null}
-                    {(this.props.isEditable) ? (<button className="bin invisible square-round" onClick={this.props.onDelete}>Bin</button>) : null}
+                    {(this.props.isEditable) ? (<button className="edit invisible square-round" onClick={this.onEditClick}><i className="fa fa-pencil-square-o" aria-hidden="true"></i></button>) : null}
+                    {(this.props.isEditable) ? (<button className="bin invisible square-round" onClick={this.onQuestionDelete}><i className="fa fa-trash-o" aria-hidden="true"></i></button>) : null}
                 </section>
                 { answerItem }
             </div>
@@ -333,7 +317,8 @@ class QuestionForm extends Component {
                 }
             }),
             'validateError': [],
-            'isAdmin': this.props.isAdmin
+            'isAdmin': this.props.isAdmin,
+            'formTitle': (this.props.formTitle) ? this.props.formTitle : 'Untitled',
         }
         this.resizeTextArea = this.resizeTextArea.bind(this);
         this.onAddQuestion = this.onAddQuestion.bind(this);
@@ -341,6 +326,7 @@ class QuestionForm extends Component {
         this.onGetResponse = this.onGetResponse.bind(this);
         this.onChangeText = this.onChangeText.bind(this);
         this.onValidate = this.onValidate.bind(this);
+        this.onChangeChoices = this.onChangeChoices.bind(this);
         this.onSave = this.onSave.bind(this);
     }
 
@@ -348,6 +334,15 @@ class QuestionForm extends Component {
         let textArea = this.refs[refName];
         textArea.style.height = 'auto';
         textArea.style.height = textArea.scrollHeight+'px';
+    }
+
+    onChangeChoices(index, new_choices) {
+        let new_questions = this.state.questions;
+        new_questions[index].choices = new_choices;
+        this.setState({
+            ...this.state,
+            'questions': new_questions
+        })
     }
 
     onGetResponse(res, index) {
@@ -409,6 +404,11 @@ class QuestionForm extends Component {
             if(this.state.responses[i].answer === null) {
                 tmp = false;
                 onErrorIndex.push(i);
+            } else if(this.state.responses[i].type === "bullet" || this.state.responses[i].type === "check box") {
+                if(this.state.responses[i].answer.constructor !== Array || this.state.responses[i].answer.length === 0) {
+                    tmp = false;
+                    onErrorIndex.push(i);
+                }
             }
         }
 
@@ -423,21 +423,33 @@ class QuestionForm extends Component {
     }
 
     onSave() {
-        if(typeof(this.props.onSave) === "function") this.props.onSave(this.state.questions);
+        if(typeof(this.props.onSave) === "function") this.props.onSave({'questions': this.state.questions, 'formTitle': this.state.formTitle});
     }
 
     render() {
         return (
             <div className="basic-card-no-glow form card-width">
-                <div className="top-color shade-blue"></div>
+                <div className={`top-color ${this.props.shadeColor}`}></div>
+                {(this.state.isAdmin) ? (
+                    <input className="title-name" type="text" ref="title" value={this.state.formTitle} onChange={() => {this.setState({ ...this.state, 'formTitle': this.refs.title.value})}} />
+                ) : (
+                    <div className="title-name">{this.props.formTitle}</div>
+                ) }
                 <div className="top-bar">
-                    EVENTNAME |
+                    {(this.props.event) ? <div className="event-container">{this.props.event.title} </div>: 'Loading...'}
+                    {(this.props.channel) ? (
+                        <div className="channel-container">
+                            {
+                                (this.props.channel.picture) ? (<img className="thumbnail" src={`https://api.${this.props.channel.picture}`} alt="icon" />) : (<div className={`thumbnail ${this.props.channelShade}`} />)
+                            }
+                            {this.props.channel.name}
+                        </div>) : null}
                 </div>
                 <p className="hr fullwidth" />
                 {
                     this.state.questions.map((item, index) => {
                         return (
-                            <QuestionItem key={index} isError={this.state.validateError.includes(index)} index={index} defaultText={item.question} type={item.type} choices={item.choices} onDelete={() => {this.onDeleteQuestion(index);}} isEditable={this.state.isAdmin} onGetResponse={this.onGetResponse} onChangeText={this.onChangeText} />
+                            <QuestionItem key={index} isError={this.state.validateError.includes(index)} index={index} question={item} response={this.state.responses[index]} onDelete={() => {this.onDeleteQuestion(index);}} isEditable={this.state.isAdmin} onChangeChoices={(new_choice)=>{this.onChangeChoices(index, new_choice);}} onGetResponse={(res) => {this.onGetResponse(res, index);}} onChangeText={this.onChangeText} />
                         );
                     })
                 }
@@ -446,20 +458,22 @@ class QuestionForm extends Component {
                         <div className="flex flex-aligns-item flex-justify-center added-zone">
                             <span className="icon-plus big" />
                             <div className="question-type">
-                                <button onClick={() => { this.onAddQuestion('short answer') }}>Add text answer</button>
-                                <button onClick={() => { this.onAddQuestion('check box') }}>Add checkbox</button>
-                                <button onClick={() => { this.onAddQuestion('bullet') }}>Add bullet point</button>
-                                <button onClick={() => { this.onAddQuestion('spinner') }}>Add spinner</button>
+                                <button className="round small" onClick={() => { this.onAddQuestion('short answer') }}>Add text answer</button>
+                                <button className="round small" onClick={() => { this.onAddQuestion('check box') }}>Add checkbox</button>
+                                <button className="round small" onClick={() => { this.onAddQuestion('bullet') }}>Add bullet point</button>
+                                <button className="round small" onClick={() => { this.onAddQuestion('spinner') }}>Add spinner</button>
                             </div>
                         </div>
-                    ) : (<div>
-                        <button onClick={this.onValidate}>Send</button>
+                    ) : (<div style={{'textAlign': 'right', 'marginTop': '30px'}}>
+                        <button className="round" onClick={this.onValidate}>Send</button>
                     </div>)
                 }
                 {
                     (this.state.isAdmin) ? (
-                        <div>
-                            <button onClick={this.onSave} >Save</button>
+                        <div style={{'textAlign': 'right'}}>
+                            <p className="hr" />
+                            <button className="round red mar-h-10" >Cancel</button>
+                            <button className="round" onClick={this.onSave} >Save</button>
                         </div>
                     ) : null
                 }
@@ -471,8 +485,9 @@ class QuestionForm extends Component {
 QuestionForm.defaultProps = {
     questions: [],
     isAdmin: false,
-    onSent: (data) => { console.log(data); },
-    onSave: (data) => { console.log(data); }
+    onSent: (data) => {  },
+    onSave: (data) => {  },
+    shadeColor: "shade-blue"
 }
 
 export default QuestionForm;

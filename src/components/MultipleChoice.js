@@ -52,7 +52,7 @@ class MultipleChoice extends Component {
                     response.push({
                         'index': key,
                         'value': new_active[key],
-                        'text': this.props.options[index]
+                        'text': this.props.options[key]
                     })
                 })
                 this.props.onUpdate(response);
@@ -67,13 +67,13 @@ class MultipleChoice extends Component {
                     response.push({
                         'index': key,
                         'value': this.state.active[key],
-                        'text': this.props.options[index]
+                        'text': this.props.options[key]
                     })
                 } else {
                     response.push({
                         'index': key,
                         'value': new_mode.value,
-                        'text': this.props.options[index]
+                        'text': this.props.options[key]
                     })
                 }
             })
@@ -86,6 +86,10 @@ class MultipleChoice extends Component {
         if(Object.keys(this.state.active).length < this.props.maxActive) return false;
         if(typeof(this.state.active[index]) === "string") return false;
         return true;
+    }
+
+    componentDidUpdate() {
+        // console.log(this.props.options);
     }
 
     render() {

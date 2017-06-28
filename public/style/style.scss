@@ -561,6 +561,13 @@ section[role="main-content"] {
         margin: auto;
     }
 }
+
+section.no-padding[role="main-content"] {
+    padding: 0px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
 section[content="left-group"] {
     display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
     display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */

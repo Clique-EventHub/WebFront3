@@ -4,6 +4,7 @@ import * as facultyMap from '../actions/facultyMap';
 import axios from 'axios';
 import { hostname } from '../actions/index';
 import ReactLoading from 'react-loading';
+import { Link } from 'react-router';
 
 //https://codepen.io/bh/pen/JBlCc
 let useCls = " toggle-vis";
@@ -206,7 +207,9 @@ class eventDetailFix extends Component {
                                             DISAPPROVE
                                         </div>
                                         <div className="btn-round shade-green">
-                                            APPROVE
+                                            <Link to='/form'>
+                                                APPROVE
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
