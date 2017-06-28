@@ -164,14 +164,17 @@ class EditEvent extends Component {
                     </button>
 
                     <img src="../resource/images/dummyProfile.png" className="chan-img" />
+
+                    <input className="chan-name" ref="location" type="text" placeholder="CHANNEL NAME" value={this.state.new_location} onChange={this.onKeyPressed}/>                    
                     
-                    <h2 className="chan-name" >CHANNEL NAME</h2>
 
                     <p className="l1"></p>
                      
-                    <div className="w55">
-                        <h1>DETAIL</h1> <input ref="title" type="text" placeholder="" value={this.state.new_title} onChange={this.onKeyPressed}/>
+                    <div className="full-input">
+                        <h1>DETAIL</h1> 
+                        <textarea className="detail" ref="about" type="text" placeholder="" value={this.state.new_about} onChange={this.onKeyPressed}/>
                         <h1>PHOTO</h1> <button className="fill">UPLOAD</button>
+
                         <h1>URL</h1> <input ref="location" type="text" placeholder="" value={this.state.new_location} onChange={this.onKeyPressed}/>
                         <h1>YOUTUBE</h1> <input ref="date_start" type="text" placeholder="" value={this.state.new_date_start} onChange={this.onKeyPressed}/>
                     </div>
@@ -194,20 +197,20 @@ class EditEvent extends Component {
                         <button className="tag">OPENING</button>
                         <button className="tag">CONTEST</button>
                         <button className="tag">EXHIBITION</button>
-                        <button className="tag long">WORKSHOP</button>
+                        <button className="tag">WORKSHOP</button>
                         <button className="tag">RELIGION</button>
                         <br />
                         <br />
                         <button className="tag">CHARILY</button>
-                        <button className="tag long">ACADEMIC</button>
+                        <button className="tag">ACADEMIC</button>
                         <button className="tag">BUSSINESS</button>
                         <button className="tag">CAREER</button>
                         <button className="tag">SPORT</button>
                         <button className="tag">ARTS</button>
-                        <button className="tag long">FOOD&DRINK</button>
+                        <button className="tag">FOOD&DRINK</button>
                         <button className="tag long">EDUCATION</button>
                         <button className="tag">MUSIC</button>
-                        <button className="tag long">TECHNOLOGY</button>
+                        <button className="tag">TECHNOLOGY</button>
                         <button className="tag">NATURAL</button>
                         <button className="tag">HEALTH</button>
                     </div>
