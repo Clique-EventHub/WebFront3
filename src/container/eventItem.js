@@ -11,7 +11,7 @@ class eventItem extends Component {
     }
 
     onButtonClick() {
-        this.props.onSetItem(<EventDetailFix onToggle={this.props.onToggle} />);
+        this.props.onSetItem(<EventDetailFix eventId={this.props.eventId} onToggle={this.props.onToggle} />);
         this.props.onToggle();
     }
 
@@ -22,7 +22,7 @@ class eventItem extends Component {
         const posterObj = (this.props.posterSrc) ? <div role="main-poster" alt="main-poster" style={{backgroundImage: `url('${this.props.posterSrc}')`}} /> : <div role="main-poster" alt="main-poster" style={{backgroundImage: `url('https://about.canva.com/wp-content/uploads/sites/3/2015/01/concert_poster.png')`}}/>;
 
         return (
-            <article role="event-item" className={detailShownClass} onClick={this.onButtonClick}>
+            <article role="event-item" className={detailShownClass} onClick={() => this.onButtonClick}>
                 <h3 className="display-none">Event Name</h3>
                 {posterObj}
                 <div role="overlay" aria-hidden="true"></div>

@@ -166,23 +166,23 @@ class EditEvent extends Component {
                     <img src="../resource/images/dummyProfile.png" className="chan-img" />
 
                     <input className="chan-name" ref="location" type="text" placeholder="CHANNEL NAME" value={this.state.new_location} onChange={this.onKeyPressed}/>                    
-                    
+
 
                     <p className="l1"></p>
-                     
+
                     <div className="full-input">
-                        <h1>DETAIL</h1> 
+                        <h1>DETAIL</h1>
                         <textarea className="detail" ref="about" type="text" placeholder="" value={this.state.new_about} onChange={this.onKeyPressed}/>
                         <h1>PHOTO</h1> <button className="fill">UPLOAD</button>
 
                         <h1>URL</h1> <input ref="location" type="text" placeholder="" value={this.state.new_location} onChange={this.onKeyPressed}/>
                         <h1>YOUTUBE</h1> <input ref="date_start" type="text" placeholder="" value={this.state.new_date_start} onChange={this.onKeyPressed}/>
                     </div>
-                        
-                        
-                    
-                    
-                    
+
+
+
+
+
                     <div className="chan-tag">
                         <h1>TAG</h1>
                         <button className="tag">CAMP</button>
@@ -214,7 +214,7 @@ class EditEvent extends Component {
                         <button className="tag">NATURAL</button>
                         <button className="tag">HEALTH</button>
                     </div>
-                    
+
                     <br />
                     <br />
                     <br />

@@ -151,7 +151,7 @@ class topNavBar extends Component {
                     <div aria-hidden="true" className="vr"></div>
                     <form>
                         <i className="fa fa-search" aria-hidden="true"></i>
-                        <input className="invisible" type="text" placeholder="Search" ref="first" onChange={() => { this.onUpdateSearch("first"); this.onSearchToggleState(true);}} value={this.state.searchTerm} onClick={this.onSearchToggleState}></input>
+                    <input className="invisible" type="text" placeholder="Search" ref="first" onChange={() => { this.onUpdateSearch("first");}} onClick={()=> {this.onSearchToggleState(true);}} value={this.state.searchTerm} onClick={this.onSearchToggleState}></input>
                     </form>
                 </section>
                 <Link to="/" className="flex-center" onClick={() => {if(this.pages.is_blur) this.props.toggle_pop_item()}}>
@@ -166,12 +166,8 @@ class topNavBar extends Component {
                 <button className="flex-right toggle outline square-round" onClick={() => { this.onSearchToggleState()}}>
                     <i className="fa fa-search" aria-hidden="true"></i>
                 </button>
-                <div className="toggle no-pos">
-                    <SearchBox onUpdateSearch={this.onUpdateSearch} searchTerm={this.state.searchTerm} />
-                    <SearchResult noBg={true} />
-                </div>
                 <div className="toggle-not no-pos">
-                    <SearchResult />
+                    <SearchResult keyword={this.state.searchTerm}/>
                 </div>
                 <div className="profile-menu-inactive">
                     <ProfilePopUp />
