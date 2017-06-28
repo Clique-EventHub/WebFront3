@@ -6,7 +6,7 @@ import './css/channelInfostyle.css';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
 
-class EditEvent extends Component {
+class channelInfo extends Component {
     constructor(props) {
         super(props);
 
@@ -21,7 +21,7 @@ class EditEvent extends Component {
             'event_id': "594bf476e374d100140f04ec"
         }
 
-        axios.get('http://128.199.208.0:1111/event?id=' + _this.state.event_id).then((data) => {
+        axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.title))
             _this.state = {
@@ -163,7 +163,8 @@ class EditEvent extends Component {
                         <img src="../../resource/images/X.svg" />
                     </button>
 
-                    <img src="../resource/images/dummyProfile.png" className="chan-img" />
+                    <img src="../resource/images/dummyProfile.png" className="chan-img" alt="cn-profile-pic"/>
+                    
 
                     <input className="chan-name" ref="location" type="text" placeholder="CHANNEL NAME" value={this.state.new_location} onChange={this.onKeyPressed}/>                    
                     
@@ -173,15 +174,37 @@ class EditEvent extends Component {
                     <div className="full-input">
                         <h1>DETAIL</h1> 
                         <textarea className="detail" ref="about" type="text" placeholder="" value={this.state.new_about} onChange={this.onKeyPressed}/>
-                        <h1>PHOTO</h1> <button className="fill">UPLOAD</button>
+                        
+                        <div>
+                            <h1>PHOTO</h1> <button className="fill">UPLOAD</button>
+                            <div className="photo-upload">
+                                pic1.png
+                                <button className="card-exit invisible square-round" role="event-exit" onClick={this.cancel.bind(this)}>
+                                    <img src="../../resource/images/X.svg" />
+                                </button>
+                            </div>
 
-                        <h1>URL</h1> <input ref="location" type="text" placeholder="" value={this.state.new_location} onChange={this.onKeyPressed}/>
-                        <h1>YOUTUBE</h1> <input ref="date_start" type="text" placeholder="" value={this.state.new_date_start} onChange={this.onKeyPressed}/>
+                            <div className="photo-upload">
+                                pic1.png
+                                <button className="card-exit invisible square-round" role="event-exit" onClick={this.cancel.bind(this)}>
+                                    <img src="../../resource/images/X.svg" />
+                                </button>
+                            </div>
+                            
+                            <div className="photo-upload">
+                                pic1.png
+                                <button className="card-exit invisible square-round" role="event-exit" onClick={this.cancel.bind(this)}>
+                                    <img src="../../resource/images/X.svg" />
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <h1>URL</h1> <input ref="url" type="text" placeholder="" value={this.state.new_url} onChange={this.onKeyPressed}/>
+                        <h1>YOUTUBE</h1> <input ref="youtube" type="text" placeholder="" value={this.state.new_youtube} onChange={this.onKeyPressed}/>
                     </div>
                         
                         
-                    
-                    
                     
                     <div className="chan-tag">
                         <h1>TAG</h1>
@@ -208,7 +231,7 @@ class EditEvent extends Component {
                         <button className="tag">SPORT</button>
                         <button className="tag">ARTS</button>
                         <button className="tag">FOOD&DRINK</button>
-                        <button className="tag long">EDUCATION</button>
+                        <button className="tag">EDUCATION</button>
                         <button className="tag">MUSIC</button>
                         <button className="tag">TECHNOLOGY</button>
                         <button className="tag">NATURAL</button>
@@ -229,4 +252,4 @@ class EditEvent extends Component {
     }
 }
 
-export default autoBind(EditEvent);
+export default autoBind(channelInfo);
