@@ -165,24 +165,24 @@ class editProfile extends Component {
                         <p className="hr"></p>
                         <div className="flex">
                             <section className="edit-pro-left">
-                                <img alt="id"/> <input ref="id" type="text" placeholder="Student ID" value={this.state.new_regId} onChange={this.onKeyPressed}/>
-                                <img alt="birth"/> <input ref="birth" type="text" placeholder="Birthdate" value={this.state.new_birth_day} onChange={this.onKeyPressed}/>
-                                <img alt="nickname"/> <input ref="nick_name" type="text" placeholder="Nickname" value={this.state.new_nick_name} onChange={this.onKeyPressed}/>
-                                <img alt="line"/> <input ref="line" type="text" placeholder="Line ID" value={this.state.new_lineId} onChange={this.onKeyPressed}/>
-                                <img alt="email"/> <input ref="email" type="text" placeholder="Email" value={this.state.new_email} onChange={this.onKeyPressed}/>
-                                <img alt="mobile"/> <input ref="mobile" type="text" placeholder="Mobile Number" value={this.state.new_phone} onChange={this.onKeyPressed}/>
-                                <img alt="size"/> <input ref="size" type="text" placeholder="T-Shirt Size" value={this.state.new_shirt_size} onChange={this.onKeyPressed}/>
-                                <img alt="med"/> <input ref="med" type="text" placeholder="Medical Problem" value={this.state.new_disease} onChange={this.onKeyPressed}/>
-                                <img alt="food"/> <input ref="food" type="text" placeholder="Food Allergy" value={this.state.new_allergy} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon3.svg" alt="id"/> <input ref="id" type="text" placeholder="Student ID" value={this.state.new_regId} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon6.svg" alt="birth"/> <input ref="birth" type="text" placeholder="Birthdate" value={this.state.new_birth_day} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon2.svg" alt="nickname"/> <input ref="nick_name" type="text" placeholder="Nickname" value={this.state.new_nick_name} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon8.svg" alt="line"/> <input ref="line" type="text" placeholder="Line ID" value={this.state.new_lineId} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon9.svg" alt="email"/> <input ref="email" type="text" placeholder="Email" value={this.state.new_email} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon10.svg" alt="mobile"/> <input ref="mobile" type="text" placeholder="Mobile Number" value={this.state.new_phone} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon11.svg" alt="size"/> <input ref="size" type="text" placeholder="T-Shirt Size" value={this.state.new_shirt_size} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon12.svg" alt="med"/> <input ref="med" type="text" placeholder="Medical Problem" value={this.state.new_disease} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon13.svg" alt="food"/> <input ref="food" type="text" placeholder="Food Allergy" value={this.state.new_allergy} onChange={this.onKeyPressed}/>
                             </section>
                             <p className="sec-line"></p>
                             <section className="edit-pro-right">
                                 <div className="fb-link">
-                                    <img alt="fb-link"/> <p>{this.state.firstName+" "+this.state.lastName}</p>
+                                    <img src="../../resource/icon/icon7.svg" alt="fb-link"/> <p>{this.state.firstName+" "+this.state.lastName}</p>
                                     <button className="unlink">Unlink</button>
                                 </div>
                                 <div className="cu-link">
-                                    <img alt="cu-link"/> <p>{this.state.regId}</p>
+                                    <img src="../../resource/icon/icon.svg" alt="cu-link"/> <p>{this.state.regId}</p>
                                     <button className="unlink">Unlink</button>
                                 </div>
                                 <div className="my-tag">

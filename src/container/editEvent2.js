@@ -86,11 +86,6 @@ class EditEvent extends Component {
     constructor(props) {
         super(props);
 
-        // title,about,video,channel,location,date_start,expire,date_end,picture,picture_large, year_require,faculty_require,tags,forms
-
-        // about, video, location, date_start, date_end, picture, picture_large, year_require, faculty_require, tags, agreement, contact_information,
-        // joinable_start_time, joinable_end_time, joinable_amount, time_start, time_end, optional_field, require_field, show, outsider_accessible
-
         let _this = this;
 
         this.state = {
@@ -112,6 +107,7 @@ class EditEvent extends Component {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.title))
             _this.setState({
+                ...this.state,
                 'title': data.data.title,
                 'about': data.data.about,
                 'channel': data.data.channel,
