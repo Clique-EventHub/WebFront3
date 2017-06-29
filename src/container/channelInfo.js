@@ -29,15 +29,11 @@ class channelInfo extends Component {
                 'picture': data.data.picture,
                 'detail': data.data.detail,
                 'picture_large': data.data.picture_large,
-                ***'url': data.data.url,
-                ***'youtube': data.data.youtube,
 
                 'new_name': data.data.name,
                 'new_picture': data.data.picture,
                 'new_detail': data.data.detail,
                 'new_picture_large': data.data.picture_large,
-                ***'new_url': data.data.url,
-                ***'new_youtube': data.data.youtube,
             }
         }, (error) => {
             console.log("get channel error");
@@ -53,8 +49,6 @@ class channelInfo extends Component {
             'new_picture': this.refs.picture.value,
             'new_detail': this.refs.detail.value,
             'new_picture_large': this.refs.picture_large.value,
-                    ***'new_url': this.refs.url.value,
-                    ***'new_youtube': this.refs.youtube.value,
         };
         this.setState(newState);
     }
@@ -66,8 +60,6 @@ class channelInfo extends Component {
             'picture': this.refs.picture.value,
             'detail': this.refs.detail.value,
             'picture_large': this.refs.picture_large.value,
-                    ***'url': this.refs.url.value,
-                    ***'youtube': this.refs.youtube.value,
         };
         this.setState(newState);
 
@@ -82,8 +74,6 @@ class channelInfo extends Component {
             'picture': this.refs.picture.value,
             'detail': this.refs.detail.value,
             'picture_large': this.refs.picture_large.value,
-                    ***'url': this.refs.url.value,
-                    ***'youtube': this.refs.youtube.value,
         }
 
         let _this = this;
@@ -106,8 +96,6 @@ class channelInfo extends Component {
             'new_picture': this.state.picture,
             'new_detail': this.state.detail,
             'new_picture_large': this.state.picture_large,
-                    ***'new_url': this.state.url,
-                    ***'new_youtube': this.state.youtube,
         };
         this.setState(newState);
         this.props.toggle_pop_item();
