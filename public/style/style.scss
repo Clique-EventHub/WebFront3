@@ -1077,8 +1077,8 @@ div.edit-profile{
     // left: 50%;
     // transform: translateY(-50%) translateX(-50%);
     z-index: 555;
-    padding: 30px;
-    width: 650px;
+    padding: 10px 10px 30px 10px;
+    width: 680px;
 
     section.edit-pro-head{
         height: 115px;
@@ -1133,27 +1133,48 @@ div.edit-profile{
 
     section.edit-pro-left{
         flex: 1 1 50%;
-        padding: 10px 50px;
+        padding: 10px 35px;
 
         img{
             height: 30px;
             width: 30px;
             position: absolute;
-            margin-top: 8px;
+            margin-top: 5px;
         }
 
-        input[type="text"] {
+        input[type="text"]{
             padding:8px;
             display:block;
             border:none;
             border-bottom:1px solid #ccc;
-            width:100%;
             margin-left: 45px;
-            width: 200px;
+            width: 260px;
             z-index: 560;
             font-family:inherit;
             font-size: 1em;
             margin-bottom: 5px;
+        }
+
+        input.w100{
+            width: 100px;
+        }
+
+        input.w50{
+            width: 50px;
+            margin-left: 15px;
+        }
+
+        div{
+            display: flex;
+        }
+
+        p{
+            padding:8px;
+            display:block;
+            border:none;
+            width: 200px;
+            z-index: 560;
+            margin: 0px 0px 5px 45px;
         }
     }
 
@@ -1166,7 +1187,7 @@ div.edit-profile{
         padding: 0px 30px;
 
         p {
-            margin-left: 30px;
+            margin-left: 40px;
             margin-bottom: 5px;
         }
 
@@ -1257,10 +1278,10 @@ div.edit-profile{
 
     p.sec-line {
         width: 1px;
-        height: 350px;
+        height: 390px;
         position: absolute;
         background-color: rgba(0, 0, 0, 0.1);
-        left: 350px;
+        left: 400px;
     }
 }
 
