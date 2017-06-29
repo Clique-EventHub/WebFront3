@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+	.st1{fill:none;stroke:#FFFFFF;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st2{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
+	.st3{fill:none;stroke:#000000;stroke-miterlimit:10;}
+</style>
+<g id="text">
+	<text id="XMLID_26_" transform="matrix(1 0 0 1 -52 -119)"><tspan x="0" y="0" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">name </tspan><tspan x="0" y="4" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">and surname</tspan></text>
+	<text id="XMLID_278_" transform="matrix(1 0 0 1 0 -119)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">nickname </text>
+	<text id="XMLID_10_" transform="matrix(1 0 0 1 -51 -158)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">icon for eventhub</text>
+	<text id="XMLID_279_" transform="matrix(1 0 0 1 52 -119)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">student id</text>
+	
+		<text id="XMLID_280_" transform="matrix(1 0 0 1 104 -119)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">faculty</text>
+</g>
+<g id="icon">
+	<path id="XMLID_139_" d="M-25-147h-22c-1.1,0-2,0.9-2,2v10c0,1.1,0.9,2,2,2h22c1.1,0,2-0.9,2-2v-10C-23-146.1-23.9-147-25-147z
+		 M-35-144h5c0.3,0,0.5,0.2,0.5,0.5s-0.2,0.5-0.5,0.5h-5c-0.3,0-0.5-0.2-0.5-0.5S-35.3-144-35-144z M-42-145c1.1,0,2,0.9,2,2
+		c0,1.1-0.9,2-2,2s-2-0.9-2-2C-44-144.1-43.1-145-42-145z M-38-137c0,0.6-0.4,1-1,1h-6c-0.6,0-1-0.4-1-1v-1c0-1.1,0.9-2,2-2h4
+		c1.1,0,2,0.9,2,2V-137z M-26-136h-9c-0.3,0-0.5-0.2-0.5-0.5s0.2-0.5,0.5-0.5h9c0.3,0,0.5,0.2,0.5,0.5S-25.7-136-26-136z M-26-138
+		h-9c-0.3,0-0.5-0.2-0.5-0.5s0.2-0.5,0.5-0.5h9c0.3,0,0.5,0.2,0.5,0.5S-25.7-138-26-138z M-26-140h-9c-0.3,0-0.5-0.2-0.5-0.5
+		s0.2-0.5,0.5-0.5h9c0.3,0,0.5,0.2,0.5,0.5S-25.7-140-26-140z"/>
+	<path id="XMLID_178_" d="M22.4-149H9.6c-1.4,0-2.6,1.2-2.6,2.6v12.9c0,1.4,1.2,2.6,2.6,2.6h12.9c1.4,0,2.6-1.2,2.6-2.6v-12.9
+		C25-147.8,23.8-149,22.4-149z M16-146.4c1.4,0,2.6,1.2,2.6,2.6c0,1.4-1.2,2.6-2.6,2.6s-2.6-1.2-2.6-2.6
+		C13.4-145.3,14.6-146.4,16-146.4z M21-136.1c0,0.7-0.4,1.1-1.1,1.1h-7.7c-0.7,0-1.1-0.4-1.1-1.1v-1.3c0-1.4,1-2.6,2.4-2.6h5.1
+		c1.4,0,2.4,1.2,2.4,2.6V-136.1z"/>
+	<g id="XMLID_258_">
+		<path id="XMLID_274_" d="M79-147H57c-1.1,0-2,0.9-2,2v10c0,1.1,0.9,2,2,2h22c1.1,0,2-0.9,2-2v-10C81-146.1,80.1-147,79-147z
+			 M73-145c1.1,0,2,0.9,2,2c0,1.1-0.9,2-2,2s-2-0.9-2-2C71-144.1,71.9-145,73-145z M66-141h-0.7l-0.5,2H65c0.6,0,1,0.4,1,1
+			s-0.4,1-1,1h-0.7l-0.3,1.2c-0.1,0.5-0.5,0.8-1,0.8c-0.1,0-0.2,0-0.2,0c-0.5-0.1-0.9-0.7-0.7-1.2l0.2-0.8h-0.9l-0.3,1.2
+			c-0.1,0.5-0.5,0.8-1,0.8c-0.1,0-0.2,0-0.2,0c-0.5-0.1-0.9-0.7-0.7-1.2l0.2-0.8H59c-0.6,0-1-0.4-1-1s0.4-1,1-1h0.7l0.5-2H60
+			c-0.6,0-1-0.4-1-1s0.4-1,1-1h0.7l0.3-1.2c0.1-0.5,0.7-0.9,1.2-0.7c0.5,0.1,0.9,0.7,0.7,1.2l-0.2,0.8h0.9l0.3-1.2
+			c0.1-0.5,0.7-0.9,1.2-0.7c0.5,0.1,0.9,0.7,0.7,1.2l-0.2,0.8H66c0.6,0,1,0.4,1,1S66.6-141,66-141z M77-137c0,0.6-0.4,1-1,1h-6
+			c-0.6,0-1-0.4-1-1v-1c0-1.1,0.9-2,2-2h4c1.1,0,2,0.9,2,2V-137z"/>
+		<polygon id="XMLID_277_" points="61.8,-139 62.7,-139 63.2,-141 62.3,-141 		"/>
+	</g>
+	<g id="XMLID_263_">
+		<g id="XMLID_270_">
+			<path id="XMLID_271_" class="st0" d="M-49-163c-0.1,0-0.2,0-0.2,0c-0.5-0.1-0.9-0.7-0.7-1.2l2-8c0.1-0.5,0.7-0.9,1.2-0.7
+				c0.5,0.1,0.9,0.7,0.7,1.2l-2,8C-48.1-163.3-48.6-163-49-163z"/>
+		</g>
+		<g id="XMLID_268_">
+			<path id="XMLID_269_" class="st0" d="M-46-163c-0.1,0-0.2,0-0.2,0c-0.5-0.1-0.9-0.7-0.7-1.2l2-8c0.1-0.5,0.7-0.9,1.2-0.7
+				c0.5,0.1,0.9,0.7,0.7,1.2l-2,8C-45.1-163.3-45.6-163-46-163z"/>
+		</g>
+		<g id="XMLID_266_">
+			<path id="XMLID_267_" class="st0" d="M-43-169h-6c-0.6,0-1-0.4-1-1s0.4-1,1-1h6c0.6,0,1,0.4,1,1S-42.4-169-43-169z"/>
+		</g>
+		<g id="XMLID_264_">
+			<path id="XMLID_265_" class="st0" d="M-44-165h-6c-0.6,0-1-0.4-1-1s0.4-1,1-1h6c0.6,0,1,0.4,1,1S-43.4-165-44-165z"/>
+		</g>
+	</g>
+	<g id="XMLID_260_">
+		<circle id="XMLID_262_" class="st0" cx="-36" cy="-171" r="2"/>
+		<path id="XMLID_261_" class="st0" d="M-34-168h-4c-1.1,0-2,0.9-2,2v1c0,0.6,0.4,1,1,1h6c0.6,0,1-0.4,1-1v-1
+			C-32-167.1-32.9-168-34-168z"/>
+	</g>
+	<text id="XMLID_281_" transform="matrix(1 0 0 1 -52 -67)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">year</text>
+	<text id="XMLID_220_" transform="matrix(1 0 0 1 -52 -15)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">email</text>
+	<text id="XMLID_12_" transform="matrix(1 0 0 1 0 -15)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">mobile no.</text>
+	<text id="XMLID_13_" transform="matrix(1 0 0 1 52 -15)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">t-shirt</text>
+	<text id="XMLID_24_" transform="matrix(1 0 0 1 -52 38)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">food allergy</text>
+	<text id="XMLID_29_" transform="matrix(1 0 0 1 -1 38)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">dorm</text>
+	<text id="XMLID_21_" transform="matrix(1 0 0 1 104 -15)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">medical problem</text>
+	<text id="XMLID_282_" transform="matrix(1 0 0 1 0 -67)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">birthday</text>
+	<text id="XMLID_283_" transform="matrix(1 0 0 1 52 -67)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">facebook </text>
+	<text id="XMLID_80_" transform="matrix(1 0 0 1 104 -67)" class="st0" style="font-family:'FredokaOne-Regular'; font-size:5px;">line id </text>
+	<g id="XMLID_7_">
+		<path id="XMLID_8_" d="M24-89h-1v-3c0-0.6-0.4-1-1-1s-1,0.4-1,1v3h-4v-3c0-0.6-0.4-1-1-1s-1,0.4-1,1v3h-4v-3c0-0.6-0.4-1-1-1
+			s-1,0.4-1,1v3H8c-1.1,0-2,0.8-2,1.8v0.2c1.2,0,1.8,0.6,2.4,1.1C8.8-85.4,9.2-85,10-85c0.8,0,1.2-0.4,1.6-0.9
+			c0.5-0.5,1.1-1.1,2.4-1.1s1.8,0.6,2.4,1.1c0.5,0.5,0.9,0.9,1.6,0.9c0.8,0,1.2-0.4,1.6-0.9c0.5-0.5,1.1-1.1,2.4-1.1
+			s1.8,0.6,2.4,1.1c0.5,0.5,0.9,0.9,1.6,0.9v-0.4v-1.8C26-88.2,25.1-89,24-89z"/>
+		<path id="XMLID_17_" d="M22-86c-0.8,0-1.2,0.4-1.6,0.9C19.8-84.6,19.2-84,18-84c-1.2,0-1.8-0.6-2.4-1.1C15.2-85.6,14.8-86,14-86
+			c-0.8,0-1.2,0.4-1.6,0.9C11.8-84.6,11.2-84,10-84c-1.2,0-1.8-0.6-2.4-1.1C7.2-85.6,6.8-86,6-86v0.6v1.8v3.6h20v-3.6V-84
+			c-1.2,0-1.8-0.6-2.4-1.1C23.2-85.6,22.8-86,22-86z"/>
+		<path id="XMLID_19_" d="M11-94c0-0.6-0.4-2-1-2s-1,1.4-1,2c0,0.6,0.4,1,1,1S11-93.4,11-94z"/>
+		<path id="XMLID_20_" d="M17-94c0-0.6-0.4-2-1-2s-1,1.4-1,2c0,0.6,0.4,1,1,1S17-93.4,17-94z"/>
+		<path id="XMLID_23_" d="M23-94c0-0.6-0.4-2-1-2s-1,1.4-1,2c0,0.6,0.4,1,1,1S23-93.4,23-94z"/>
+	</g>
+	
+		<image style="overflow:visible;" width="300" height="300" id="XMLID_159_" xlink:href="data:image/jpeg;base64,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" transform="matrix(6.000000e-002 0 0 6.000000e-002 140 -96)">
+	</image>
+	<g id="XMLID_11_">
+		<path id="XMLID_22_" d="M-36-34.6l10.9-8.2c-0.3-0.1-0.6-0.2-0.9-0.2h-20c-0.3,0-0.6,0.1-0.9,0.2L-36-34.6z"/>
+		<path id="XMLID_25_" d="M-24-41c0-0.4-0.1-0.8-0.3-1.1l-8.1,6.1l8.1,6.1c0.2-0.3,0.3-0.7,0.3-1.1V-41z"/>
+		<path id="XMLID_27_" d="M-33.3-35.4l-2.4,1.8c-0.1,0.1-0.2,0.1-0.3,0.1s-0.2,0-0.3-0.1l-2.4-1.8l-8.2,6.2c0.3,0.2,0.6,0.2,0.9,0.2
+			h20c0.3,0,0.7-0.1,0.9-0.2L-33.3-35.4z"/>
+		<path id="XMLID_28_" d="M-47.7-42.1c-0.2,0.3-0.3,0.7-0.3,1.1v10c0,0.4,0.1,0.8,0.3,1.1l8.1-6.1L-47.7-42.1z"/>
+	</g>
+	<path id="XMLID_334_" class="st1" d="M-38-36"/>
+	<path id="XMLID_333_" class="st1" d="M-48.1-28.9"/>
+	<path id="XMLID_335_" class="st2" d="M-34-36"/>
+	<path id="XMLID_332_" class="st2" d="M-24-29"/>
+	<g id="XMLID_192_">
+		<path id="XMLID_211_" d="M133-143l-13-4l-13,4l13,4l9-2.8c0,0,0.5-0.1,1-0.3v3.1c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-3.4
+			L133-143z"/>
+		<path id="XMLID_212_" d="M120-138c-0.1,0-0.2,0-0.3,0l-7.7-2.4v5.4c0,1.1,3.6,2,8,2s8-0.9,8-2v-5.4l-7.7,2.4
+			C120.2-138,120.1-138,120-138z"/>
+	</g>
+	<g id="XMLID_231_">
+		<path id="XMLID_233_" d="M-23-91l-13-4l-13,4l13,4l9-2.8c0,0,0.5-0.1,1-0.3v3.1c0,0.3,0.2,0.5,0.5,0.5S-25-86.7-25-87v-3.4L-23-91
+			z"/>
+		<path id="XMLID_232_" d="M-36-86c-0.1,0-0.2,0-0.3,0l-7.7-2.4v5.4c0,1.1,3.6,2,8,2s8-0.9,8-2v-5.4l-7.7,2.4
+			C-35.8-86-35.9-86-36-86z"/>
+	</g>
+	<path id="XMLID_157_" d="M23-45H9c-1.1,0-2,0.9-2,2v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2v-14C25-44.1,24.1-45,23-45z M21.9-31.6
+		c-0.4,0.9-1.4,1.6-2.5,1.6c-5.2,0-9.5-4.3-9.5-9.5c0-1.1,0.6-2,1.5-2.4c0.3-0.1,0.6,0,0.8,0.2l1.8,2.3c0.2,0.3,0.2,0.7-0.1,1
+		l-1.1,0.8c-0.2,0.2-0.3,0.5-0.2,0.7c0.5,1.6,4.1,5.2,4.8,4.2l1-1.4c0.2-0.3,0.7-0.4,1-0.1l2.3,1.8C22-32.2,22.1-31.9,21.9-31.6z"/>
+	<path id="XMLID_154_" class="st0" d="M-54.3-164.4c0.2,0.2,0.3,0.5,0.2,0.8c-0.4,0.9-1.4,1.6-2.5,1.6c-5.2,0-9.5-4.3-9.5-9.5
+		c0-1.1,0.6-2,1.5-2.4c0.3-0.1,0.6,0,0.8,0.2l1.8,2.3c0.2,0.3,0.2,0.7-0.1,1l-1.1,0.8c-0.2,0.2-0.3,0.5-0.2,0.7
+		c0.5,1.6,4.1,5.2,4.8,4.2l1-1.4c0.2-0.3,0.7-0.4,1-0.1L-54.3-164.4z"/>
+	<path id="XMLID_239_" d="M79.3-39.1L74.4-44h-2.5c-0.4,1.7-2,3-3.9,3s-3.4-1.3-3.9-3H62l-4.9,4.9c-0.4,0.4-0.4,1,0,1.4l1.6,1.6
+		c0.4,0.4,1,0.4,1.4,0L62-38v9c0,0.6,0.4,1,1,1h5h5c0.6,0,1-0.4,1-1v-9l2.1,2c0.4,0.4,1,0.4,1.4,0l1.7-1.6
+		C79.7-38,79.7-38.7,79.3-39.1z"/>
+	<path id="XMLID_72_" d="M127-45h-14c-1.1,0-2,0.9-2,2v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2v-14C129-44.1,128.1-45,127-45z
+		 M126-35c0,0.6-0.4,1-1,1h-3v3c0,0.6-0.4,1-1,1h-2c-0.6,0-1-0.4-1-1v-3h-3c-0.6,0-1-0.4-1-1v-2c0-0.6,0.4-1,1-1h3v-3
+		c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v3h3c0.6,0,1,0.4,1,1V-35z"/>
+	<path id="XMLID_43_" class="st0" d="M151-37h-3v-3c0-0.6-0.4-1-1-1h-2c-0.6,0-1,0.4-1,1v3h-3c-0.6,0-1,0.4-1,1v2c0,0.6,0.4,1,1,1h3
+		v3c0,0.6,0.4,1,1,1h2c0.6,0,1-0.4,1-1v-3h3c0.6,0,1-0.4,1-1v-2C152-36.6,151.6-37,151-37z"/>
+	<path id="XMLID_88_" class="st3" d="M-44,15"/>
+	<g id="XMLID_87_">
+		<path id="XMLID_101_" d="M-26.8,23.8l-2.1-2.1c0.5-0.4,0.9-1,0.9-1.7v-1h-3.6l-1-1h4.6c0.6,0,1-0.4,1-1v-1c0-0.6-0.4-1-1-1h-7.6
+			l-1-1h8.5c-0.5-3.4-3.9-6-7.9-6c-1.9,0-3.7,0.6-5,1.5l-2.3-2.3c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4l16.5,16.5
+			c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3C-26.4,24.8-26.4,24.2-26.8,23.8z"/>
+		<path id="XMLID_119_" d="M-43.9,14h3.2l-2.4-2.4C-43.5,12.4-43.8,13.2-43.9,14z"/>
+		<path id="XMLID_134_" d="M-36.7,18l-3-3H-44c-0.6,0-1,0.4-1,1v1c0,0.6,0.4,1,1,1H-36.7z"/>
+		<path id="XMLID_149_" d="M-44,19v1c0,1.1,0.9,2,2,2h9.3l-3-3H-44z"/>
+	</g>
+	<path id="XMLID_189_" d="M20,6h-7c-1.1,0-2,0.9-2,2v12v4v2h2h4v-4.5c0-0.3,0.2-0.5,0.5-0.5h2c0.3,0,0.5,0.2,0.5,0.5V26h2v-2v-4V8
+		C22,6.9,21.1,6,20,6z M14,22c0,0.3-0.2,0.5-0.5,0.5S13,22.3,13,22v-1c0-0.3,0.2-0.5,0.5-0.5S14,20.7,14,21V22z M14,18
+		c0,0.3-0.2,0.5-0.5,0.5S13,18.3,13,18v-1c0-0.3,0.2-0.5,0.5-0.5S14,16.7,14,17V18z M14,14c0,0.3-0.2,0.5-0.5,0.5S13,14.3,13,14v-1
+		c0-0.3,0.2-0.5,0.5-0.5S14,12.7,14,13V14z M14,10c0,0.3-0.2,0.5-0.5,0.5S13,10.3,13,10V9c0-0.3,0.2-0.5,0.5-0.5S14,8.7,14,9V10z
+		 M17,18c0,0.3-0.2,0.5-0.5,0.5S16,18.3,16,18v-1c0-0.3,0.2-0.5,0.5-0.5S17,16.7,17,17V18z M17,14c0,0.3-0.2,0.5-0.5,0.5
+		S16,14.3,16,14v-1c0-0.3,0.2-0.5,0.5-0.5S17,12.7,17,13V14z M17,10c0,0.3-0.2,0.5-0.5,0.5S16,10.3,16,10V9c0-0.3,0.2-0.5,0.5-0.5
+		S17,8.7,17,9V10z M20,18c0,0.3-0.2,0.5-0.5,0.5S19,18.3,19,18v-1c0-0.3,0.2-0.5,0.5-0.5S20,16.7,20,17V18z M20,14
+		c0,0.3-0.2,0.5-0.5,0.5S19,14.3,19,14v-1c0-0.3,0.2-0.5,0.5-0.5S20,12.7,20,13V14z M20,10c0,0.3-0.2,0.5-0.5,0.5S19,10.3,19,10V9
+		c0-0.3,0.2-0.5,0.5-0.5S20,8.7,20,9V10z"/>
+	<path id="XMLID_161_" d="M62,2h-7c-1.1,0-2,0.9-2,2v12v4v2h2h7h2v-2v-4V4C64,2.9,63.1,2,62,2z"/>
+	<path id="XMLID_160_" class="st0" d="M61.2,24h-2c-0.3,0-0.5-0.2-0.5-0.5v-6c0-0.3,0.2-0.5,0.5-0.5h2c0.3,0,0.5,0.2,0.5,0.5v6
+		C61.7,23.8,61.5,24,61.2,24z"/>
+	<g id="XMLID_113_">
+		<path id="XMLID_114_" class="st0" d="M55.5,18.5c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5S56,16.7,56,17v1
+			C56,18.3,55.8,18.5,55.5,18.5z"/>
+	</g>
+	<g id="XMLID_111_">
+		<path id="XMLID_112_" class="st0" d="M55.5,14.5c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5S56,12.7,56,13v1
+			C56,14.3,55.8,14.5,55.5,14.5z"/>
+	</g>
+	<g id="XMLID_102_">
+		<path id="XMLID_103_" class="st0" d="M58.5,14.5c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5S59,12.7,59,13v1
+			C59,14.3,58.8,14.5,58.5,14.5z"/>
+	</g>
+	<g id="XMLID_84_">
+		<path id="XMLID_85_" class="st0" d="M61.5,14.5c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5S62,12.7,62,13v1
+			C62,14.3,61.8,14.5,61.5,14.5z"/>
+	</g>
+	<g id="XMLID_82_">
+		<path id="XMLID_83_" class="st0" d="M55.5,10.5c-0.3,0-0.5-0.2-0.5-0.5V9c0-0.3,0.2-0.5,0.5-0.5S56,8.7,56,9v1
+			C56,10.3,55.8,10.5,55.5,10.5z"/>
+	</g>
+	<g id="XMLID_79_">
+		<path id="XMLID_81_" class="st0" d="M58.5,10.5c-0.3,0-0.5-0.2-0.5-0.5V9c0-0.3,0.2-0.5,0.5-0.5S59,8.7,59,9v1
+			C59,10.3,58.8,10.5,58.5,10.5z"/>
+	</g>
+	<g id="XMLID_77_">
+		<path id="XMLID_78_" class="st0" d="M61.5,10.5c-0.3,0-0.5-0.2-0.5-0.5V9c0-0.3,0.2-0.5,0.5-0.5S62,8.7,62,9v1
+			C62,10.3,61.8,10.5,61.5,10.5z"/>
+	</g>
+	<g id="XMLID_75_">
+		<path id="XMLID_76_" class="st0" d="M55.5,6.5C55.2,6.5,55,6.3,55,6V5c0-0.3,0.2-0.5,0.5-0.5S56,4.7,56,5v1
+			C56,6.3,55.8,6.5,55.5,6.5z"/>
+	</g>
+	<g id="XMLID_73_">
+		<path id="XMLID_74_" class="st0" d="M58.5,6.5C58.2,6.5,58,6.3,58,6V5c0-0.3,0.2-0.5,0.5-0.5S59,4.7,59,5v1
+			C59,6.3,58.8,6.5,58.5,6.5z"/>
+	</g>
+	<g id="XMLID_39_">
+		<path id="XMLID_69_" class="st0" d="M61.5,6.5C61.2,6.5,61,6.3,61,6V5c0-0.3,0.2-0.5,0.5-0.5S62,4.7,62,5v1
+			C62,6.3,61.8,6.5,61.5,6.5z"/>
+	</g>
+	<g id="XMLID_253_">
+		<path id="XMLID_477_" d="M127-97h-14c-1.1,0-2,0.9-2,2v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2v-14C129-96.1,128.1-97,127-97z
+			 M125.1-85.5c-1.4,1.6-4.4,3.5-5.1,3.8c-0.7,0.3-0.6-0.2-0.6-0.4c0-0.1,0.1-0.6,0.1-0.6c0-0.2,0-0.4,0-0.6
+			c-0.1-0.2-0.4-0.3-0.6-0.3c-3.1-0.4-5.5-2.6-5.5-5.2c0-2.9,2.9-5.3,6.6-5.3c3.6,0,6.6,2.4,6.6,5.3
+			C126.5-87.6,126.1-86.6,125.1-85.5L125.1-85.5z"/>
+		<g id="XMLID_257_">
+			<path id="XMLID_238_" d="M118.6-90.2h-0.5c-0.1,0-0.1,0.1-0.1,0.1v2.9c0,0.1,0.1,0.1,0.1,0.1h0.5c0.1,0,0.1-0.1,0.1-0.1v-2.9
+				C118.8-90.2,118.7-90.2,118.6-90.2"/>
+			<path id="XMLID_237_" d="M121.8-90.2h-0.5c-0.1,0-0.1,0.1-0.1,0.1v1.7l-1.3-1.8c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0
+				c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0
+				c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0h-0.5c-0.1,0-0.1,0.1-0.1,0.1v2.9c0,0.1,0.1,0.1,0.1,0.1h0.5
+				c0.1,0,0.1-0.1,0.1-0.1v-1.7l1.3,1.8c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0
+				c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0,0,0,0h0.5c0.1,0,0.1-0.1,0.1-0.1v-2.9C121.9-90.2,121.9-90.2,121.8-90.2"/>
+			<path id="XMLID_236_" d="M117.5-87.8h-1.2v-2.3c0-0.1-0.1-0.1-0.1-0.1h-0.5c-0.1,0-0.1,0.1-0.1,0.1v2.9v0c0,0,0,0.1,0,0.1
+				c0,0,0,0,0,0c0,0,0,0,0,0c0,0,0.1,0,0.1,0h0h1.8c0.1,0,0.1-0.1,0.1-0.1v-0.5C117.7-87.8,117.6-87.8,117.5-87.8"/>
+			<path id="XMLID_235_" d="M124.3-89.5c0.1,0,0.1-0.1,0.1-0.1v-0.5c0-0.1-0.1-0.1-0.1-0.1h-1.8h0c0,0-0.1,0-0.1,0c0,0,0,0,0,0
+				c0,0,0,0,0,0c0,0,0,0.1,0,0.1v0v2.9v0c0,0,0,0.1,0,0.1l0,0c0,0,0,0,0,0c0,0,0.1,0,0.1,0h0h1.8c0.1,0,0.1-0.1,0.1-0.1v-0.5
+				c0-0.1-0.1-0.1-0.1-0.1h-1.2v-0.5h1.2c0.1,0,0.1-0.1,0.1-0.1v-0.5c0-0.1-0.1-0.1-0.1-0.1h-1.2v-0.5H124.3z"/>
+		</g>
+	</g>
+	<path id="XMLID_463_" d="M75-97H61c-1.1,0-2,0.9-2,2v14c0,1.1,0.9,2,2,2h7.6v-7h-2.3v-2.7h2.3v-2c0-2.3,1.4-3.6,3.5-3.6
+		c1,0,1.8,0.1,2.1,0.1v2.4l-1.4,0c-1.1,0-1.3,0.5-1.3,1.3v1.7h2.7L73.8-86h-2.3v7H75c1.1,0,2-0.9,2-2v-14C77-96.1,76.1-97,75-97z"/>
+</g>
+</svg>

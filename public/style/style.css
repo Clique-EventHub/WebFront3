@@ -1068,7 +1068,7 @@ section.channel-main section.channel-head div.edit-cn-detail button {
   background-color: #555555;
 }
 
-section.channel-main section.channel-head div.cn-name {
+/*section.channel-main section.channel-head div.cn-name {
   position: absolute;
   margin-top: 210px;
   margin-left: 32%;
@@ -1082,7 +1082,6 @@ section.channel-main section.channel-head div.cn-name h1 {
 }
 
 section.channel-main section.channel-head div.cn-name button {
-  position: absolute;
   border: 2px solid;
   border-radius: 20px;
   height: 35px;
@@ -1094,7 +1093,7 @@ section.channel-main section.channel-head div.cn-name button {
   border-color: #AAAAAA;
   color: #555555;
   background-color: #FFFFFF;
-}
+}*/
 
 section.channel-main section.channel-head div.edit-cn-name {
   position: absolute;
