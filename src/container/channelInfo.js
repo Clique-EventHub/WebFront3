@@ -25,36 +25,22 @@ class channelInfo extends Component {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.title))
             _this.state = {
-                'title': data.data.title,
-                'about': data.data.about,
-                'channel': data.data.channel,
-                'video': data.data.video,
-                'location': data.data.location,
-                'date_start': data.data.date_start,
-                'date_end': data.data.date_end,
+                'name': data.data.name,
                 'picture': data.data.picture,
+                'detail': data.data.detail,
                 'picture_large': data.data.picture_large,
-                'year_require': data.data.year_require,
-                'faculty_require': data.data.faculty_require,
-                'tags': data.data.tags,
-                'forms': data.data.forms,
+                ***'url': data.data.url,
+                ***'youtube': data.data.youtube,
 
-                'new_title': data.data.title,
-                'new_about': data.data.about,
-                'new_channel': data.data.channel,
-                'new_video': data.data.video,
-                'new_location': data.data.location,
-                'new_date_start': data.data.date_start,
-                'new_date_end': data.data.date_end,
+                'new_name': data.data.name,
                 'new_picture': data.data.picture,
+                'new_detail': data.data.detail,
                 'new_picture_large': data.data.picture_large,
-                'new_year_require': data.data.year_require,
-                'new_faculty_require': data.data.faculty_require,
-                'new_tags': data.data.tags,
-                'new_forms': data.data.forms,
+                ***'new_url': data.data.url,
+                ***'new_youtube': data.data.youtube,
             }
         }, (error) => {
-            console.log("get event error");
+            console.log("get channel error");
         });
 
         this.onKeyPressed = this.onKeyPressed.bind(this);
@@ -63,19 +49,12 @@ class channelInfo extends Component {
     onKeyPressed() {
         const newState = {
             ...this.state,
-            'new_title': this.refs.title.value,
-            'new_about': this.refs.about.value,
-            'new_channel': this.refs.channel.value,
-            'new_video': this.refs.video.value,
-            'new_location': this.refs.location.value,
-            'new_date_start': this.refs.date_start.value,
-            'new_date_end': this.refs.date_end.value,
+            'new_name': this.refs.name.value,
             'new_picture': this.refs.picture.value,
+            'new_detail': this.refs.detail.value,
             'new_picture_large': this.refs.picture_large.value,
-            'new_year_require': this.refs.year_require.value,
-            'new_faculty_require': this.refs.faculty_require.value,
-            'new_tags': this.refs.tags.value,
-            'new_forms': this.refs.forms.value,
+                    ***'new_url': this.refs.url.value,
+                    ***'new_youtube': this.refs.youtube.value,
         };
         this.setState(newState);
     }
@@ -83,19 +62,12 @@ class channelInfo extends Component {
     save() {
         const newState = {
             ...this.state,
-            'title': this.refs.title.value,
-            'about': this.refs.about.value,
-            'channel': this.refs.channel.value,
-            'video': this.refs.video.value,
-            'location': this.refs.location.value,
-            'date_start': this.refs.date_start.value,
-            'date_end': this.refs.date_end.value,
+            'name': this.refs.name.value,
             'picture': this.refs.picture.value,
+            'detail': this.refs.detail.value,
             'picture_large': this.refs.picture_large.value,
-            'year_require': this.refs.year_require.value,
-            'faculty_require': this.refs.faculty_require.value,
-            'tags': this.refs.tags.value,
-            'forms': this.refs.forms.value,
+                    ***'url': this.refs.url.value,
+                    ***'youtube': this.refs.youtube.value,
         };
         this.setState(newState);
 
@@ -106,19 +78,12 @@ class channelInfo extends Component {
         }
 
         let responseBody = {
-            'title': this.refs.title.value,
-            'about': this.refs.about.value,
-            'channel': this.refs.channel.value,
-            'video': this.refs.video.value,
-            'location': this.refs.location.value,
-            'date_start': this.refs.date_start.value,
-            'date_end': this.refs.date_end.value,
+            'name': this.refs.name.value,
             'picture': this.refs.picture.value,
+            'detail': this.refs.detail.value,
             'picture_large': this.refs.picture_large.value,
-            'year_require': this.refs.year_require.value,
-            'faculty_require': this.refs.faculty_require.value,
-            'tags': this.refs.tags.value,
-            'forms': this.refs.forms.value,
+                    ***'url': this.refs.url.value,
+                    ***'youtube': this.refs.youtube.value,
         }
 
         let _this = this;
@@ -137,19 +102,12 @@ class channelInfo extends Component {
     cancel() {
         const newState = {
             ...this.state,
-            'new_title': this.state.title,
-            'new_about': this.state.about,
-            'new_channel': this.state.channel,
-            'new_video': this.state.video,
-            'new_location': this.state.location,
-            'new_date_start': this.state.date_start,
-            'new_date_end': this.state.date_end,
+            'new_name': this.state.name,
             'new_picture': this.state.picture,
+            'new_detail': this.state.detail,
             'new_picture_large': this.state.picture_large,
-            'new_year_require': this.state.year_require,
-            'new_faculty_require': this.state.faculty_require,
-            'new_tags': this.state.tags,
-            'new_forms': this.state.forms,
+                    ***'new_url': this.state.url,
+                    ***'new_youtube': this.state.youtube,
         };
         this.setState(newState);
         this.props.toggle_pop_item();
@@ -164,16 +122,13 @@ class channelInfo extends Component {
                     </button>
 
                     <img src="../resource/images/dummyProfile.png" className="chan-img" alt="cn-profile-pic"/>
-                    
-
-                    <input className="chan-name" ref="location" type="text" placeholder="CHANNEL NAME" value={this.state.new_location} onChange={this.onKeyPressed}/>                    
-                    
+                    <input className="chan-name" ref="name" type="text" placeholder="" value={this.state.new_name} onChange={this.onKeyPressed} />
 
                     <p className="l1"></p>
                      
                     <div className="full-input">
                         <h1>DETAIL</h1> 
-                        <textarea className="detail" ref="about" type="text" placeholder="" value={this.state.new_about} onChange={this.onKeyPressed}/>
+                        <textarea className="detail" ref="about" type="text" placeholder="" value={this.state.new_detail} onChange={this.onKeyPressed}/>
                         
                         <div>
                             <h1>PHOTO</h1> <button className="fill">UPLOAD</button>
@@ -197,11 +152,10 @@ class channelInfo extends Component {
                                     <img src="../../resource/images/X.svg" />
                                 </button>
                             </div>
-
                         </div>
 
-                        <h1>URL</h1> <input ref="url" type="text" placeholder="" value={this.state.new_url} onChange={this.onKeyPressed}/>
-                        <h1>YOUTUBE</h1> <input ref="youtube" type="text" placeholder="" value={this.state.new_youtube} onChange={this.onKeyPressed}/>
+                        <h1>URL</h1> <input ref="url" type="text" placeholder="" />
+                        <h1>YOUTUBE</h1> <input ref="youtube" type="text" placeholder=""/>
                     </div>
                         
                         
