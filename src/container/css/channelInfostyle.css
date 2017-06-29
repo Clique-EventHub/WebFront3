@@ -10,7 +10,7 @@ article.edit-event input.chan-name {
   border: 1.8px solid #ccc;
   border-radius: 5px;
   height: auto;
-  width: 200px;
+  width: auto;
   font-family: inherit;
   word-wrap: break-word;
   display: inline;

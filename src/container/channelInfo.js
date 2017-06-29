@@ -18,12 +18,12 @@ class channelInfo extends Component {
         let _this = this;
 
         this.state = {
-            'event_id': "594bf476e374d100140f04ec"
+            'channel_id': "5946205a4b908f001403aba5"
         }
 
         axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id).then((data) => {
             console.log("get!!!");
-            console.log(JSON.stringify(data.data.title))
+            console.log(JSON.stringify(data.data.name))
             _this.state = {
                 'name': data.data.name,
                 'picture': data.data.picture,
@@ -101,11 +101,20 @@ class channelInfo extends Component {
         this.props.toggle_pop_item();
     }
 
+    onExit() {
+        this.props.onToggle();
+    }
+
+    onDelect() {
+        this.props.invisible();
+    }
+
+
     render () {
         return (
             <div>
                 <article className="edit-event basic-card-no-glow modal-main">
-                    <button className="card-exit invisible square-round" role="event-exit" onClick={this.cancel.bind(this)}>
+                    <button className="card-exit invisible square-round" role="event-exit" onClick={this.onExit.bind(this)}>
                         <img src="../../resource/images/X.svg" />
                     </button>
 
@@ -120,23 +129,24 @@ class channelInfo extends Component {
                         
                         <div>
                             <h1>PHOTO</h1> <button className="fill">UPLOAD</button>
+
                             <div className="photo-upload">
                                 pic1.png
-                                <button className="card-exit invisible square-round" role="event-exit" onClick={this.cancel.bind(this)}>
+                                <button role="event-exit" onClick={this.onDelect.bind(this)}>
                                     <img src="../../resource/images/X.svg" />
                                 </button>
                             </div>
 
                             <div className="photo-upload">
                                 pic1.png
-                                <button className="card-exit invisible square-round" role="event-exit" onClick={this.cancel.bind(this)}>
+                                <button role="event-exit" onClick={this.onDelect.bind(this)}>
                                     <img src="../../resource/images/X.svg" />
                                 </button>
                             </div>
                             
                             <div className="photo-upload">
                                 pic1.png
-                                <button className="card-exit invisible square-round" role="event-exit" onClick={this.cancel.bind(this)}>
+                                <button role="event-exit" onClick={this.onDelect.bind(this)}>
                                     <img src="../../resource/images/X.svg" />
                                 </button>
                             </div>
