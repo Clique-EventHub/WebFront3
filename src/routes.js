@@ -7,14 +7,12 @@ import normPage from './hoc/normPage';
 import LoginPage from './pages/loginPage';
 import HomePage from './pages/homePage';
 import ChannelPage from './pages/channelPage';
-import EditChannel from './pages/editChannel';
 import EditProfile from './pages/myEventPage';
 import tag from './pages/tagPage';
 import TablePage from './pages/tablePage';
 import CalendarPage from './pages/calendarPage';
 import EditEvent from './container/editEvent2'
 import ChannelInfo from './container/channelInfo';
-import QuestionForm from './components/questionForm';
 
 class FallbackPage extends Component {
 
@@ -68,8 +66,6 @@ export default (
         <Route path="calendar" component={CalendarPage} />
         <Route path="event" component={EditEvent}/>
         <Route path="focuskuy" component={ChannelInfo} />
-        <Route path="testtt" component={EditChannel} />
-        <Route path="form" component={QuestionForm} />
         <Route path="*" component={FallbackPageNorm} />
     </Route>
 );

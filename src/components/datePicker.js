@@ -217,15 +217,15 @@ class DatePicker extends Component {
             <div className="Date-Controller">
                 <div className="Option-Container">
                     <p onClick={() => {this.onChangeMode(0)}}>
-                        <input className="RadioButton" type="radio" name="mode-option" value="single-date" checked={this.state.mode === 0} onChange={() => {this.onChangeMode(0)}} />
+                        <input className="RadioButton" type="radio" name="mode-option" value="single-date" checked={this.state.mode === 0} onClick={() => {this.onChangeMode(0)}} />
                         <label onClick={() => {this.onChangeMode(0)}}>Single Date</label>
                     </p>
                     <p onClick={() => {this.onChangeMode(2)}}>
-                        <input className="RadioButton" type="radio" name="mode-option" value="range-date" checked={this.state.mode === 2} onChange={() => {this.onChangeMode(2)}} />
+                        <input className="RadioButton" type="radio" name="mode-option" value="range-date" checked={this.state.mode === 2} onClick={() => {this.onChangeMode(2)}} />
                         <label onClick={() => {this.onChangeMode(2)}}>Range of Dates</label>
                     </p>
                     <p onClick={() => {this.onChangeMode(1)}}>
-                        <input className="RadioButton" type="radio" name="mode-option" value="multiple-date" checked={this.state.mode === 1} onChange={() => {this.onChangeMode(1)}} />
+                        <input className="RadioButton" type="radio" name="mode-option" value="multiple-date" checked={this.state.mode === 1} onClick={() => {this.onChangeMode(1)}} />
                         <label onClick={() => {this.onChangeMode(1)}}>Multiple Dates</label>
                     </p>
                 </div>

@@ -4,110 +4,26 @@ import EventItem from '../container/eventItem';
 import './css/editEvent2.css';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
-import CustomRadio from '../components/CustomRadio';
-import DatePicker from '../components/datePicker';
-
-const state = [{
-        'type': 'none',
-        'value': 'none'
-    }, {
-        'type': 'circle',
-        'value': 'require'
-    }, {
-        'type': 'square',
-        'value': 'optional'
-}];
-
-const defaultState = {
-    'eventName': 'Event Name'
-}
-
-const TAG_1 = [
-    "CAMP",
-    "THEATHRE",
-    "TALK",
-    "FIRSTMEET",
-    "RECRUITMENT",
-    "MARKET",
-    "VOLUNTEER",
-    "CONCERT",
-    "FESTIVAL",
-    "OPENING",
-    "CONTEST",
-    "EXHIBITION",
-    "WORKSHOP",
-    "RELIGION"
-];
-
-const TAG_2 = [
-    "CHARITY",
-    "ACADEMIC",
-    "BUSINESS",
-    "CAREER",
-    "SPORT",
-    "ARTS",
-    "FOOD&DRINK",
-    "EDUCATION",
-    "MUSIC",
-    "TECHNOLOGY",
-    "NATURAL",
-    "HEALTH"
-]
-
-class Btn extends Component {
-    //BtnToggleState
-    constructor(props) {
-        super(props);
-        this.state = {
-            'isActive': false
-        }
-        this.onClick = this.onClick.bind(this);
-    }
-
-    onClick() {
-        let tmp = !this.state.isActive;
-        this.setState({
-            ...this.state,
-            'isActive': tmp
-        });
-        if(typeof(this.props.callback) === "function") this.props.callback(tmp);
-    }
-
-    render() {
-        return (
-            <button onClick={this.onClick} className={(this.state.isActive) ? this.props.classNameOn : this.props.classNameOff}>
-                {this.props.text}
-            </button>
-        );
-    }
-}
 
 class EditEvent extends Component {
     constructor(props) {
         super(props);
 
+        // title,about,video,channel,location,date_start,expire,date_end,picture,picture_large, year_require,faculty_require,tags,forms
+
+        // about, video, location, date_start, date_end, picture, picture_large, year_require, faculty_require, tags, agreement, contact_information,
+        // joinable_start_time, joinable_end_time, joinable_amount, time_start, time_end, optional_field, require_field, show, outsider_accessible
+
         let _this = this;
 
         this.state = {
-            'event_id': "594bf476e374d100140f04ec",
-            'isLoading': true,
+            'event_id': "594bf476e374d100140f04ec"
         }
-
-        this.onKeyPressed = this.onKeyPressed.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({updated: nextProps.updated});
-    }
-
-    componentWillMount() {
-        let _this = this;
 
         axios.get('http://128.199.208.0:1111/event?id=' + _this.state.event_id).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.title))
-            _this.setState({
-                ...this.state,
+            _this.state = {
                 'title': data.data.title,
                 'about': data.data.about,
                 'channel': data.data.channel,
@@ -135,10 +51,12 @@ class EditEvent extends Component {
                 'new_faculty_require': data.data.faculty_require,
                 'new_tags': data.data.tags,
                 'new_forms': data.data.forms,
-            })
+            }
         }, (error) => {
             console.log("get event error");
         });
+
+        this.onKeyPressed = this.onKeyPressed.bind(this);
     }
 
     onKeyPressed() {
@@ -238,17 +156,15 @@ class EditEvent extends Component {
 
     render () {
         return (
-            <div className="modal-container">
-                <article className="edit-event basic-card-no-glow modal-main card-width">
+            <div>
+                <article className="edit-event basic-card-no-glow modal-main">
                     <button className="card-exit invisible square-round" role="event-exit" onClick={this.cancel.bind(this)}>
                         <img src="../../resource/images/X.svg" />
                     </button>
                     <h2>CREATE EVENT / EDIT EVENT</h2>
                     <p className="l1"></p>
-                    <div className="flex">
-                        <div className="margin-auto">
-                            <EventItem onToggle={() => {}} onSetItem={() => {}} noGlow="true" overrideState={defaultState} />
-                        </div>
+                    <div>
+                        <EventItem onToggle={() => {}} onSetItem={() => {}} noGlow="true" />
                     </div>
                     <p className="l1"></p>
                     <div className="flex">
@@ -263,29 +179,43 @@ class EditEvent extends Component {
                     </div>
                     <p className="l1"></p>
                     <div>
-                        <h1>EVENT DETAIL</h1> <textarea className="detail" ref="detail" type="text" placeholder="" value={this.state.new_about} onChange={this.onKeyPressed}/>
-                        <div className="flex add">
-                            <div className="flex-1"><h1>ADD URL</h1> <button className="fill">URL</button></div>
-                            <div className="flex-1"><h1>ADD FILE</h1> <button className="fill">FILE</button></div>
-                            <div className="flex-1"><h1>ADD CONTACT</h1> <button className="fill">CONTACT</button></div>
+                        <h1>EVENT DETAIL</h1> <textarea className="detail" ref="about" type="text" placeholder="" value={this.state.new_about} onChange={this.onKeyPressed}/>
+                        <div className="flex">
+                            <div><h1>ADD URL</h1> <button className="fill">URL</button></div>
+                            <div><h1>ADD FILE</h1> <button className="fill">FILE</button></div>
+                            <div><h1>ADD CONTACT</h1> <button className="fill">CONTACT</button></div>
                         </div>
                     </div>
                     <p className="l1"></p>
                     <div>
                         <h1>TAG</h1>
-                        {
-                            TAG_1.map((key, index) => {
-                                if(key.length > 7) return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag long" classNameOff="Btn tag long"/>);
-                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag"/>);
-                            })
-                        }
+                        <button className="tag">CAMP</button>
+                        <button className="tag">THEATRE</button>
+                        <button className="tag">TALK</button>
+                        <button className="tag">FIRSTMEET</button>
+                        <button className="tag long">RECRUITMENT</button>
+                        <button className="tag">MARKET</button>
+                        <button className="tag long">VOLUNTEER</button>
+                        <button className="tag">CONCERT</button>
+                        <button className="tag">FESTIVAL</button>
+                        <button className="tag">OPENING</button>
+                        <button className="tag">CONTEST</button>
+                        <button className="tag">EXHIBITION</button>
+                        <button className="tag long">WORKSHOP</button>
+                        <button className="tag">RELIGION</button>
                         <p className="l2 ltag"></p>
-                            {
-                                TAG_2.map((key, index) => {
-                                    if(key.length > 7) return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag long" classNameOff="Btn tag long"/>);
-                                    return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag"/>);
-                                })
-                            }
+                        <button className="tag">CHARILY</button>
+                        <button className="tag long">ACADEMIC</button>
+                        <button className="tag">BUSSINESS</button>
+                        <button className="tag">CAREER</button>
+                        <button className="tag">SPORT</button>
+                        <button className="tag">ARTS</button>
+                        <button className="tag long">FOOD&DRINK</button>
+                        <button className="tag long">EDUCATION</button>
+                        <button className="tag">MUSIC</button>
+                        <button className="tag long">TECHNOLOGY</button>
+                        <button className="tag">NATURAL</button>
+                        <button className="tag">HEALTH</button>
                     </div>
                     <p className="l1"></p>
                     <div>
@@ -300,17 +230,18 @@ class EditEvent extends Component {
                         </div>
                         <textarea ref="loc" type="text" placeholder="ADD DESCRIPTION" value={this.state.loc} onChange={this.onKeyPressed}/>
                         <h1>RECRUITMENT DURATION</h1>
-                        <div className="basic-card-no-glow" style={{'width': '340px', 'margin': 'auto'}}>
-                            <DatePicker />
+                        <div className="flex">
+                            <input ref="loc" type="text" placeholder="STRAT" value={this.state.loc} onChange={this.onKeyPressed}/>
+                            <input ref="loc" type="text" placeholder="END" value={this.state.loc} onChange={this.onKeyPressed}/>
                         </div>
                         <h1>ADD FIRSTMEET</h1>
                         <div className="flex">
                             <input ref="loc" type="text" placeholder="" value={this.state.loc} onChange={this.onKeyPressed}/>
-                            <Btn text="CLOSE WHEN FULL" classNameOn="Btn-active fill" classNameOff="Btn fill" />
+                            <button className="fill">CLOSE WHEN FULL</button>
                         </div>
 
                         <h1>PARTICIPANTS FILTER</h1>
-                        <Btn text="ONLY CHULA" classNameOn="Btn-active fill tg" classNameOff="Btn fill tg" />
+                        <button className="fill tg">ONLY CHULA</button>
                         <input className="list" list="fac" placeholder="FACULTY"/>
                         <datalist id="fac">
                             <option value="ALL"/>
@@ -335,23 +266,23 @@ class EditEvent extends Component {
                         <h1>REQUIRED INFORMATION</h1>
                         <div className="flex">
                         <div className="w30">
-                            <CustomRadio state={state} text="NAME and SURNAME" />
-                            <CustomRadio state={state} text="NICKNAME" />
-                            <CustomRadio state={state} text="STUDENT ID" />
-                            <CustomRadio state={state} text="FACULTY" />
-                            <CustomRadio state={state} text="YEAR" />
+                            <div><input ref="" type="checkbox"/>NAME and SURNAME</div>
+                            <div><input ref="" type="checkbox"/>NICKNAME</div>
+                            <div><input ref="" type="checkbox"/>STUDENT ID</div>
+                            <div><input ref="" type="checkbox"/>FACULTY</div>
+                            <div><input ref="" type="checkbox"/>YEAR</div>
                         </div>
                         <div className="w30">
-                            <CustomRadio state={state} text="BIRTHDAY" />
-                            <CustomRadio state={state} text="FACEBOOK" />
-                            <CustomRadio state={state} text="LINE ID" />
-                            <CustomRadio state={state} text="EMAIL" />
-                            <CustomRadio state={state} text="MOBILE NUMBER" />
+                            <div><input ref="" type="checkbox"/>BIRTHDAY</div>
+                            <div><input ref="" type="checkbox"/>FACEBOOK</div>
+                            <div><input ref="" type="checkbox"/>LINE ID</div>
+                            <div><input ref="" type="checkbox"/>EMAIL</div>
+                            <div><input ref="" type="checkbox"/>MOBILE NUMBER</div>
                         </div>
                         <div className="w30">
-                            <CustomRadio state={state} text="T-SHIRT SIZE" />
-                            <CustomRadio state={state} text="MEDICAL PROBLEM" />
-                            <CustomRadio state={state} text="FOOD ALLERGIES" />
+                            <div><input ref="" type="checkbox"/>T-SHIRT SIZE</div>
+                            <div><input ref="" type="checkbox"/>MEDICAL PROBLEM</div>
+                            <div><input ref="" type="checkbox"/>FOOD ALLERGIES</div>
                         </div>
                         </div>
                     </div>
@@ -374,7 +305,7 @@ class EditEvent extends Component {
                     <div>
                         <button className="bt blue">PUBLIC</button>
                         <button className="bt" onClick={this.save.bind(this)}>SAVE</button>
-                        <button className="bt" onClick={this.cancel.bind(this)}>CANCEL</button>
+                        <button className="bt" onClick={this.cancel.bind(this)}>CANCLE</button>
                     </div>
                 </article>
                 <div className="background-overlay"/>

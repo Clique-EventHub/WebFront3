@@ -1,0 +1,72 @@
+
+/* start FM*/
+article.tag-proflie {
+    margin: 20px auto;
+    padding: 10px;
+    width: 90%;
+    background: #FFF;
+    height: 135px;
+    display: -webkit-box;
+    /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box;
+    /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox;
+    /* TWEENER - IE 10 */
+    display: -webkit-flex;
+    /* NEW - Chrome */
+    display: flex;
+    align-items: center;
+    font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+
+
+}
+div.tag-icon {
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+    background: #FF1493;
+    margin-top:4px;
+    margin-left: 10px;
+    margin-right: 5px;
+    position: absolute;
+}
+
+div.like-button {
+    border-radius: 35px;
+    border: 1px solid #000000;
+    margin-left: 50px;
+    /*padding: 20px;*/
+    padding-top: 6px;
+    width: 100px;
+    height: 20%;
+    text-align: center;
+}
+
+
+img.photo {
+  height: 100%;
+  width: 135px;
+  margin-right: 50px;
+  border-radius: 100%;
+  background-color: pink;
+
+}
+
+section[role="tag-content"] {
+  background-color: #F1F1F1;
+  flex: 1;
+  width: 100%;
+  padding: 20px 20px 20px 20px;
+  box-sizing: border-box;
+  min-width: 280px;
+}
+section[content="event-list"] {
+    flex: 2;
+    display: inline-block;
+    text-align: center;
+}
+section[role="tag-content"] .below-carousel {
+  max-width: 1440px;
+  margin: auto;
+}
+/*end FM*/

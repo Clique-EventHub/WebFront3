@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import '../../public/resource/slick-1.6.0/slick/slick.min.js';
-import EventDetail from '../container/eventDetail2';
+import EventDetail from '../container/eventDetail';
 
 class slickCarousel extends Component {
     constructor(props) {
@@ -32,7 +32,7 @@ class slickCarousel extends Component {
     }
 
     onItemClick() {
-        this.props.onItemPopUpClick(<EventDetail onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />);
+        this.props.onItemPopUpClick(<EventDetail />);
     }
 
     render() {

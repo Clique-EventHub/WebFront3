@@ -336,7 +336,7 @@ class eventDetailFix extends Component {
 }
 
 eventDetailFix.defaultProps = {
-    'eventId': '5946245c4b908f001403aba6'
+    'eventId': '594bf476e374d100140f04ec'
 }
 
 export default eventDetailFix;

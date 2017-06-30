@@ -38,10 +38,6 @@ button {
     margin-right: auto;
 }
 
-.margin-auto {
-    margin: auto;
-}
-
 @mixin shade($colorOne, $colorTwo) {
     background: -webkit-linear-gradient(right, top, $colorOne, $colorTwo);
     background: -o-linear-gradient(bottom left, $colorOne, $colorTwo);
@@ -1936,26 +1932,12 @@ article.event-detail {
     }
 }
 
-.card-width {
-    width: $event-detail-width;
-    max-width: $event-detail-max-width;
-    min-width: $event-detail-min-width;
-    margin: 40px auto 100px auto;
-    padding: 40px 30px;
-    box-sizing: border-box;
-}
-
 @media all and (max-width : 768px) {
     .toggle {
         display: initial !important;
     }
     .toggle-not {
         display: none !important;
-    }
-
-    .card-width {
-        width: $event-detail-bp-1-width;
-        margin: 10px auto;
     }
 
     article.event-detail {
@@ -2012,12 +1994,6 @@ article.event-detail {
             flex-direction: row;
             -webkit-flex-direction: row;
         }
-    }
-
-    .card-width {
-        width: $event-detail-bp-2-width;
-        margin: 1px auto;
-        padding: 30px 23px;
     }
 }
 
