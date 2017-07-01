@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import MultipleChoice from './MultipleChoice';
 // import EditDiv from './EditDiv';
 import './style/questionForm.css';
+import { afterSlash } from '../actions/common';
+import { hostname } from '../actions/index';
 
 const enableTestFeature = false;
 
@@ -440,7 +442,7 @@ class QuestionForm extends Component {
                     {(this.props.channel) ? (
                         <div className="channel-container">
                             {
-                                (this.props.channel.picture) ? (<img className="thumbnail" src={`https://api.${this.props.channel.picture}`} alt="icon" />) : (<div className={`thumbnail ${this.props.channelShade}`} />)
+                                (this.props.channel.picture) ? (<img className="thumbnail" src={`${hostname}${afterSlash(this.props.channel.picture)}`} alt="icon" />) : (<div className={`thumbnail ${this.props.channelShade}`} />)
                             }
                             {this.props.channel.name}
                         </div>) : null}

@@ -7,6 +7,7 @@
     "jquery": "^3.2.1",
     "moment": "^2.18.1",
     "react": "^15.4.2",
+    "react-csv": "^1.0.8",
     "react-day-picker": "^5.5.3",
     "react-dom": "^15.4.2",
     "react-loading": "^0.1.4",

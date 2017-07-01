@@ -189,11 +189,12 @@ article.event-detail-fix {
                         padding: 10px;
                         margin: auto;
                         // border: 1px solid #000;
-                        img {
+                        img,
+                        div.profile {
                             margin-right: 15px;
                             width: 2.5em;
                             height: 2.5em;
-                            background: #000;
+                            // background: #000;
                             border-radius: 50%;
                         }
                         .info {
@@ -348,13 +349,18 @@ article.event-detail-fix {
             height: 430px;
             white-space: nowrap;
 
-            img {
+            img,
+            div.img {
                 height: 400px;
                 display: inline-block;
                 margin-left: 10px;
                 margin-right: 10px;
                 margin-top: 10px;
                 box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2)
+            }
+
+            div.img {
+                width: 300px;
             }
         }
 
@@ -389,6 +395,8 @@ article.event-detail-fix {
 
         .event-poster-fix {
             // background: blue;
+            display: flex;
+            flex-direction: column;
 
             div.tags-container {
                 width: calc(100% - 0.02695167286245353 * #{$event-detail-width});
@@ -431,7 +439,7 @@ article.event-detail-fix {
                 margin: 0px;
             }
 
-            div {
+            > div {
                 display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
                 display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
                 display: -ms-flexbox;      /* TWEENER - IE 10 */
@@ -601,12 +609,12 @@ article.event-detail-fix {
     }
 }
 
-img[data-icon="channel-icon"] {
+[data-icon="channel-icon"] {
     margin-top: 10px;
     border-radius: 50%;
     height: 1.5em;
     width: 1.5em;
-    background: #000;
+    // background: #000;
     margin-right: 5px;
     display: inline-block;
     margin: auto;
@@ -614,7 +622,7 @@ img[data-icon="channel-icon"] {
     margin-right: 0px;
 }
 
-img[data-icon="channel-icon"] + span {
+[data-icon="channel-icon"] + span {
     line-height: 1.5em;
     display: inline-block;
     margin: auto;

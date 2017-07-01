@@ -25,8 +25,8 @@ class formPage extends Component {
             'error': null,
             'meta': {
                 'formId': (this.props.location.query.id) ? this.props.location.query.id : this.props.formId,
-                'eventId': (this.props.location.query.eid) ? this.props.location.query.eid : this.props.eventId,
-                'channelId': (this.props.location.query.cid) ? this.props.location.query.cid : this.props.channelId,
+                'eventId': null,
+                'channelId': null,
                 'isAdmin': (typeof(this.props.location.query.state) === "undefined") ? this.props.isAdmin : (this.props.location.query.state === "0")
             }
         }
@@ -57,8 +57,34 @@ class formPage extends Component {
                 this.setState({
                     ...this.state,
                     'questions': data.data.form.questions,
-                    'formTitle': data.data.form.title
+                    'formTitle': data.data.form.title,
+                    'meta': {
+                        ...this.state.meta,
+                        'eventId': data.data.form.event,
+                        'channelId': data.data.form.channel
+                    }
                 });
+
+                getEventThumbnail(data.data.form.event, {
+                    isUseAuthorize: true,
+                    onSuccess: (data) => {
+                        this.setState({
+                            ...this.state,
+                            'event': data
+                        });
+                    }
+                })
+
+                getChannelThumbnail(data.data.form.channel, {
+                    isUseAuthorize: true,
+                    onSuccess: (data) => {
+                        this.setState({
+                            ...this.state,
+                            'channel': data
+                        });
+                    }
+                })
+
                 return true;
             }, (error) => {
                 // console.log(error);
@@ -84,26 +110,6 @@ class formPage extends Component {
             }
             this.onPopUpError(error);
         }
-
-        getEventThumbnail(this.state.meta.eventId, {
-            isUseAuthorize: true,
-            onSuccess: (data) => {
-                this.setState({
-                    ...this.state,
-                    'event': data
-                });
-            }
-        })
-
-        getChannelThumbnail(this.state.meta.channelId, {
-            isUseAuthorize: true,
-            onSuccess: (data) => {
-                this.setState({
-                    ...this.state,
-                    'channel': data
-                });
-            }
-        })
     }
 
     // componentDidUpdate() {
@@ -136,13 +142,23 @@ class formPage extends Component {
             }
         }
 
-        console.log(`${hostname}form?id=${this.state.meta.formId}`);
 
-        axios.put(`${hostname}form?id=${this.state.meta.formId}`, {'response': new_response}, config).then((data) => {
+        // let newer_response = {};
+        // new_response.forEach((item) => {
+        //     newer_response[`_${item.question}`] = item.answer;
+        // })
+        // console.log(`${hostname}form?id=${this.state.meta.formId}`);
+        //
+        // console.log({'responses': new_response});
+
+        // console.log(newer_response);
+
+        axios.put(`${hostname}form?id=${this.state.meta.formId}`, {responses: new_response}, config).then((data) => {
             this.onPopUpMsg(["Thank you for answer our question(s)", "Have a nice day!"], () => {
                 this.props.context.router.push('/');
             });
         }, (error) => {
+            console.log(error.response)
             this.onPopUpError(error);
         });
     }
@@ -234,9 +250,7 @@ class formPage extends Component {
 }
 
 formPage.defaultProps = {
-    'formId': '5953991b46643c4fda2f4679',
-    'eventId': '594bf476e374d100140f04ec',
-    'channelId': '5946205a4b908f001403aba5',
+    'formId': '',
     'isAdmin': false
 }
 

@@ -104,10 +104,10 @@ select:-moz-focusring {
 }
 
 @mixin shade($colorOne, $colorTwo) {
-    background: -webkit-linear-gradient(right, top, $colorOne, $colorTwo);
-    background: -o-linear-gradient(bottom left, $colorOne, $colorTwo);
-    background: -moz-webkit-linear-gradient(bottom, left, $colorOne, $colorTwo);
-    background: linear-gradient(to bottom left, $colorOne, $colorTwo);
+    background: -webkit-linear-gradient(right, top, $colorOne, $colorTwo) !important;
+    background: -o-linear-gradient(bottom left, $colorOne, $colorTwo) !important;
+    background: -moz-webkit-linear-gradient(bottom, left, $colorOne, $colorTwo) !important;
+    background: linear-gradient(to bottom left, $colorOne, $colorTwo) !important;
 }
 
 .shade-blue {
@@ -204,10 +204,6 @@ $i: 10;
 
 .flex-aligns-item {
     align-items: center;
-}
-
-.display-none {
-    display: none !important;
 }
 
 .text-right {
@@ -1320,11 +1316,11 @@ section[role="carousel"] {
     .slick-slide {
         text-align: center;
         color: #419be0;
-        background-color: #777;
-        background: -webkit-linear-gradient(right, top, #fff50b, #ffab00);
-        background: -o-linear-gradient(bottom left, #fff50b, #ffab00);
-        background: -moz-webkit-linear-gradient(bottom, left, #fff50b, #ffab00);
-        background: linear-gradient(to bottom left, #fff50b, #ffab00);
+        // background-color: #777;
+        // background: -webkit-linear-gradient(right, top, #fff50b, #ffab00);
+        // background: -o-linear-gradient(bottom left, #fff50b, #ffab00);
+        // background: -moz-webkit-linear-gradient(bottom, left, #fff50b, #ffab00);
+        // background: linear-gradient(to bottom left, #fff50b, #ffab00);
         margin-left: 2px;
         margin-right: 2px;
         width: 65vw;
@@ -2046,6 +2042,11 @@ section[role="tag-content"] .below-carousel {
 
 .no-pos {
     position: fixed;
+    top: 65px;
+    left: 0pc;
+    height: calc(100vh - 65px);
+    width: 100vw;
+    overflow-y: scroll;
 }
 
 /* Start Faculty */
@@ -2263,3 +2264,22 @@ div.background-overlay-fix {
 }
 
 /* End Error Warning */
+
+.truncate {
+    /*Must have width in its container to work -> indicate when is the maximum*/
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+$i: 50;
+@while $i <= 500 {
+    .min-height-#{$i} {
+        min-height: 0px + $i;
+    }
+    $i: $i + 50;
+}
+
+.display-none {
+    display: none !important;
+}

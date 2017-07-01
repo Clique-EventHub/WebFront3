@@ -119,3 +119,8 @@ export function getChannelThumbnail(channelId, options) {
         });
     }
 }
+
+export function afterSlash(str) {
+    if(typeof(str) !== "string") return "";
+    return str.slice(str.indexOf('/')+1, str.length);
+}
