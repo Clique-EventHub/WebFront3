@@ -1,8 +1,20 @@
 import React, { Component } from 'react';
 import './css/searchResult.css'
 import EventItem from '../container/eventItem';
+import Axios from 'axios';
 
 class SearchResult extends Component {
+
+    constructor(props) {
+      super(props);
+
+      let _this = this;
+
+      this.state = {
+        listOfEvent: [],
+        listOfUnPic: []
+      };
+    }
 
     render() {
         let addtitonalStyle = (this.props.noBg) ? {
@@ -11,26 +23,40 @@ class SearchResult extends Component {
             'position': 'fixed',
             'overflowY': 'scroll'
         } : {}
+        let list_tmp = [], list_unpic = [];
+        Axios.get('http://128.199.208.0:1111/event/search?keyword=' + this.props.keyword).then((data) => {
+            console.log("get!!!");
+            // console.log(JSON.stringify(data.data.events));
+            data.data.events.map((event) => {
+              if(list_tmp.length < 4) {
+                list_tmp.push(event._id);
+              } else {
+                list_unpic.push(event._id);
+              }
+            });
+            this.state = {
+              listOfEvent: list_tmp,
+              listOfUnPic: list_unpic
+            };
+
+        }, (error) => {
+            console.log("get event search error");
+        });
+
         return (
             <div  className="search-box-container" style={addtitonalStyle} className={this.props.className}>
                 <article className="event-search">
                     <div className="keyword truncate">{this.props.keyword}</div>
-                    <div className="found">found 17 results</div>
+                    <div className="found">found {this.state.listOfEvent.length + this.state.listOfUnPic.length} results</div>
                     <div className="event-found">
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="true" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="true" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="true" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="true" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <br />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
-                        <EventItem posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem}  />
+                      {this.state.listOfEvent.map((ID) => {
+                        return <EventItem eventId={ID} posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="true" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
+                      })}
+
+                         <br />
+                         {this.state.listOfUnPic.map((ID) => {
+                           return <EventItem eventId={ID} posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
+                         })}
                     </div>
                 </article>
                 {(this.props.noBg) ? (null) : (<div className="background-overlay-fix"/>) }
