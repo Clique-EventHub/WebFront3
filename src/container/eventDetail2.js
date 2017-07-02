@@ -4,6 +4,8 @@ import * as facultyMap from '../actions/facultyMap';
 import axios from 'axios';
 import { hostname } from '../actions/index';
 import ReactLoading from 'react-loading';
+import { Link } from 'react-router';
+import Image from '../components/Image';
 
 //https://codepen.io/bh/pen/JBlCc
 let useCls = " toggle-vis";
@@ -12,7 +14,7 @@ let index = 0;
 
 const defaultState = {
     'title': null,
-    'about': null,
+    'about': [],
     'video': null,
     'channel': null,
     'location': null,
@@ -20,13 +22,22 @@ const defaultState = {
     'expire': null,
     'date_end': null,
     'picture': null,
-    'picture_large': null,
+    'picture_large': [],
     'year_require': null,
     'faculty_require': null,
     'tags': null,
     'forms': null,
     'isLoading': true,
     'error': null
+}
+
+function replaceIncorrectLink(str) {
+    if(typeof(str) === "string") {
+        if(str.indexOf("128.199.208.0/") === 0) str = str.replace("128.199.208.0/", hostname);
+        else if(str.indexOf("cueventhub.com/") === 0) str = str.replace("cueventhub.com/", hostname)
+        return str;
+    }
+    return null;
 }
 
 class eventDetailFix extends Component {
@@ -43,13 +54,23 @@ class eventDetailFix extends Component {
         this.props.onToggle();
     }
 
-    componentDidMount() {
-        this.onResetPopup();
+    componentWillMount() {
         this.onGetInfo();
     }
 
+    componentDidMount() {
+        this.onResetPopup();
+    }
+
     componentDidUpdate() {
-        console.log(this.state);
+        if(!this.state.isLoading) {
+            let allName = document.getElementsByClassName("event-name");
+            Object.keys(allName).map((key) => {
+                window.fitText(allName[key].children[0], 1, {
+                    'maxFontSize': '32px'
+                });
+            })
+        }
     }
 
     onGetInfo() {
@@ -102,9 +123,10 @@ class eventDetailFix extends Component {
 
         let eventName = (
             <div className="event-name">
-                <h2>{this.state.title}</h2>
+                <h2 className="truncate">{this.state.title}</h2>
                 <div className="flex">
-                    <img data-icon="channel-icon" alt="channel-icon" /><span> {this.state.channel_name}</span>
+                    <Image src={replaceIncorrectLink(this.state.channel_picture)}  imgOption={{'data-icon': 'channel-icon', 'alt': 'channel-icon'}} rejectOption={{'data-icon': 'channel-icon'}} />
+                    <span> {this.state.channel_name}</span>
                 </div>
             </div>
         );
@@ -127,13 +149,11 @@ class eventDetailFix extends Component {
                         {eventName}
                     </div>
                     <div className="event-poster-fix">
-                        <div>
-                            <img src="../../resource/images/poster_dummy/10.jpg" alt="main-poster" />
-                            <div className="tags-container">
-                                <div data-icon="tag" />
-                                <div data-icon="tag" />
-                                <div data-icon="tag" />
-                            </div>
+                        <Image src={replaceIncorrectLink(this.state.picture)} imgAlt="main-poster" rejectClass="flex-1 min-height-400" />
+                        <div className="tags-container">
+                            <div data-icon="tag" />
+                            <div data-icon="tag" />
+                            <div data-icon="tag" />
                         </div>
                     </div>
                     <div className="column">
@@ -167,7 +187,7 @@ class eventDetailFix extends Component {
                                                 //{ ClassNameKeyWord: 'engineer', FullName: 'Engineering'}
                                                 return (
                                                     <div className="result" key={item}>
-                                                        <img alt="profile" />
+                                                        <Image src="" imgOption={{'alt': 'profile'}} rejectClass="profile" />
                                                         <div className="info">
                                                             <span>Friend Name</span>
                                                             <div>
@@ -206,7 +226,9 @@ class eventDetailFix extends Component {
                                             DISAPPROVE
                                         </div>
                                         <div className="btn-round shade-green">
-                                            APPROVE
+                                            <Link to='/form'>
+                                                APPROVE
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
@@ -249,32 +271,23 @@ class eventDetailFix extends Component {
                 <p className="hr"></p>
                 <div className="event-bio">
                     <h3 className="display-none">Bio</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id ipsum orci. Aliquam erat volutpat. Sed in erat quis mi laoreet vestibulum. Fusce vitae tempor nisi. Fusce aliquam dolor mi, sit amet egestas ex imperdiet fringilla. Nullam nisl quam, convallis vitae viverra in, lacinia nec lectus. Praesent nibh metus, luctus nec tortor sit amet, hendrerit congue elit. Aliquam erat volutpat. Quisque ex arcu, iaculis blandit arcu at, molestie mattis mauris. Etiam in tortor nec metus eleifend euismod. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-                    </p>
-                    <p>
-                        Nulla congue tincidunt sem non ullamcorper. Etiam mattis auctor tellus. Aenean ultricies lacus at elementum fermentum. Nunc hendrerit neque et nibh sodales, a malesuada orci euismod. Aliquam a pharetra purus, nec porta augue. Donec in elit non arcu commodo tristique. Integer nunc ligula, tristique eget nisl non, consectetur pharetra lacus.
-                    </p>
-                    <p>
-                        Cras pellentesque enim justo, id pharetra neque pulvinar quis. Suspendisse a odio lacinia, maximus dolor et, maximus massa. Curabitur dolor nibh, pulvinar imperdiet nunc id, placerat venenatis massa. Donec vitae venenatis nisi. Ut iaculis sem a tempor ullamcorper. Ut aliquam venenatis fermentum. Nam porttitor libero sit amet nisl mattis, sed tincidunt eros tincidunt.
-                    </p>
+                    {
+                        this.state.about.map((text, index) => {
+                            return <p key={index}>{text}</p>
+                        })
+                    }
                 </div>
                 <p className="hr"></p>
                 <div className="event-img-slide">
-                    <a href="https://s-media-cache-ak0.pinimg.com/736x/a9/d5/ff/a9d5ffc839c6fd69bd76bdd1e81fb42d.jpg">
-                        <img src="https://s-media-cache-ak0.pinimg.com/736x/a9/d5/ff/a9d5ffc839c6fd69bd76bdd1e81fb42d.jpg" />
-                    </a>
-                    <a href="https://s-media-cache-ak0.pinimg.com/736x/2c/06/90/2c0690f83727e1bf7d7d3f1eb60685bb.jpg">
-                        <img src="https://s-media-cache-ak0.pinimg.com/736x/2c/06/90/2c0690f83727e1bf7d7d3f1eb60685bb.jpg" />
-                    </a>
-                    <a href="ttp://dl9fvu4r30qs1.cloudfront.net/47/3f/b9398ff842278569608c449da077/enemy-poster.jpg">
-                        <img src="http://dl9fvu4r30qs1.cloudfront.net/47/3f/b9398ff842278569608c449da077/enemy-poster.jpg" />
-                    </a>
-                    <a href="https://s-media-cache-ak0.pinimg.com/736x/62/0c/aa/620caa23db6fa40d16f494ac17a47982.jpg">
-                        <img src="https://s-media-cache-ak0.pinimg.com/736x/62/0c/aa/620caa23db6fa40d16f494ac17a47982.jpg" />
-                    </a>
-                    <a href="https://s-media-cache-ak0.pinimg.com/736x/d7/d6/ae/d7d6ae768606d96d23ee247827d79c73.jpg">
-                        <img src="https://s-media-cache-ak0.pinimg.com/736x/d7/d6/ae/d7d6ae768606d96d23ee247827d79c73.jpg" />
-                    </a>
+                    {
+                        this.state.picture_large.map((text, index) => {
+                            return (
+                                <a key={index} href={replaceIncorrectLink(text)}>
+                                    <Image src={replaceIncorrectLink(text)} rejectClass="img" />
+                                </a>
+                            );
+                        })
+                    }
                 </div>
                 <p className="hr"></p>
                 <div className="event-other">
@@ -301,7 +314,7 @@ class eventDetailFix extends Component {
                 </div>
                 Loading
                 <div style={{'margin': 'auto', 'width': '50px', 'display': 'inline-block', 'position': 'relative', 'top': '12px', 'marginLeft': '5px'}}>
-                    <ReactLoading type={'bars'} color={'#878787'} height='40' width='40' />
+                    <ReactLoading type={'bars'} color={'#878787'} height='40px' width='40px' />
                 </div>
             </div>
         );
@@ -336,7 +349,7 @@ class eventDetailFix extends Component {
 }
 
 eventDetailFix.defaultProps = {
-    'eventId': '5946245c4b908f001403aba6'
+    'eventId': '594bf476e374d100140f04ec'
 }
 
 export default eventDetailFix;

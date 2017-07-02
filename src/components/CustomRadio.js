@@ -10,7 +10,6 @@ class CustomRadio extends Component {
         super(props);
         this.state = {
             'mode': 0,
-            'text': (this.props.text) ? this.props.text : 'No text',
             'color': (this.props.color) ? this.props.color : '#000',
             'colorHover': (this.props.colorHover) ? this.props.colorHover : '#000',
             'colorActive': (this.props.colorActive) ? this.props.colorActive : '#000',
@@ -93,7 +92,7 @@ class CustomRadio extends Component {
         return (
             <div className={`CustomRadio ${(this.props.addedClass) ? this.props.addedClass : ''}`} onClick={this.onClick} style={this.style()} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>
                 <input className={`state-${this.state.state[this.state.mode].type}`} type="radio" value={this.state.state[this.state.mode].value} checked={this.state.mode !== 0} name="mode-option" />
-                <label>{this.state.text}</label>
+                <label>{this.props.text}</label>
             </div>
         );
     }
@@ -117,7 +116,7 @@ CustomRadio.defaultProps = {
         'type': 'diamond',
         'value': 'state-4'
     }],
-    'text': 'This is sample text',
+    'text': 'No Text',
     'color': '#878787',
     'colorHover': '#AAA',
     'colorActive': '#BBB',

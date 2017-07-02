@@ -269,6 +269,11 @@ export function findInfoById(id) {
     return codeToInfo[id];
 }
 
+/**
+ * @param  {string}
+ * @return {object}
+ */
+
 export function findInfoByName(substring) {
     if(/^[a-zA-Z\s()]+$/.test(substring)) {
         let possibleId = findIdByNameEN(substring.toUpperCase());

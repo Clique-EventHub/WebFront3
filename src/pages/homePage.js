@@ -12,6 +12,7 @@ import normalPage from '../hoc/normPage';
 
 import EditProfile from '../container/editProfile';
 import DatePicker from '../components/datePicker';
+import EventDetailFix from '../container/eventDetail2';
 
 class homePage extends Component {
 
@@ -28,6 +29,13 @@ class homePage extends Component {
     onItemPopUpClick(item) {
         if(this.props.pages.pop_up_item === null) this.props.set_pop_up_item(item);
         this.props.toggle_pop_item();
+    }
+
+    componentDidMount() {
+        if(!(typeof(this.props.location.query.eid) === "undefined" || this.props.location.query.eid === null)) {
+            console.log("Hello")
+            this.onItemPopUpClick(<EventDetailFix onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+        }
     }
 
     render() {

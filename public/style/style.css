@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Muli");
+/*test*/
 body {
   padding: 0px;
   margin: 0px;
@@ -20,6 +21,44 @@ button {
   padding-bottom: 0px;
 }
 
+select {
+  /* styling */
+  background-color: white;
+  border: thin solid #878787;
+  border-radius: 4px;
+  display: inline-block;
+  font: inherit;
+  line-height: 1.5em;
+  box-sizing: border-box;
+  padding: 0.2em 3.5em 0.1em 1em;
+  /* reset */
+  margin: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, gray 50%), linear-gradient(135deg, gray 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc);
+  background-position: calc(100% - 20px) calc(1em - 3px), calc(100% - 15px) calc(1em - 3px), calc(100% - 2.5em) 0.15em;
+  background-size: 5px 5px, 5px 5px, 1px 1.5em;
+  background-repeat: no-repeat;
+}
+
+select:focus {
+  background-image: linear-gradient(45deg, #008bdb 50%, transparent 50%), linear-gradient(135deg, transparent 50%, #008bdb 50%), linear-gradient(to right, #ccc, #ccc);
+  background-position: calc(100% - 15px) calc(1em - 3px), calc(100% - 20px) calc(1em - 3px), calc(100% - 2.5em) 0.15em;
+  background-size: 5px 5px, 5px 5px, 1px 1.5em;
+  background-repeat: no-repeat;
+  border-color: #008bdb;
+  color: #008bdb;
+  outline: 0;
+}
+
+select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
+
 .text-center {
   text-align: center !important;
 }
@@ -34,38 +73,38 @@ button {
 }
 
 .shade-blue {
-  background: -webkit-linear-gradient(right, top, #37c6f0, #008bdb);
-  background: -o-linear-gradient(bottom left, #37c6f0, #008bdb);
-  background: -moz-webkit-linear-gradient(bottom, left, #37c6f0, #008bdb);
-  background: linear-gradient(to bottom left, #37c6f0, #008bdb);
+  background: -webkit-linear-gradient(right, top, #37c6f0, #008bdb) !important;
+  background: -o-linear-gradient(bottom left, #37c6f0, #008bdb) !important;
+  background: -moz-webkit-linear-gradient(bottom, left, #37c6f0, #008bdb) !important;
+  background: linear-gradient(to bottom left, #37c6f0, #008bdb) !important;
 }
 
 .shade-yellow {
-  background: -webkit-linear-gradient(right, top, #fff200, #ffab00);
-  background: -o-linear-gradient(bottom left, #fff200, #ffab00);
-  background: -moz-webkit-linear-gradient(bottom, left, #fff200, #ffab00);
-  background: linear-gradient(to bottom left, #fff200, #ffab00);
+  background: -webkit-linear-gradient(right, top, #fff200, #ffab00) !important;
+  background: -o-linear-gradient(bottom left, #fff200, #ffab00) !important;
+  background: -moz-webkit-linear-gradient(bottom, left, #fff200, #ffab00) !important;
+  background: linear-gradient(to bottom left, #fff200, #ffab00) !important;
 }
 
 .shade-pink {
-  background: -webkit-linear-gradient(right, top, #f84994, #be2f7d);
-  background: -o-linear-gradient(bottom left, #f84994, #be2f7d);
-  background: -moz-webkit-linear-gradient(bottom, left, #f84994, #be2f7d);
-  background: linear-gradient(to bottom left, #f84994, #be2f7d);
+  background: -webkit-linear-gradient(right, top, #f84994, #be2f7d) !important;
+  background: -o-linear-gradient(bottom left, #f84994, #be2f7d) !important;
+  background: -moz-webkit-linear-gradient(bottom, left, #f84994, #be2f7d) !important;
+  background: linear-gradient(to bottom left, #f84994, #be2f7d) !important;
 }
 
 .shade-green {
-  background: -webkit-linear-gradient(right, top, #74fa00, #568d0c);
-  background: -o-linear-gradient(bottom left, #74fa00, #568d0c);
-  background: -moz-webkit-linear-gradient(bottom, left, #74fa00, #568d0c);
-  background: linear-gradient(to bottom left, #74fa00, #568d0c);
+  background: -webkit-linear-gradient(right, top, #74fa00, #568d0c) !important;
+  background: -o-linear-gradient(bottom left, #74fa00, #568d0c) !important;
+  background: -moz-webkit-linear-gradient(bottom, left, #74fa00, #568d0c) !important;
+  background: linear-gradient(to bottom left, #74fa00, #568d0c) !important;
 }
 
 .shade-red {
-  background: -webkit-linear-gradient(right, top, #ff7200, #fe2000);
-  background: -o-linear-gradient(bottom left, #ff7200, #fe2000);
-  background: -moz-webkit-linear-gradient(bottom, left, #ff7200, #fe2000);
-  background: linear-gradient(to bottom left, #ff7200, #fe2000);
+  background: -webkit-linear-gradient(right, top, #ff7200, #fe2000) !important;
+  background: -o-linear-gradient(bottom left, #ff7200, #fe2000) !important;
+  background: -moz-webkit-linear-gradient(bottom, left, #ff7200, #fe2000) !important;
+  background: linear-gradient(to bottom left, #ff7200, #fe2000) !important;
 }
 
 button {
@@ -119,8 +158,8 @@ button[role="event-exit"] img {
 }
 
 .mar-v-10 {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
 }
 
 .mar-h-10 {
@@ -147,8 +186,8 @@ button[role="event-exit"] img {
 }
 
 .mar-v-15 {
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 15px !important;
+  margin-bottom: 15px !important;
 }
 
 .mar-h-15 {
@@ -175,8 +214,8 @@ button[role="event-exit"] img {
 }
 
 .mar-v-20 {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
 }
 
 .mar-h-20 {
@@ -203,8 +242,8 @@ button[role="event-exit"] img {
 }
 
 .mar-v-25 {
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-top: 25px !important;
+  margin-bottom: 25px !important;
 }
 
 .mar-h-25 {
@@ -231,8 +270,8 @@ button[role="event-exit"] img {
 }
 
 .mar-v-30 {
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 30px !important;
+  margin-bottom: 30px !important;
 }
 
 .mar-h-30 {
@@ -259,8 +298,8 @@ button[role="event-exit"] img {
 }
 
 .mar-v-35 {
-  margin-top: 35px;
-  margin-bottom: 35px;
+  margin-top: 35px !important;
+  margin-bottom: 35px !important;
 }
 
 .mar-h-35 {
@@ -287,8 +326,8 @@ button[role="event-exit"] img {
 }
 
 .mar-v-40 {
-  margin-top: 40px;
-  margin-bottom: 40px;
+  margin-top: 40px !important;
+  margin-bottom: 40px !important;
 }
 
 .mar-h-40 {
@@ -315,8 +354,8 @@ button[role="event-exit"] img {
 }
 
 .mar-v-45 {
-  margin-top: 45px;
-  margin-bottom: 45px;
+  margin-top: 45px !important;
+  margin-bottom: 45px !important;
 }
 
 .mar-h-45 {
@@ -334,10 +373,6 @@ button[role="event-exit"] img {
 
 .flex-aligns-item {
   align-items: center;
-}
-
-.display-none {
-  display: none !important;
 }
 
 .text-right {
@@ -719,6 +754,12 @@ section[role="main-content"] {
 section[role="main-content"] .below-carousel {
   max-width: 1280px;
   margin: auto;
+}
+
+section.no-padding[role="main-content"] {
+  padding: 0px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 section[content="left-group"] {
@@ -1132,10 +1173,10 @@ section.channel-main section.channel-head div[alt="cn-cover-pic"] {
   display: inline-block;
   align-items: center;
   position: absolute;
-  background: -webkit-linear-gradient(right, top, #999999, #DDDDDD);
-  background: -o-linear-gradient(bottom left, #999999, #DDDDDD);
-  background: -moz-webkit-linear-gradient(bottom, left, #999999, #DDDDDD);
-  background: linear-gradient(to bottom left, #999999, #DDDDDD);
+  background: -webkit-linear-gradient(right, top, #999999, #DDDDDD) !important;
+  background: -o-linear-gradient(bottom left, #999999, #DDDDDD) !important;
+  background: -moz-webkit-linear-gradient(bottom, left, #999999, #DDDDDD) !important;
+  background: linear-gradient(to bottom left, #999999, #DDDDDD) !important;
   border: 15px solid;
   border-color: #A0A0A0;
   transform: translateY(-50%) translateX(-50%);
@@ -1479,11 +1520,6 @@ section[role="carousel"] .myContainer {
 section[role="carousel"] .slick-slide {
   text-align: center;
   color: #419be0;
-  background-color: #777;
-  background: -webkit-linear-gradient(right, top, #fff50b, #ffab00);
-  background: -o-linear-gradient(bottom left, #fff50b, #ffab00);
-  background: -moz-webkit-linear-gradient(bottom, left, #fff50b, #ffab00);
-  background: linear-gradient(to bottom left, #fff50b, #ffab00);
   margin-left: 2px;
   margin-right: 2px;
   width: 65vw;
@@ -2194,6 +2230,11 @@ section[role="tag-content"] .below-carousel {
 /*end FM*/
 .no-pos {
   position: fixed;
+  top: 65px;
+  left: 0pc;
+  height: calc(100vh - 65px);
+  width: 100vw;
+  overflow-y: scroll;
 }
 
 /* Start Faculty */
@@ -2358,3 +2399,222 @@ section[role="tag-content"] .below-carousel {
 }
 
 /* End Faculty */
+/* Error Warning */
+div.Error-Warning-Container {
+  position: relative;
+}
+
+div.Error-Warning-Container div.Error-Warning::before {
+  content: "";
+  width: 5px;
+  height: 100%;
+  background-color: #FC0010;
+  position: absolute;
+  left: 10px;
+  top: 0px;
+}
+
+div.Error-Warning-Container div.Error-Warning {
+  padding-left: 25px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-image: url("https://i.stack.imgur.com/hgsp8.png");
+  background-size: cover;
+  filter: brightness(120%);
+  box-sizing: border-box;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 20px;
+  color: #FC0010;
+}
+
+div.Error-Warning-Container div.Error-Warning span {
+  display: block;
+  position: relative;
+  z-index: 401;
+}
+
+div.Error-Warning-Container div.Error-Warning::after {
+  content: "";
+  width: calc(100% - 20px - 5px);
+  height: 100%;
+  background-color: rgba(252, 0, 16, 0.15);
+  position: absolute;
+  left: 15px;
+  top: 0px;
+  z-index: 400;
+}
+
+.Warning-Container button {
+  background-color: transparent;
+  border: 1px solid rgba(160, 160, 160, 0.5);
+  outline: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #3f88fe;
+  border-color: #3f88fe;
+  margin-top: 15px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.Warning-Container button:hover {
+  background-color: rgba(63, 136, 254, 0.85);
+  color: #FFF;
+  border-color: #EEE;
+}
+
+.Warning-Container button:active {
+  background-color: #3f88fe;
+  color: #FFF;
+  border-color: #EEE;
+}
+
+div.Message-Container {
+  position: relative;
+}
+
+div.Message-Container div.Message::before {
+  content: "";
+  width: 5px;
+  height: 100%;
+  background-color: #AAA;
+  position: absolute;
+  left: 10px;
+  top: 0px;
+}
+
+div.Message-Container div.Message {
+  padding-left: 25px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-image: url("https://i.stack.imgur.com/hgsp8.png");
+  background-size: cover;
+  filter: brightness(120%);
+  box-sizing: border-box;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 20px;
+  color: #878787 span;
+  color-display: block;
+  color-position: relative;
+  color-z-index: 401;
+}
+
+div.Message-Container div.Message::after {
+  content: "";
+  width: calc(100% - 20px - 5px);
+  height: 100%;
+  background-color: rgba(97, 97, 97, 0.15);
+  position: absolute;
+  left: 15px;
+  top: 0px;
+  z-index: 400;
+}
+
+div.Message-Container div.Message.green {
+  color: #499B0E;
+  filter: brightness(112%);
+}
+
+div.Message-Container div.Message.green::before {
+  background-color: #52C00E;
+}
+
+div.Message-Container div.Message.green::after {
+  background-color: rgba(82, 192, 14, 0.15);
+}
+
+.Message-Btn-Container button {
+  background-color: transparent;
+  border: 1px solid rgba(160, 160, 160, 0.5);
+  outline: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #3f88fe;
+  border-color: #3f88fe;
+  margin-top: 15px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.Message-Btn-Container button:hover {
+  background-color: rgba(63, 136, 254, 0.85);
+  color: #FFF;
+  border-color: #EEE;
+}
+
+.Message-Btn-Container button:active {
+  background-color: #3f88fe;
+  color: #FFF;
+  border-color: #EEE;
+}
+
+div.background-overlay-fix {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 65px;
+  left: 0;
+  background: #000;
+  opacity: 0.5;
+  z-index: 550;
+  filter: alpha(opacity=50);
+  /* required for opacity to work in IE */
+}
+
+/* End Error Warning */
+.truncate {
+  /*Must have width in its container to work -> indicate when is the maximum*/
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.min-height-50 {
+  min-height: 50px;
+}
+
+.min-height-100 {
+  min-height: 100px;
+}
+
+.min-height-150 {
+  min-height: 150px;
+}
+
+.min-height-200 {
+  min-height: 200px;
+}
+
+.min-height-250 {
+  min-height: 250px;
+}
+
+.min-height-300 {
+  min-height: 300px;
+}
+
+.min-height-350 {
+  min-height: 350px;
+}
+
+.min-height-400 {
+  min-height: 400px;
+}
+
+.min-height-450 {
+  min-height: 450px;
+}
+
+.min-height-500 {
+  min-height: 500px;
+}
+
+.display-none {
+  display: none !important;
+}

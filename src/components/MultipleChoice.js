@@ -52,7 +52,7 @@ class MultipleChoice extends Component {
                     response.push({
                         'index': key,
                         'value': new_active[key],
-                        'text': this.props.options[index]
+                        'text': this.props.options[key]
                     })
                 })
                 this.props.onUpdate(response);
@@ -67,13 +67,13 @@ class MultipleChoice extends Component {
                     response.push({
                         'index': key,
                         'value': this.state.active[key],
-                        'text': this.props.options[index]
+                        'text': this.props.options[key]
                     })
                 } else {
                     response.push({
                         'index': key,
                         'value': new_mode.value,
-                        'text': this.props.options[index]
+                        'text': this.props.options[key]
                     })
                 }
             })
@@ -88,13 +88,17 @@ class MultipleChoice extends Component {
         return true;
     }
 
+    componentDidUpdate() {
+        // console.log(this.props.options);
+    }
+
     render() {
         return (
             <div className={(this.props.containerClass) ? (this.props.containerClass) : ''}>
                 {
                     this.props.options.map((text, index) => {
                         return (
-                            <div>
+                            <div key={index}>
                                 <CustomRadio key={index} text={text} state={this.props.state} isBlockedAction={
                                     this.onEvalBlock(index)
                                 } onClick={(new_mode) => {
