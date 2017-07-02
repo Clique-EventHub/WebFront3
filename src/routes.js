@@ -13,12 +13,9 @@ import TablePage from './pages/tablePage';
 import CalendarPage from './pages/calendarPage';
 import EditEvent from './container/editEvent2'
 import ChannelInfo from './container/channelInfo';
-<<<<<<< HEAD
 import FormPage from './pages/formPage';
 import EditChannelPage from './pages/editChannel';
-=======
 import ChannelDetail from './container/channelDetail';
->>>>>>> channelInfo_photo-upload
 
 class FallbackPage extends Component {
 
