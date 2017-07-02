@@ -13,6 +13,8 @@ import TablePage from './pages/tablePage';
 import CalendarPage from './pages/calendarPage';
 import EditEvent from './container/editEvent2'
 import ChannelInfo from './container/channelInfo';
+import FormPage from './pages/formPage';
+import EditChannelPage from './pages/editChannel';
 
 class FallbackPage extends Component {
 
@@ -61,11 +63,13 @@ export default (
         <Route path="signup" component={LoginPage} />
         <Route path="tagpage" component={tag} />
         <Route path="channel/:id" component={ChannelPage} />
+        <Route path="editchannel/:id" component={EditChannelPage} />
         <Route path="profile" component={EditProfile} />
         <Route path="table" component={TablePage} />
         <Route path="calendar" component={CalendarPage} />
         <Route path="event" component={EditEvent}/>
         <Route path="focuskuy" component={ChannelInfo} />
+        <Route path="form" component={FormPage} />
         <Route path="*" component={FallbackPageNorm} />
     </Route>
 );

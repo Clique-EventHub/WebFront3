@@ -5,10 +5,11 @@ import EventItem from '../container/eventItem';
 import Circle from '../components/circle';
 // import ChannelList from '../components/channelList';
 
+import EditChannel from '../container/editChannelInfo';
 import pages from '../hoc/pages';
 import normalPage from '../hoc/normPage';
 
-class channelPage extends Component {
+class editChannelPage extends Component {
 
     constructor(props) {
         super(props);
@@ -35,6 +36,7 @@ class channelPage extends Component {
         return (
             <section className="channel-main">
                 <section className="channel-head">
+                    <button onClick={() => { this.onItemPopUpClick(<EditChannel />);}}>Click Me</button>
                     <div className="cn-tag">
                         <Circle parent="tag" />
                         <Circle parent="tag" />
@@ -84,4 +86,4 @@ class channelPage extends Component {
 }
 
 
-export default normalPage(pages(channelPage, true));
+export default normalPage(pages(editChannelPage, true));

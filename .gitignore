@@ -1,7 +1,10 @@
 /node_modules
-
+/test-model
+/Old
+/slow-loris
 bundle.js
 npm-debug.log
+/etc
 
 # IntelliJ
 *.iml
