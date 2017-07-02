@@ -13,8 +13,12 @@ import TablePage from './pages/tablePage';
 import CalendarPage from './pages/calendarPage';
 import EditEvent from './container/editEvent2'
 import ChannelInfo from './container/channelInfo';
+<<<<<<< HEAD
 import FormPage from './pages/formPage';
 import EditChannelPage from './pages/editChannel';
+=======
+import ChannelDetail from './container/channelDetail';
+>>>>>>> channelInfo_photo-upload
 
 class FallbackPage extends Component {
 
@@ -70,6 +74,7 @@ export default (
         <Route path="event" component={EditEvent}/>
         <Route path="focuskuy" component={ChannelInfo} />
         <Route path="form" component={FormPage} />
+        <Route path="fmkuy" component={ChannelDetail} />
         <Route path="*" component={FallbackPageNorm} />
     </Route>
 );
