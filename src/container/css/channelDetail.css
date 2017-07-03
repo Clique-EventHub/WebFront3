@@ -41,8 +41,7 @@ div .chan-img-slide img {
 }
 
 button.bt-fol {
-  position: absolute;
-  top: 130px;   
+  top: 130px;
   left: 29%;
   border: 1.8px solid;
   border-radius: 20px;
@@ -52,5 +51,5 @@ button.bt-fol {
   border-color: #AAAAAA;
   color: #888888;
   background-color: #FFFFFF;
-  
+
 }
