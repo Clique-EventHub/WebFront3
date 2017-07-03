@@ -15,14 +15,8 @@ class SearchResult extends Component {
         listOfUnPic: []
       };
     }
-
-    render() {
-        let addtitonalStyle = (this.props.noBg) ? {
-            'top': '165px',
-            'height': 'calc(100vh - 65px - 100px)',
-            'position': 'fixed',
-            'overflowY': 'scroll'
-        } : {}
+    
+    componentWillReceiveProps(nextProps) {
         let list_tmp = [], list_unpic = [];
         Axios.get('http://128.199.208.0:1111/event/search?keyword=' + this.props.keyword).then((data) => {
             console.log("get!!!");
@@ -42,6 +36,15 @@ class SearchResult extends Component {
         }, (error) => {
             console.log("get event search error");
         });
+    }
+    render() {
+        let addtitonalStyle = (this.props.noBg) ? {
+            'top': '165px',
+            'height': 'calc(100vh - 65px - 100px)',
+            'position': 'fixed',
+            'overflowY': 'scroll'
+        } : {}
+
 
         return (
             <div  className="search-box-container" style={addtitonalStyle} className={this.props.className}>
