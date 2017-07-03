@@ -15,7 +15,7 @@ class SearchResult extends Component {
         listOfUnPic: []
       };
     }
-    
+
     componentWillReceiveProps(nextProps) {
         let list_tmp = [], list_unpic = [];
         Axios.get('http://128.199.208.0:1111/event/search?keyword=' + this.props.keyword).then((data) => {
@@ -53,12 +53,12 @@ class SearchResult extends Component {
                     <div className="found">found {this.state.listOfEvent.length + this.state.listOfUnPic.length} results</div>
                     <div className="event-found">
                       {this.state.listOfEvent.map((ID) => {
-                        return <EventItem eventId={ID} posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="true" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
+                        return <EventItem eventId={ID} detail-shown="true" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
                       })}
 
                          <br />
                          {this.state.listOfUnPic.map((ID) => {
-                           return <EventItem eventId={ID} posterSrc={`../../resource/images/poster_dummy/1.jpg`} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
+                           return <EventItem eventId={ID} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
                          })}
                     </div>
                 </article>
