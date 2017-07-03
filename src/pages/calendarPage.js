@@ -9,7 +9,6 @@ class calendarPage extends Component {
         return (
             <section role="main-content">
                 <Calendar />
-                
             </section>
         );
     }

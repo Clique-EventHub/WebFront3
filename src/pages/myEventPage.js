@@ -16,6 +16,10 @@ class myEventPage extends Component {
         this.props.toggle_pop_item();
     }
 
+    componentWillMount() {
+        document.title = "Event Hub | My Event";
+    }
+
     render() {
         return (
             <section role="main-content" >

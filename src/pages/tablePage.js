@@ -211,6 +211,10 @@ class tablePage extends Component {
         document.removeEventListener('keydown', this.onKeyPress);
     }
 
+    componentWillMount() {
+        document.title = "Event Hub | Table";
+    }
+
     onKeyPress(e) {
         e = e || window.event;
         if(e.keyCode === 27) {

@@ -29,6 +29,10 @@ class homePage extends Component {
         this.props.toggle_pop_item();
     }
 
+    componentWillMount() {
+        document.title = "Event Hub | Tag";
+    }
+
     render() {
 
         //Note: if EventDetail is shown, side-menu should not be pressed -> drastic layout change

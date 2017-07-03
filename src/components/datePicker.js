@@ -64,6 +64,9 @@ class DatePicker extends Component {
                 'state': 0
             }
         });
+        if(typeof(this.props.onSetDates) === "function") {
+            this.props.onSetDates([]);
+        }
     }
 
     onChangeMode(new_mode) {

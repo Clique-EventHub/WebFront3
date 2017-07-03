@@ -204,7 +204,7 @@ class topNavBar extends Component {
                 <button className="flex-right toggle outline square-round" onClick={() => { this.onSearchToggleState()}}>
                     <i className="fa fa-search" aria-hidden="true"></i>
                 </button>
-                <div className={`toggle no-pos ${(this.state.searchTerm.length > 0 && this.state.isSearchActive) ? '' : 'display-none'}`}>
+                <div className={`toggle no-pos ${( this.state.isSearchActive) ? '' : 'display-none'}`}>
                     <SearchBox onUpdateSearch={this.onUpdateSearch} searchTerm={this.state.searchTerm} onSubmit={this.onSubmit} />
                     <SearchResult noBg={true} className={(this.state.searchTerm.length > 0 && this.state.isSearchActive) ? '' : 'display-none'} keyword={this.state.searchTerm} onToggle={() => {this.onToggle();}} onSetItem={this.props.set_pop_up_item} />
                 </div>

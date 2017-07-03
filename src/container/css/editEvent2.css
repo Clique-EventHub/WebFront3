@@ -95,8 +95,8 @@ article.edit-event button.fill {
   width: 180px;
   height: 30px;
   border-color: #CCCCCC;
-  color: #999999;
-  background-color: #FFFFFF;
+  color: inherit;
+  background-color: inherit;
 }
 
 article.edit-event button.long {
@@ -143,6 +143,38 @@ article.edit-event button.blue {
   border-color: #00BFF0;
   color: #FFFFFF;
   background-color: #00BFF0;
+}
+
+article.edit-event .position-relative {
+    position: relative;
+}
+
+article.edit-event .date {
+    margin: 0px auto 30px auto;
+}
+
+article.edit-event .TimeInput {
+    margin-left: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+article.edit-event .TimeInput h3 {
+    font-weight: normal;
+    margin: 5px;
+}
+
+article.edit-event .TimeInput input {
+    text-align: center;
+    border: 1.8px solid #ccc;
+    border-radius: 5px;
+    height: 26px;
+    font-family: inherit;
+    font-size: 1em;
+    margin-bottom: 5px;
+    width: 100px;
 }
 
 article.edit-event textarea.detail {
@@ -320,7 +352,7 @@ article.edit-event div.CustomRadio input[type="radio"].state-circle ~ label:befo
   content: "\2022";
   font-size: calc(17px);
   text-align: center;
-  line-height: calc(17px - 5px);
+  line-height: calc(17px - 3px);
 }
 article.edit-event div.CustomRadio input[type="radio"].state-square ~ label:before {
   background-color: #888888;

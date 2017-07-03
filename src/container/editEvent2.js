@@ -6,6 +6,8 @@ import axios from 'axios';
 import { getCookie } from '../actions/common';
 import CustomRadio from '../components/CustomRadio';
 import DatePicker from '../components/datePicker';
+import TimeInput from '../components/TimeInput';
+import { fullId, findInfoById } from '../actions/facultyMap';
 
 const state = [{
         'type': 'none',
@@ -17,10 +19,6 @@ const state = [{
         'type': 'square',
         'value': 'optional'
 }];
-
-const defaultState = {
-    'eventName': 'Event Name'
-}
 
 const TAG_1 = [
     "CAMP",
@@ -54,6 +52,25 @@ const TAG_2 = [
     "HEALTH"
 ]
 
+//date_time format
+/*
+    {
+        'dates': [...],
+        'time': {
+            'start': [String?],
+            'end': [String?]
+        }
+    }
+*/
+
+const defaultDate = {
+    'dates': [],
+    'time': {
+        'start': '',
+        'end': ''
+    }
+}
+
 class Btn extends Component {
     //BtnToggleState
     constructor(props) {
@@ -82,22 +99,118 @@ class Btn extends Component {
     }
 }
 
+const defaultState = {
+    'event_id': "594bf476e374d100140f04ec",
+    'isLoading': true,
+    'old': {
+        'title': '',
+        'about': '',
+        'channel': '',
+        'video': '',
+        'location': '',
+        'date_start': '',
+        'date_end': '',
+        'picture': '',
+        'picture_large': '',
+        'year_require': '',
+        'faculty_require': '',
+        'tags': '',
+        'forms': ''
+    },
+    'new': {
+        'title': '',
+        'about': '',
+        'channel': '',
+        'video': '',
+        'location': '',
+        'date_time': defaultDate,
+        'picture': '',
+        'picture_large': '',
+        'year_require': '',
+        'faculty_require': '',
+        'tags': '',
+        'forms': '',
+    }
+}
+
 class EditEvent extends Component {
     constructor(props) {
         super(props);
 
         let _this = this;
 
-        this.state = {
-            'event_id': "594bf476e374d100140f04ec",
-            'isLoading': true,
-        }
+        this.state = defaultState;
 
         this.onKeyPressed = this.onKeyPressed.bind(this);
+        this.save = this.save.bind(this);
+        this.cancel = this.cancel.bind(this);
+        this.onDateSet = this.onDateSet.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({updated: nextProps.updated});
+    }
+
+    onDateSet(dateList) {
+        let checkNextDate = (today, nextDay) => {
+            let tmp = new Date(nextDay);
+            tmp.setDate(nextDay.getDate() - 1);
+            return today.toISOString().slice(0,10) === tmp.toISOString().slice(0,10);
+        }
+
+        dateList = dateList.sort((a, b) => {
+            if(a > b) return 1;
+            if(a < b) return -1;
+            return 0;
+        });
+
+        let dateChop = [];
+
+        if(dateList.length === 0) dateChop = [];
+        else if(dateList.length === 1) dateChop = dateList;
+        else {
+            let start = dateList[0];
+            let end = dateList[0];
+
+            for(let i = 1; i < dateList.length; i++) {
+                if(checkNextDate(end, dateList[i]) && i !== dateList.length-1) {
+                    end = dateList[i];
+                } else {
+                    if(i === dateList.length - 1) {
+                        if(checkNextDate(end, dateList[i])) end = dateList[i];
+                    }
+                    if(start.toISOString().slice(0,10) === end.toISOString().slice(0,10)) dateChop.push(start);
+                    else dateChop.push([start, end]);
+                    start = dateList[i];
+                    end = dateList[i];
+                }
+                if(i === dateList.length - 1) {
+                    if(start.toISOString().slice(0,10) === end.toISOString().slice(0,10)) {
+                        if(dateChop[dateChop.length-1].constructor === Array ) {
+                            if((dateChop[dateChop.length-1][1].toISOString().slice(0,10) !== start.toISOString().slice(0,10))) {
+                                dateChop.push(start);
+                            }
+                        }
+                        else if(dateChop[dateChop.length-1].toISOString().slice(0,10) !== start.toISOString().slice(0,10)) {
+                            dateChop.push(start);
+                        }
+                    }
+                }
+            }
+        }
+
+        this.setState({
+            ...this.state,
+            'new': {
+                ...this.state.new,
+                'date_time': {
+                    ...this.state.new.date_time,
+                    'dates': dateChop,
+                }
+            }
+        })
+        //correct dateChop
+
     }
 
     componentWillMount() {
@@ -108,77 +221,67 @@ class EditEvent extends Component {
             console.log(JSON.stringify(data.data.title))
             _this.setState({
                 ...this.state,
-                'title': data.data.title,
-                'about': data.data.about,
-                'channel': data.data.channel,
-                'video': data.data.video,
-                'location': data.data.location,
-                'date_start': data.data.date_start,
-                'date_end': data.data.date_end,
-                'picture': data.data.picture,
-                'picture_large': data.data.picture_large,
-                'year_require': data.data.year_require,
-                'faculty_require': data.data.faculty_require,
-                'tags': data.data.tags,
-                'forms': data.data.forms,
-
-                'new_title': data.data.title,
-                'new_about': data.data.about,
-                'new_channel': data.data.channel,
-                'new_video': data.data.video,
-                'new_location': data.data.location,
-                'new_date_start': data.data.date_start,
-                'new_date_end': data.data.date_end,
-                'new_picture': data.data.picture,
-                'new_picture_large': data.data.picture_large,
-                'new_year_require': data.data.year_require,
-                'new_faculty_require': data.data.faculty_require,
-                'new_tags': data.data.tags,
-                'new_forms': data.data.forms,
+                'old': {
+                    'title': data.data.title,
+                    'about': data.data.about,
+                    'channel': data.data.channel,
+                    'video': data.data.video,
+                    'location': data.data.location,
+                    'date_start': data.data.date_start,
+                    'date_end': data.data.date_end,
+                    'picture': data.data.picture,
+                    'picture_large': data.data.picture_large,
+                    'year_require': data.data.year_require,
+                    'faculty_require': data.data.faculty_require,
+                    'tags': data.data.tags,
+                    'forms': data.data.forms,
+                },
+                'new': {
+                    'title': data.data.title,
+                    'about': data.data.about,
+                    'channel': data.data.channel,
+                    'video': data.data.video,
+                    'location': data.data.location,
+                    'date_time': defaultDate,
+                    'picture': data.data.picture,
+                    'picture_large': data.data.picture_large,
+                    'year_require': data.data.year_require,
+                    'faculty_require': data.data.faculty_require,
+                    'tags': data.data.tags,
+                    'forms': data.data.forms,
+                }
             })
         }, (error) => {
             console.log("get event error");
         });
     }
 
+    componentDidUpdate() {
+        console.log(this.state);
+    }
+
     onKeyPressed() {
         const newState = {
             ...this.state,
-            'new_title': this.refs.title.value,
-            'new_about': this.refs.about.value,
-            'new_channel': this.refs.channel.value,
-            'new_video': this.refs.video.value,
-            'new_location': this.refs.location.value,
-            'new_date_start': this.refs.date_start.value,
-            'new_date_end': this.refs.date_end.value,
-            'new_picture': this.refs.picture.value,
-            'new_picture_large': this.refs.picture_large.value,
-            'new_year_require': this.refs.year_require.value,
-            'new_faculty_require': this.refs.faculty_require.value,
-            'new_tags': this.refs.tags.value,
-            'new_forms': this.refs.forms.value,
+            'new': {
+                'title': (this.refs.title) ? this.refs.title.value : '',
+                'about': (this.refs.about) ? this.refs.about.value : '',
+                'channel': (this.refs.channel) ? this.refs.channel.value : '',
+                'video': (this.refs.video) ? this.refs.video.value : '',
+                'location': (this.refs.location) ? this.refs.location.value : '',
+                'date_time': this.state.new.date_time,
+                'picture': (this.refs.picture) ? this.refs.picture.value : '',
+                'picture_large': (this.refs.picture_large) ? this.refs.picture_large.value : '',
+                'year_require': (this.refs.year_require) ? this.refs.year_require.value : '',
+                'faculty_require': (this.refs.faculty_require) ? this.refs.faculty_require.value : '',
+                'tags': (this.refs.tags) ? this.refs.tags.value : '',
+                'forms': (this.refs.forms) ? this.refs.forms.value : '',
+            }
         };
         this.setState(newState);
     }
 
     save() {
-        const newState = {
-            ...this.state,
-            'title': this.refs.title.value,
-            'about': this.refs.about.value,
-            'channel': this.refs.channel.value,
-            'video': this.refs.video.value,
-            'location': this.refs.location.value,
-            'date_start': this.refs.date_start.value,
-            'date_end': this.refs.date_end.value,
-            'picture': this.refs.picture.value,
-            'picture_large': this.refs.picture_large.value,
-            'year_require': this.refs.year_require.value,
-            'faculty_require': this.refs.faculty_require.value,
-            'tags': this.refs.tags.value,
-            'forms': this.refs.forms.value,
-        };
-        this.setState(newState);
 
         let config = {
             'headers': {
@@ -187,19 +290,7 @@ class EditEvent extends Component {
         }
 
         let responseBody = {
-            'title': this.refs.title.value,
-            'about': this.refs.about.value,
-            'channel': this.refs.channel.value,
-            'video': this.refs.video.value,
-            'location': this.refs.location.value,
-            'date_start': this.refs.date_start.value,
-            'date_end': this.refs.date_end.value,
-            'picture': this.refs.picture.value,
-            'picture_large': this.refs.picture_large.value,
-            'year_require': this.refs.year_require.value,
-            'faculty_require': this.refs.faculty_require.value,
-            'tags': this.refs.tags.value,
-            'forms': this.refs.forms.value,
+            ...this.state.new
         }
 
         let _this = this;
@@ -216,23 +307,7 @@ class EditEvent extends Component {
     }
 
     cancel() {
-        const newState = {
-            ...this.state,
-            'new_title': this.state.title,
-            'new_about': this.state.about,
-            'new_channel': this.state.channel,
-            'new_video': this.state.video,
-            'new_location': this.state.location,
-            'new_date_start': this.state.date_start,
-            'new_date_end': this.state.date_end,
-            'new_picture': this.state.picture,
-            'new_picture_large': this.state.picture_large,
-            'new_year_require': this.state.year_require,
-            'new_faculty_require': this.state.faculty_require,
-            'new_tags': this.state.tags,
-            'new_forms': this.state.forms,
-        };
-        this.setState(newState);
+        this.setState(defaultState);
         this.props.toggle_pop_item();
     }
 
@@ -247,26 +322,44 @@ class EditEvent extends Component {
                     <p className="l1"></p>
                     <div className="flex">
                         <div className="margin-auto">
-                            <EventItem onToggle={() => {}} onSetItem={() => {}} noGlow="true" overrideState={defaultState} />
+                            <EventItem onToggle={() => {}} onSetItem={() => {}} noGlow="true" overrideState={{
+                                    'title': this.state.new.title,
+                                    'location': this.state.new.location,
+                                    'date_time': this.state.new.date_time.dates,
+                                    'about': this.state.new.about
+                                }} />
                         </div>
                     </div>
                     <p className="l1"></p>
                     <div className="flex">
-                    <div className="w55">
-                        <h1>EVENT NAME</h1> <input ref="title" type="text" placeholder="" value={this.state.new_title} onChange={this.onKeyPressed}/>
-                        <h1>EVENT LOCATION</h1> <input ref="location" type="text" placeholder="" value={this.state.new_location} onChange={this.onKeyPressed}/>
-                        <h1>DATE & TIME</h1> <input ref="date_start" type="text" placeholder="" value={this.state.new_date_start} onChange={this.onKeyPressed}/>
+                        <div className="w55">
+                            <h1>EVENT NAME</h1> <input ref="title" type="text" value={this.state.new.title} onChange={this.onKeyPressed} placeholder="" />
+                            <h1>EVENT LOCATION</h1> <input ref="location" type="text" placeholder="" value={this.state.new.location} onChange={this.onKeyPressed} />
+                        </div>
+                        <div>
+                            <h1>ADD A POSTER</h1> <button className="fill">UPLOAD</button>
+                        </div>
                     </div>
                     <div>
-                        <h1>ADD A POSTER</h1> <button className="fill">UPLOAD</button>
-                    </div>
+                        <h1>DATE & TIME</h1>
+                        <div className="basic-card-no-glow date" style={{'width': '500px', 'display': 'flex', 'padding': '30px 0px', 'alignsItem': 'center', 'justifyContent': 'center'}}>
+                            <DatePicker controlEnable={true} initialMode={2} onSetDates={this.onDateSet} />
+                            <div className="TimeInput">
+                                <div>
+                                    <h3>Start Time</h3>
+                                    <TimeInput placeholder="start" onTimeChange={(val) => console.log(val)} />
+                                    <h3>End Time</h3>
+                                    <TimeInput placeholder="end"  onTimeChange={(val) => console.log(val)}/>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <p className="l1"></p>
                     <div>
-                        <h1>EVENT DETAIL</h1> <textarea className="detail" ref="detail" type="text" placeholder="" value={this.state.new_about} onChange={this.onKeyPressed}/>
+                        <h1>EVENT DETAIL</h1> <textarea className="detail" type="text" placeholder="" value={this.state.new.about} onChange={this.onKeyPressed} ref="about" />
                         <div className="flex add">
                             <div className="flex-1"><h1>ADD URL</h1> <button className="fill">URL</button></div>
-                            <div className="flex-1"><h1>ADD FILE</h1> <button className="fill">FILE</button></div>
+                            <div className="flex-1"><h1>ADD FILE (URL)</h1> <button className="fill">FILE</button></div>
                             <div className="flex-1"><h1>ADD CONTACT</h1> <button className="fill">CONTACT</button></div>
                         </div>
                     </div>
@@ -295,13 +388,13 @@ class EditEvent extends Component {
                     <div className="add">
                         <h1>ADD FIRSTMEET</h1>
                         <div className="flex">
-                            <input ref="loc" type="text" placeholder="LOCATION" value={this.state.loc} onChange={this.onKeyPressed}/>
-                            <input ref="loc" type="text" placeholder="DATE" value={this.state.loc} onChange={this.onKeyPressed}/>
+                            <input ref="loc" type="text" placeholder="LOCATION" />
+                            <input ref="loc" type="text" placeholder="DATE" />
                         </div>
-                        <textarea ref="loc" type="text" placeholder="ADD DESCRIPTION" value={this.state.loc} onChange={this.onKeyPressed}/>
+                        <textarea ref="loc" type="text" placeholder="ADD DESCRIPTION" />
                         <h1>RECRUITMENT DURATION</h1>
-                        <div className="basic-card-no-glow" style={{'width': '340px', 'margin': 'auto'}}>
-                            <DatePicker />
+                        <div className="basic-card-no-glow" style={{'width': '340px', 'margin': 'auto', 'padding': '30px 0px'}}>
+                            <DatePicker controlEnable={false} initialMode={2} />
                         </div>
                         <h1>ADD FIRSTMEET</h1>
                         <div className="flex">
@@ -311,24 +404,21 @@ class EditEvent extends Component {
 
                         <h1>PARTICIPANTS FILTER</h1>
                         <Btn text="ONLY CHULA" classNameOn="Btn-active fill tg" classNameOff="Btn fill tg" />
-                        <input className="list" list="fac" placeholder="FACULTY"/>
-                        <datalist id="fac">
-                            <option value="ALL"/>
-                            <option value="ENGINEERING"/>
-                            <option value="ART"/>
-                            <option value="SCIENCE"/>
-                        </datalist>
-                        <input className="list" list="year" placeholder="YEAR"/>
-                        <datalist id="year">
-                            <option value="ALL"/>
-                            <option value="1"/>
-                            <option value="2"/>
-                            <option value="3"/>
-                            <option value="4"/>
-                            <option value="5"/>
-                            <option value="6"/>
-                            <option value="OTHER"/>
-                        </datalist>
+                        <select>
+                            <option value="ALL">ALL</option>
+                            {
+                                fullId.map((id, index) => {
+                                    return <option value={findInfoById(id).FullName} key={index}>{findInfoById(id).FullName}</option>
+                                })
+                            }
+                        </select>
+                        <select>
+                            {
+                                ["ALL", "1", "2", "3", "4", "5", "6", "OTHER"].map((item, index) => {
+                                    return <option value={item} key={index}>{item}</option>
+                                })
+                            }
+                        </select>
                     </div>
                     <p className="l2"></p>
                     <div className="check">

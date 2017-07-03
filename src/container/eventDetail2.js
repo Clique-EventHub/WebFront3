@@ -121,13 +121,15 @@ class eventDetailFix extends Component {
 
     render() {
 
+        console.log(this.state.channel);
+
         let eventName = (
             <div className="event-name">
                 <h2 className="truncate">{this.state.title}</h2>
-                <div className="flex">
+                <Link className="flex" to={`/channel/${(this.state.channel) ? this.state.channel._id : ''}`}>
                     <Image src={replaceIncorrectLink(this.state.channel_picture)}  imgOption={{'data-icon': 'channel-icon', 'alt': 'channel-icon'}} rejectOption={{'data-icon': 'channel-icon'}} />
                     <span> {this.state.channel_name}</span>
-                </div>
+                </Link>
             </div>
         );
 

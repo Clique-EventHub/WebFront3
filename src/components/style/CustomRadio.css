@@ -3,6 +3,7 @@ div.CustomRadio {
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  font-family: sans-serif;
 }
 
 div.CustomRadio input[type="radio"] {
@@ -40,7 +41,7 @@ div.CustomRadio input[type="radio"].state-circle ~ label:before {
   content: "\2022";
   font-size: calc(17px + 11px);
   text-align: center;
-  line-height: calc(17px - 7px);
+  line-height: calc(17px + 10px);
 }
 
 div.CustomRadio input[type="radio"].state-square ~ label:before {
@@ -52,10 +53,10 @@ div.CustomRadio input[type="radio"].state-square ~ label:before {
 
 div.CustomRadio input[type="radio"].state-triangle ~ label:before {
   content: "\25B6";
-  font-size: calc(17px - 4px);
+  font-size: calc(17px);
   text-align: center;
   padding-left: 1px;
-  line-height: calc(17px);
+  line-height: calc(17px - 3px);
 }
 
 div.CustomRadio input[type="radio"].state-diamond ~ label:before {

@@ -42,6 +42,7 @@ class formPage extends Component {
 
     componentWillMount() {
         this.onStart();
+        document.title = "Event Hub | Form";
     }
 
     onStart() {

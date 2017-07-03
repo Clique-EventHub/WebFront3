@@ -58,6 +58,8 @@ class channelPage extends Component {
     componentWillMount() {
         let _this = this;
 
+        document.title = "Event Hub | Channel";
+
         let config = {
             'headers': {
                 'Authorization': ('JWT ' + getCookie('fb_sever_token'))

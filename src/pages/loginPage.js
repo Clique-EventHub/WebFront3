@@ -24,6 +24,10 @@ class loginPage extends Component {
         this.props.fbLogout();
     }
 
+    componentWillMount() {
+        document.title = "Event Hub | Login";
+    }
+
     render() {
 
         const isTest = false;

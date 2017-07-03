@@ -31,6 +31,10 @@ class homePage extends Component {
         this.props.toggle_pop_item();
     }
 
+    componentWillMount() {
+        document.title = "Event Hub | Home";
+    }
+
     componentDidMount() {
         if(!(typeof(this.props.location.query.eid) === "undefined" || this.props.location.query.eid === null)) {
             console.log("Hello")
@@ -66,7 +70,7 @@ class homePage extends Component {
                         </section>
                         <section content="new">
                             <h2>New</h2>
-                            <EventItem posterSrc={posterTest[0]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            <EventItem posterSrc={posterTest[0]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} isJoined={true} />
                             <EventItem posterSrc={posterTest[1]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                             <EventItem posterSrc={posterTest[2]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                             <EventItem posterSrc={posterTest[3]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
