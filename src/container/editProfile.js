@@ -3,6 +3,8 @@ import autoBind from '../hoc/autoBind';
 import Circle from '../components/circle';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
+import './css/editProfile.css';
+import * as facultyMap from '../actions/facultyMap';
 
 class editProfile extends Component {
 
@@ -37,7 +39,7 @@ class editProfile extends Component {
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
                 'regId': (data.data.regId == null) ? 'undefined' : data.data.regId,
-                'faculty': (data.data.faculty == null)? 'Faculty of Engineering': data.data.faculty,
+                'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
                 'birth_day': data.data.birth_day,
                 'nick_name': data.data.nick_name,
                 'lineId': data.data.lineId,
@@ -173,7 +175,9 @@ class editProfile extends Component {
                             <img src={this.state.picture} alt="profile-pic" />
                             <div className="profile-head">
                                 <h1 alt="profile-name">{this.state.firstName+" "+this.state.lastName}</h1>
-                                <div alt="faculty-icon" /> <p>Faculty of Engineering</p>
+                                <div alt="faculty-icon" className={`bg-${facultyMap.findInfoById(this.state.faculty).ClassNameKeyWord}`} />
+                                <p>{facultyMap.findInfoById(this.state.faculty).FullName}</p>
+                                {typeof(this.state.faculty)}
                             </div>
                         </section>
                         <p className="hr"></p>

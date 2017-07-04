@@ -1,7 +1,125 @@
-section[data-role="profile"] {
+section[role="main-content"] {
+  font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+}
+
+section.profile {
+  color: #555555;
   background-color: #FFF;
   width: 100%;
-  padding: 20px;
+  padding: 40px;
   position: relative;
   left: -20px;
+  display: flex;
+}
+
+div.profile-left {
+  width: 25vw;
+  padding: 0px 60px;
+}
+
+img[alt="profile-pic"] {
+  height: calc(200px);
+  /*max-height: calc(400px);
+  min-height: calc(180px);*/
+  margin-left: 50px;
+  border-radius: 50%;
+  /*border: 1px solid #000;*/
+  display: inline-block;
+}
+
+div.profile-left h2[alt="profile-name"] {
+  padding-top: 10px;
+  margin-top: 10px;
+  margin-bottom: 12px;
+  font-weight: normal;
+  font-size: 2.3em;
+}
+
+div.profile-left div[alt="faculty-icon"] {
+  border-radius: 50%;
+  height: 18px;
+  width: 18px;
+  margin-top: 3px;
+  margin-right: 5px;
+  position: absolute;
+}
+
+div.profile-left p {
+  margin-left: 35px;
+  margin-top: 5px;
+  font-size: 1.2em;
+}
+
+div.profile-left button {
+  border: 1.8px solid;
+  border-radius: 20px;
+  width: 125px;
+  height: 35px;
+  font-size: 1.1em;
+  border-color: #AAAAAA;
+  color: #888888;
+  background-color: #FFFFFF;
+  margin-top: 10px;
+}
+
+div.profile-center {
+  width: 20vw;
+  padding: 0px 20px;
+}
+
+div.profile-center img {
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  margin-top: 6px;
+}
+
+div.profile-center p {
+  margin-left: 40px;
+  margin-bottom: 5px;
+}
+
+@media screen and (max-width: 950px) {
+  section.profile {
+    height: 450px;
+  }
+  div.profile-left {
+    min-width: 350px;
+  }
+  div.profile-center {
+    position: absolute;
+    width: 40vw;
+    top: 300px;
+    left: 70px;
+  }
+  div.profile-right {
+    position: absolute;
+    top: 300px;
+    left: 420px;
+  }
+  p.line {
+    width: 90vw;
+    height: 1px;
+    background-color: rgba(128, 128, 128, 0.7);
+    display: block;
+    padding: 0px;
+    position: relative;
+    top: -270px;
+  }
+}
+
+div.profile-right {
+  width: 20vw;
+  padding: 0px 20px;
+}
+
+div.profile-right p {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+div.profile-right h1 {
+  font-size: 5em;
+  font-weight: bold;
+  margin: 10px 25px;
 }

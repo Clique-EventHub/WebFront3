@@ -1,14 +1,12 @@
-/* eslint-disable */
-
 import React, { Component } from 'react';
 import SearchBox from '../components/searchBox';
 import Bubble from '../components/Bubble';
 import ProfilePopUp from './profilePopup';
 import { Link } from 'react-router';
 import SearchResult from './searchResult';
-
 import autoBind from '../hoc/autoBind';
-
+import axios from 'axios';
+import { getCookie } from '../actions/common';
 import $ from 'jquery';
 
 class topNavBar extends Component {
@@ -17,6 +15,8 @@ class topNavBar extends Component {
         super(props);
         this.state = {
             'searchTerm': '',
+            'name': "Sign in / Sign up",
+            'picture': "../../resource/images/dummyProfile.png",
             'isSearchActive': false
         }
 
@@ -45,6 +45,25 @@ class topNavBar extends Component {
     componentDidMount() {
         window.addEventListener("resize", this.onWindowResize);
         this.onWindowResize();
+
+        let config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            }
+        }
+
+        let _this = this;
+
+        axios.get('http://128.199.208.0:1111/user', config).then((data) => {
+            console.log("get top nav bar!!!");
+            console.log(JSON.stringify(data.data.firstName));
+            _this.setState({
+                'name': data.data.firstName,
+                'picture': data.data.picture
+            })
+        }, (error) => {
+            console.log("get tnb error");
+        });
     }
 
     componentWillUnmount() {
@@ -197,9 +216,9 @@ class topNavBar extends Component {
                 </Link>
                 <button aria-hidden="false" className="flex-right toggle-not invisible" role="profile-button" onClick={this.onToggleProfile}>
                     <div>
-                        Mitsuha
+                        {this.state.name}
                     </div>
-                    <img src="../../resource/images/dummyProfile.png" alt="profile"/>
+                    <img src={this.state.picture} alt="profile"/>
                 </button>
                 <button className="flex-right toggle outline square-round" onClick={() => { this.onSearchToggleState()}}>
                     <i className="fa fa-search" aria-hidden="true"></i>

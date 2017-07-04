@@ -6,6 +6,7 @@ import pages from '../hoc/pages';
 import normalPage from '../hoc/normPage';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
+import './css/channelPage.css';
 
 class channelPage extends Component {
 
