@@ -54,7 +54,7 @@ console.log(this.state.detail);
                         <img src="../../resource/images/X.svg" />
                     </button>
 
-                    <img src="../../resource/images/X.svg" className="chan-img" alt="cn-profile-pic"/>
+                    <img src={this.state.picture} className="chan-img" alt="cn-profile-pic"/>
                     <h2 className="chan-name">{this.state.name}</h2>
                     <button className="bt-fol" alt="btn-follow">FOLLOW</button>
 
