@@ -3,7 +3,7 @@
 import './css/tagstyle.css';
 
 import React , { Component } from 'react';
-
+import Axios from 'axios';
 import CardList from '../components/cardList';
 import ChannelList from '../components/channelList';
 import CircleList from '../components/circleList';
@@ -18,6 +18,35 @@ class homePage extends Component {
         super(props);
         this.onClickMe = this.onClickMe.bind(this);
         this.onItemPopUpClick = this.onItemPopUpClick.bind(this);
+        let _this = this;
+
+        
+
+        this.state = {
+            listOfEvent: [],
+            listOfUnDe: []
+        };
+        let list_event = [], list_event_unde = [];
+
+        Axios.get('http://128.199.208.0:1111/tags/search?keyword=music').then((data) => {
+            console.log("get!!!");
+            // console.log(JSON.stringify(data.data.events));
+            
+            data.data.events.map((music) => {
+              if(list_event.length < 6) {
+                list_event.push(event._id);
+              } else {
+                list_event_unde.push(event._id);
+              }
+            });
+            this.state = {
+              listOfEvent: list_event,
+              listOfUnDe: list_event_unde
+            };
+
+        }, (error) => {
+            console.log("get event search error");
+        });
     }
 
     onClickMe() {
@@ -45,18 +74,20 @@ class homePage extends Component {
                 <div className="below-carousel">
                         <article className="tag-proflie basic-card">
                             <img className="photo"  />
-                            <div className=" "><h2>TAG NAME</h2></div>
+                            <div className=" "><h2>{keyword}</h2></div>
                             <div className="like-button">LIKE</div>
                         </article>
-                            <section content="event-list">
-                            <EventItem posterSrc={posterTest[4]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            <EventItem posterSrc={posterTest[5]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            <EventItem posterSrc={posterTest[6]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            <EventItem posterSrc={posterTest[7]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            <EventItem posterSrc={posterTest[6]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            <EventItem posterSrc={posterTest[7]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            </section>
+                        <section content="event-list">
+                            {this.state.listOfEvent.map((ID) => {
+                              return <EventItem eventId={ID} detail-shown="true" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
+                            })}
+                            <br />
+                            {this.state.listOfUnDe.map((ID) => {
+                              return <EventItem eventId={ID} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
+                            })}
+                        </section>
                 </div>
+        
             </section>
         );
     }
