@@ -46,7 +46,7 @@ class channelInfo extends Component {
     }
 
     render () {
-console.log(this.state.detail);
+console.log(this.state.picture);
         return (
             <div>
                 <article className="edit-event basic-card-no-glow modal-main">
