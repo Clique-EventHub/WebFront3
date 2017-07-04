@@ -29,7 +29,7 @@ class eventItem extends Component {
     }
 
     onButtonClick() {
-        this.props.onSetItem(<EventDetailFix onToggle={this.props.onToggle} />);
+        this.props.onSetItem(<EventDetailFix eventId={this.props.eventId} onToggle={this.props.onToggle} />);
         this.props.onToggle();
     }
 

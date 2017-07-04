@@ -173,7 +173,8 @@ class topNavBar extends Component {
             // if(!this.props.pages.is_blur) this.props.blur_bg();
             this.setState({
                 ...this.state,
-                'isSearchActive': false
+                'isSearchActive': false,
+                searchTerm: ''
             })
         } else {
             this.props.toggle_pop_item();
