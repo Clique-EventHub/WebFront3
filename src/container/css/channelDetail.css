@@ -5,8 +5,8 @@ h2.chan-name {
   word-wrap: break-word;
   display: inline;
   position: absolute;
-  margin-top: 60px;
-  margin-left: 30px;
+  top: 4.3vw;
+  left: 15.4vw;
   font-size: 30px;
   color: black;
   text-transform: uppercase;
@@ -41,7 +41,9 @@ div .chan-img-slide img {
 }
 
 button.bt-fol {
-  margin-top: 7vh;
+  position: relative;
+  top: -3.5vw;
+  left: 2.4vw;
   border: 1.8px solid;
   border-radius: 20px;
   width: 90px;
@@ -50,5 +52,4 @@ button.bt-fol {
   border-color: #AAAAAA;
   color: #888888;
   background-color: #FFFFFF;
-
 }
