@@ -16,7 +16,7 @@ class homePage extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.state = {
             listOfEvent: [],
             listOfUnDe: []
@@ -26,7 +26,7 @@ class homePage extends Component {
         Axios.get('http://128.199.208.0:1111/tags/search?keywords=camp').then((data) => {
             console.log("get!!!");
              console.log(JSON.stringify(data.data.events));
-            
+
             data.data.events.map((event) => {
               if(list_event.length < 6) {
                 list_event.push(event._id);
@@ -34,10 +34,10 @@ class homePage extends Component {
                 list_event_unde.push(event._id);
               }
             });
-            this.state = {
+            this.setState({
               listOfEvent: list_event,
               listOfUnDe: list_event_unde
-            };
+            });
 
         }, (error) => {
             console.log("get event search error");
@@ -51,7 +51,7 @@ class homePage extends Component {
 
 
     render() {
-
+        // console.log(this.state.listOfEvent);
         //Note: if EventDetail is shown, side-menu should not be pressed -> drastic layout change
         return (
             <section role="tag-content" onClick={this.onClickMe}>
@@ -74,7 +74,7 @@ class homePage extends Component {
                         </section>
                 </div>
 
-        
+
             </section>
         );
     }
