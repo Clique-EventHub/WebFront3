@@ -7,7 +7,7 @@ import * as facultyMap from './facultyMap';
 //myStore.getState()
 
 // const hostname = "https://api.cueventhub.com/";
-export const hostname = "http://128.199.208.0:1111/";
+export const hostname = "https://api.cueventhub.com/";
 const expireDefaultInterval = 1000*60*60*3;
 
 export const requestActionList = [
@@ -167,103 +167,195 @@ function requestWithAuthorization(url, options) {
     }
 }
 
-export function init_user_info() {
+function updateActivities(dispatch) {
+
+    requestWithAuthorization(`${hostname}user/join`, {
+        'method': 'get'
+    }).then((res) => {
+        dispatch({
+            type: types.UPDATE_USER_EVENTS_INFO_JOIN,
+            payload: {
+                join: res.data[Object.keys(res.data).filter((key) => key !== "notification")],
+                notification: res.data.notification
+            }
+        })
+    })
+
+    requestWithAuthorization(`${hostname}user/interest`, {
+        'method': 'get'
+    }).then((res) => {
+        dispatch({
+            type: types.UPDATE_USER_EVENTS_INFO_INTEREST,
+            payload: {
+                interest: res.data[Object.keys(res.data).filter((key) => key !== "notification")],
+                notification: res.data.notification
+            }
+        })
+    })
+
+    requestWithAuthorization(`${hostname}user/subscribe`, {
+        'method': 'get'
+    }).then((res) => {
+        dispatch({
+            type: types.UPDATE_USER_EVENTS_INFO_SUBSCRIBE,
+            payload: {
+                subscribe: res.data[Object.keys(res.data).filter((key) => key !== "notification")],
+                notification: res.data.notification
+            }
+        })
+    })
+
+}
+
+/*
+// let tmp = [
+//     requestWithAuthorization(`${hostname}user/join`, {
+//         'method': 'get'
+//     }),
+//     requestWithAuthorization(`${hostname}user/interest`, {
+//         'method': 'get'
+//     }),
+//     requestWithAuthorization(`${hostname}user/subscribe`, {
+//         'method': 'get'
+//     })
+// ];
+//
+// Promise.all(tmp).then((datas) => {
+//     let noti = [datas[0].data.notification, datas[1].data.notification, datas[2].data.notification];
+//     let rNoti = [];
+//     if(noti[0] == noti[1] && noti[1] == noti[2]) rNoti = noti[0];
+//     else {
+//         if(noti[0] == noti[1]) rNoti = noti[0];
+//         else if(noti[1] == noti[2]) rNoti = noti[1];
+//         else if(noti[0] == noti[2]) rNoti = noti[2];
+//     }
+//
+//     dispatch({
+//         type: types.UPDATE_USER_EVENTS_INFO,
+//         payload: {
+//             join: datas[0].data[Object.keys(datas[0].data).filter((key) => key !== "notification")],
+//             subscribe: datas[1].data[Object.keys(datas[1].data).filter((key) => key !== "notification")],
+//             interest: datas[2].data[Object.keys(datas[2].data).filter((key) => key !== "notification")],
+//             notification: rNoti
+//         }
+//     })
+// })
+*/
+
+function init_user_info(dispatch) {
     requestWithAuthorization(`${hostname}user`, {
         'method': 'get',
     }).then((data) => {
-        myStore.dispatch({
+        dispatch({
             type: types.GET_USER_INFO,
             payload: data.data
         })
     });
-
-    let tmp = [
-        requestWithAuthorization(`${hostname}user/join`, {
-            'method': 'get'
-        }),
-        requestWithAuthorization(`${hostname}user/interest`, {
-            'method': 'get'
-        }),
-        requestWithAuthorization(`${hostname}user/subscribe`, {
-            'method': 'get'
-        })
-    ];
-
-    Promise.all(tmp).then((datas) => {
-        let noti = [datas[0].data.notification, datas[1].data.notification, datas[2].data.notification];
-        let rNoti = [];
-        if(noti[0] == noti[1] && noti[1] == noti[2]) rNoti = noti[0];
-        else {
-            if(noti[0] == noti[1]) rNoti = noti[0];
-            else if(noti[1] == noti[2]) rNoti = noti[1];
-            else if(noti[0] == noti[2]) rNoti = noti[2];
-        }
-
-        myStore.dispatch({
-            type: types.UPDATE_USER_EVENTS_INFO,
-            payload: {
-                join: datas[0].data[Object.keys(datas[0].data).filter((key) => key !== "notification")],
-                subscribe: datas[1].data[Object.keys(datas[1].data).filter((key) => key !== "notification")],
-                interest: datas[2].data[Object.keys(datas[2].data).filter((key) => key !== "notification")],
-                notification: rNoti
-            }
-        })
-    })
+    updateActivities(dispatch);
 }
 
 //
 
 export function setFBVariable(_FB) {
     // console.log(facultyMap.findInfoByName("นิเทด"));
-    if(getCookie('fb_is_login')) {
-        setTimeout(function() {
-            let rObj_1 = {};
-            let rObj_2 = {authResponse: {}, status: "unknown"};
+    return (dispatch) => {
+        dispatch({
+            type: types.SET_FB_VARIABLE,
+            payload: _FB
+        });
 
-            ['fb_basic_info_email', 'fb_basic_info_name', 'fb_basic_info_id'].forEach((item) => {
-                rObj_1[item.replace('fb_basic_info_','')] = getCookie(item);
-            });
+        if(getCookie('fb_is_login')) {
+            setTimeout(function() {
+                let rObj_1 = {};
+                let rObj_2 = {authResponse: {}, status: "unknown"};
 
-            ['fb_accessToken', 'fb_grantedScopes', 'fb_signedRequest', 'fb_userID'].forEach((item) => {
-                rObj_2.authResponse[item.replace('fb_','')] = getCookie(item);
+                ['fb_basic_info_email', 'fb_basic_info_name', 'fb_basic_info_id'].forEach((item) => {
+                    rObj_1[item.replace('fb_basic_info_','')] = getCookie(item);
+                });
+
+                ['fb_accessToken', 'fb_grantedScopes', 'fb_signedRequest', 'fb_userID'].forEach((item) => {
+                    rObj_2.authResponse[item.replace('fb_','')] = getCookie(item);
+                })
+
+                dispatch({
+                    type: types.FB_FETCH_BASIC_INFO,
+                    payload: rObj_1
+                });
+
+                dispatch({
+                    type: types.FB_LOGIN,
+                    payload: rObj_2
+                });
+
+                window.getCookie = getCookie;
+                window.setCookie = setCookie;
+                window.clearCookie = clearAllCookie;
+
+                fbUpdateStatus(dispatch).then(() => {
+                    fbGetBasicInfo(dispatch);
+                    if(getCookie("fb_sever_token") === "") {
+                        fbGetSeverToken(dispatch).then(() => {
+                            init_user_info(dispatch);
+                            fbGetFriendsList(dispatch);
+                        });
+                    } else {
+                        init_user_info(dispatch);
+                        fbGetFriendsList(dispatch);
+                    }
+                })
+            }, 0);
+        };
+
+    }
+}
+
+function updateAllFriendsInfo(dispatch) {
+    const FB = myStore.getState().pages.FB;
+    const fb = myStore.getState().fb;
+    if(FB && fb.user_friends.length > 0) {
+        let tmp = fb.user_friends.map((info) => {
+            return new Promise((resolve, reject) => {
+                axios.get(`${hostname}findfb?user=${info.id}`).then((data) => {
+                    resolve({
+                        server: {...data.data.user_info},
+                        isError: false,
+                        fb: {...info}
+                    });
+                }).catch((error) => {
+                    resolve({
+                        server: {...error.response.data},
+                        isError: true,
+                        fb: {...info}
+                    });
+                });
             })
+        });
 
-            myStore.dispatch({
-                type: types.FB_FETCH_BASIC_INFO,
-                payload: rObj_1
-            });
-
-            myStore.dispatch({
-                type: types.FB_LOGIN,
-                payload: rObj_2
-            });
-
-            fbGetSeverToken();
-            fbGetFriendsList();
-
-        }, 0);
-    };
-    return ({
-        type: types.SET_FB_VARIABLE,
-        payload: _FB
-    });
+        Promise.all(tmp).then((datas) => {
+            dispatch({
+                type: types.UPDATE_USER_FRIENDS_INFO,
+                payload: datas
+            })
+        })
+    }
 }
 
 //
 
-export function fbUpdateStatus() {
+function fbUpdateStatus(dispatch) {
     const FB = myStore.getState().pages.FB;
-    if(FB) {
-        FB.getLoginStatus((res) => {
-            myStore.dispatch({
-                type: types.FB_UPDATE_STATUS,
-                payload: res.status
-            });
-        })
-    }
-    return ({
-        type: null
-    });
+    return new Promise((resolve, reject) => {
+        if(FB) {
+            FB.getLoginStatus((res) => {
+                dispatch({
+                    type: types.FB_UPDATE_STATUS,
+                    payload: res.status
+                });
+                resolve(true);
+            })
+        }
+        else reject(false);
+    })
 }
 
 export function fbClearInfo() {
@@ -274,118 +366,115 @@ export function fbClearInfo() {
 }
 
 export function fbLogin(callback) {
-    const FB = myStore.getState().pages.FB;
-    if(FB) {
-        FB.login((res) => {
-            if(res.status === "connected") {
+    return (dispatch) => {
+        const FB = myStore.getState().pages.FB;
+        if(FB) {
+            FB.login((res) => {
+                if(res.status === "connected") {
 
-                Object.keys(res.authResponse).map((item) => {
-                    if(item !== "expiresIn")
-                        setCookie(`fb_${item}`, res.authResponse[item], res.expiresIn*1000);
-                    return null;
-                });
+                    Object.keys(res.authResponse).map((item) => {
+                        if(item !== "expiresIn")
+                            setCookie(`fb_${item}`, res.authResponse[item], res.expiresIn*1000);
+                        return null;
+                    });
 
-                setCookie(`fb_is_login`, true, expireDefaultInterval);
+                    setCookie(`fb_is_login`, true, expireDefaultInterval);
 
-                myStore.dispatch({
-                    type: types.FB_LOGIN,
-                    payload: res
-                });
+                    dispatch({
+                        type: types.FB_LOGIN,
+                        payload: res
+                    });
 
-            }
-            if(typeof(callback) === "function") callback();
-        }, {
-            scope: 'user_friends,email,public_profile',
-            return_scopes: true
-        });
+                    if(getCookie("fb_sever_token") === "") {
+                        fbGetSeverToken(dispatch)
+                    }
+
+                }
+                //if(typeof(callback) === "function") callback();
+            }, {
+                scope: 'user_friends,email,public_profile',
+                return_scopes: true
+            });
+        }
     }
-    return {
-        type: null
-    };
 }
 
 export function fbLogout() {
-    const FB = myStore.getState().pages.FB;
-    if(FB && myStore.getState().fb.isLogin) {
-        FB.logout((res) => {
-            if(res.status === "unknown") {
-                myStore.dispatch({
-                    type: types.FB_LOGOUT,
-                    payload: res
-                });
-                clearAllCookie();
-            }
-            fbUpdateStatus();
-        });
+    return (dispatch) => {
+        const FB = myStore.getState().pages.FB;
+        if(FB && myStore.getState().fb.isLogin) {
+            FB.logout((res) => {
+                if(res.status === "unknown") {
+                    dispatch({
+                        type: types.FB_LOGOUT,
+                        payload: res
+                    });
+                    clearAllCookie();
+                }
+                fbUpdateStatus(dispatch);
+            });
+        }
     }
-    return {
-        type: null
-    };
 }
 
-export function fbGetBasicInfo() {
+function fbGetBasicInfo(dispatch) {
     const FB = myStore.getState().pages.FB;
     if(FB) {
-        fbUpdateStatus();
+        fbUpdateStatus(dispatch);
         FB.api('/me', { locale: 'en_US', fields: 'name, email' },  (res) => {
-            myStore.dispatch({
+            dispatch({
                 type: types.FB_FETCH_BASIC_INFO,
                 payload: res
             });
-            Object.keys(res).map((item) => {
+            Object.keys(res).forEach((item) => {
                 setCookie(`fb_basic_info_${item}`, res[item], expireDefaultInterval);
-                return null;
             });
         });
     }
-    return {
-        type: null
-    };
 }
 
-export function fbGetFriendsList() {
+function fbGetFriendsList(dispatch) {
     const FB = myStore.getState().pages.FB;
     if(FB) {
-        fbUpdateStatus();
-        FB.api('/me/friends',  (res) => {
-            myStore.dispatch({
-                type: types.FB_FETCH_USERS_FRIENDS_LIST,
-                payload: res
-            });
-            //console.log(res.data);
+        fbUpdateStatus(dispatch);
+        const fbat = getCookie("fb_accessToken");
+
+        FB.api(`/me/friends?access_token=${fbat}&fields=id,name,gender,link,picture.width(200).height(200)&type=large`,  (res) => {
+            if(res.data) {
+                dispatch({
+                    type: types.FB_FETCH_USERS_FRIENDS_LIST,
+                    payload: res
+                });
+                updateAllFriendsInfo(dispatch);
+            }
         });
     }
-    return {
-        type: null
-    };
 }
 
-export function fbGetSeverToken(callback) {
+export function fbGetSeverToken(dispatch) {
     const FB = myStore.getState().pages.FB;
-    if(FB && (myStore.getState().fb.status === "connected")) {
-        axios.get(`${hostname}login/facebook?access_token=${myStore.getState().fb.authResponse.accessToken}&id=${myStore.getState().fb.authResponse.userID}`).then((res) => {
-            myStore.dispatch({
+    const fb = myStore.getState().fb;
+    return new Promise((resolve, reject) => {
+        if(FB && fb.status === "connected") {
+            console.log(`${hostname}login/facebook?access_token=${myStore.getState().fb.authResponse.accessToken}&id=${myStore.getState().fb.authResponse.userID}`);
+            axios.get(`${hostname}login/facebook?access_token=${myStore.getState().fb.authResponse.accessToken}&id=${myStore.getState().fb.authResponse.userID}`).then((res) => {
+                setCookie(`fb_sever_token`, res.data.access_token, expireDefaultInterval);
+                dispatch({
+                    type: types.FB_GET_TOKEN,
+                    payload: res.data.access_token
+                });
+                resolve(true);
+            }).catch((err) => {
+                console.log(err);
+            })
+        } else {
+            dispatch({
                 type: types.FB_GET_TOKEN,
-                payload: res.data.access_token
+                payload: null
             });
-            setCookie(`fb_sever_token`, res.data.access_token, expireDefaultInterval);
-
-            init_user_info();
-            if(typeof(callback) === "function") {
-                callback();
-            }
-        }).catch((err) => {
-            console.log(err);
-        })
-
-        // myStore.dispatch({
-        //     type: types.FB_GET_TOKEN,
-        //     payload: null
-        // });
-    }
-    return ({
-        type: null
-    });
+            reject(false);
+        }
+    })
 }
 
 //
@@ -398,10 +487,6 @@ export function getEvent(id) {
 export function searchEvent(keyword) {
     const rObj = request(`${hostname}event/search?keyword=${keyword}`, "get", types.SEARCH_EVENT_KEYWORD);
     return rObj.action;
-}
-
-export function getProfile() {
-
 }
 
 export function searchChannel(keyword) {

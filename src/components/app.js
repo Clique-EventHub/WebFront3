@@ -36,9 +36,6 @@ class App extends Component {
             });
             new Promise((res, rej) => (res(true))).then(() => {
                 _this.props.setFBVariable(FB);
-                return true;
-            }).then(() => {
-                _this.props.fbGetSeverToken();
             })
             FB.AppEvents.logPageView();
         };
@@ -62,7 +59,7 @@ class App extends Component {
         *
         * Date: Tue Aug 09 2011 10:45:54 GMT+0200 (CEST)
         */
-        
+
         (function(){
 
           var addEvent = function (el, type, fn) {

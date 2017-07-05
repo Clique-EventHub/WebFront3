@@ -6,6 +6,7 @@ import Bubble from '../components/Bubble';
 import ProfilePopUp from './profilePopup';
 import { Link } from 'react-router';
 import SearchResult from './searchResult';
+import { myStore } from '../index';
 
 import autoBind from '../hoc/autoBind';
 
@@ -17,7 +18,9 @@ class topNavBar extends Component {
         super(props);
         this.state = {
             'searchTerm': '',
-            'isSearchActive': false
+            'isSearchActive': false,
+            'user': null,
+            'facebook': null
         }
 
         this.onUpdateSearch = this.onUpdateSearch.bind(this);
@@ -51,8 +54,16 @@ class topNavBar extends Component {
         window.removeEventListener("resize", this.onWindowResize);
     }
 
-    componentDidUpdate() {
-        console.log(this.state);
+    componentWillMount() {
+        // myStore.subscribe(() => {
+        //     if(myStore.getState().user !== this.state.user || myStore.getState().fb !== this.state.facebook) {
+        //         this.setState({
+        //             ...this.state,
+        //             'user': myStore.getState().user,
+        //             'facebook': myStore.getState().fb
+        //         })
+        //     }
+        // })
     }
 
     // componentDidUpdate() {
@@ -212,7 +223,7 @@ class topNavBar extends Component {
                     <SearchResult className={(this.state.searchTerm.length > 0 && this.state.isSearchActive) ? '' : 'display-none'} keyword={this.state.searchTerm} onToggle={() => {this.onToggle();}} onSetItem={this.props.set_pop_up_item} />
                 </div>
                 <div className="profile-menu-inactive">
-                    <ProfilePopUp />
+                    <ProfilePopUp user={this.props.user} />
                 </div>
                 <div className="tags-menu-inactive">
                     <Bubble />
@@ -222,4 +233,4 @@ class topNavBar extends Component {
     }
 }
 
-export default autoBind(topNavBar, false);
+export default autoBind(topNavBar);

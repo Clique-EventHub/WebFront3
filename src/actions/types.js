@@ -36,5 +36,8 @@ export const FB_GET_TOKEN = 'FB_GET_TOKEN';
 export const SET_FB_VARIABLE = 'SET_FB_VARIABLE';
 
 export const GET_USER_INFO = 'get_user_info';
-export const UPDATE_USER_EVENTS_INFO = 'update_user_events_info';
+export const UPDATE_USER_EVENTS_INFO_JOIN = 'update_user_events_info_join';
+export const UPDATE_USER_EVENTS_INFO_INTEREST = 'update_user_events_info_interest';
+export const UPDATE_USER_EVENTS_INFO_SUBSCRIBE = 'update_user_events_info_subscribe';
 export const UPDATE_USER_ADMIN_INFO = 'update_user_admin_info';
+export const UPDATE_USER_FRIENDS_INFO = 'UPDATE_USER_FRIENDS_INFO ';

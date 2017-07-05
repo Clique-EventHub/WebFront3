@@ -121,8 +121,6 @@ class eventDetailFix extends Component {
 
     render() {
 
-        console.log(this.state.channel);
-
         let eventName = (
             <div className="event-name">
                 <h2 className="truncate">{this.state.title}</h2>
@@ -228,7 +226,7 @@ class eventDetailFix extends Component {
                                             DISAPPROVE
                                         </div>
                                         <div className="btn-round shade-green">
-                                            <Link to='/form'>
+                                            <Link to={`/form?id=${'5953991b46643c4fda2f4679'}`}>
                                                 APPROVE
                                             </Link>
                                         </div>

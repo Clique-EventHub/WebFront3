@@ -157,7 +157,7 @@ class QuestionItem extends Component {
         this.onUpdateResponseSpinner();
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.onUpdateResponseSpinner();
     }
 

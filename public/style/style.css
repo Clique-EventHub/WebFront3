@@ -490,13 +490,13 @@ button[role="event-exit"] img {
   border-bottom: 30px solid #FCFCFC;
   position: relative;
   top: -34px;
-  left: 305px;
+  left: 370px;
   animation: dissoveIn 0.1s ease-in-out;
 }
 
 .profile-menu-active {
   position: absolute;
-  width: 350px;
+  width: 450px;
   height: 500px;
   top: 70px;
   right: 15px;
@@ -853,7 +853,7 @@ div.event-name p {
 /*tm*/
 div.profile-head {
   margin-bottom: 40px;
-  margin-left: 125px;
+  margin-left: 135px;
   height: 70px;
 }
 
@@ -876,7 +876,7 @@ div.profile-head div[alt="faculty-icon"] {
 }
 
 div.profile-head p {
-  margin-left: 20px;
+  margin-left: 25px;
   margin-top: 5px;
 }
 
@@ -888,7 +888,7 @@ div.profile-popup {
 /*tm*/
 div.profile-popup img[alt="profile-pic"] {
   height: calc(85px);
-  margin-left: 20px;
+  margin-left: 25px;
   border-radius: 50%;
   border: 1px solid #000;
   display: inline-block;
@@ -897,7 +897,7 @@ div.profile-popup img[alt="profile-pic"] {
 
 /*tm*/
 div.profile-section {
-  width: 300px;
+  width: 400px;
   height: 110px;
   background-color: #F0F0F0;
   margin-left: 20px;
@@ -994,16 +994,26 @@ div.my-event3 div[alt="event-icon"] {
   position: absolute;
 }
 
+div.my-noti {
+  overflow-y: scroll;
+  height: 75px;
+}
+
+div.my-noti div {
+  display: flex;
+}
+
 /*tm*/
 div.my-noti p {
   color: #555555;
-  margin-left: 30px;
+  margin: 0 0 7px 5px;
   font-size: 0.9em;
 }
 
 /*tm*/
 div.my-noti img[alt="noti-icon"] {
   height: calc(12px);
+  width: calc(12px);
   margin-left: 10px;
   margin-right: 6px;
   margin-top: 3px;
@@ -1026,8 +1036,8 @@ div.btn-profile button {
   border-radius: 20px;
   height: 40px;
   margin-top: 5px;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
   font-size: 1.1em;
 }
 
@@ -1109,32 +1119,87 @@ section.channel-main section.channel-head div.edit-cn-detail button {
   background-color: #555555;
 }
 
-/*section.channel-main section.channel-head div.cn-name {
-  position: absolute;
-  margin-top: 210px;
-  margin-left: 32%;
-  margin-right: 30%;
+@media screen and (max-width: 768px) {
+  section.channel-main section.channel-head div.cn-name {
+    position: absolute;
+    margin-top: 280px;
+    margin-left: 25%;
+    margin-right: 20%;
+  }
+  section.channel-main section.channel-head div.cn-name div {
+    width: 60vw;
+  }
+  section.channel-main section.channel-head div.cn-name h1 {
+    font-size: 2.2em;
+    margin-top: 25px;
+    margin-bottom: 30px;
+  }
+  section.channel-main section.channel-head div.cn-name button {
+    position: absolute;
+    top: -70px;
+    right: -20px;
+    border: 2px solid;
+    border-radius: 20px;
+    height: 40px;
+    margin-top: 30px;
+    margin-left: 5%;
+    margin-right: 20px;
+    font-size: 1.05em;
+    min-width: 145px;
+    border-color: #AAAAAA;
+    color: #555555;
+    background-color: #FFFFFF;
+  }
+  section.channel-main section.channel-head div.cn-name button.active {
+    border-color: #AAAAAA;
+    color: #555555;
+    background-color: #4ff779;
+  }
+  section.channel-main section.channel-head img[alt="cn-profile-pic"] {
+    margin-left: 150px;
+  }
 }
 
-section.channel-main section.channel-head div.cn-name h1 {
-  font-size: 2.2em;
-  margin-top: 25px;
-  margin-bottom: 30px;
+@media screen and (min-width: 769px) {
+  section.channel-main section.channel-head div.cn-name {
+    position: absolute;
+    display: flex;
+    margin-top: 210px;
+    margin-left: 32%;
+    margin-right: 20%;
+  }
+  section.channel-main section.channel-head div.cn-name div {
+    width: 45vw;
+  }
+  section.channel-main section.channel-head div.cn-name h1 {
+    font-size: 2.2em;
+    margin-top: 25px;
+    margin-bottom: 30px;
+  }
+  section.channel-main section.channel-head div.cn-name button {
+    border: 2px solid;
+    border-radius: 20px;
+    height: 40px;
+    margin-top: 30px;
+    margin-left: 5%;
+    margin-right: 20px;
+    font-size: 1.05em;
+    min-width: 145px;
+    border-color: #AAAAAA;
+    color: #555555;
+    background-color: #FFFFFF;
+  }
+  section.channel-main section.channel-head div.cn-name button.active {
+    border-color: #AAAAAA;
+    color: #555555;
+    background-color: #4ff779;
+  }
+  section.channel-main section.channel-head img[alt="cn-profile-pic"] {
+    margin-left: 20%;
+    max-width: 270px;
+    max-height: 270px;
+  }
 }
-
-section.channel-main section.channel-head div.cn-name button {
-  border: 2px solid;
-  border-radius: 20px;
-  height: 35px;
-  margin-top: 30px;
-  margin-left: 75%;
-  margin-right: 20px;
-  font-size: 1.05em;
-  width: 150px;
-  border-color: #AAAAAA;
-  color: #555555;
-  background-color: #FFFFFF;
-}*/
 
 section.channel-main section.channel-head div.edit-cn-name {
   position: absolute;
@@ -1164,7 +1229,7 @@ section.channel-main section.channel-head div.edit-cn-name button {
   background-color: #555555;
 }
 
-section.channel-main section.channel-head div[alt="cn-cover-pic"] {
+section.channel-main section.channel-head img[alt="cn-cover-pic"] {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -1198,9 +1263,11 @@ section.channel-main section.channel-head img[alt="cn-profile-pic"] {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  height: calc(260px);
+  height: 20vw;
+  width: 20vw;
+  min-height: 150px;
+  min-width: 150px;
   margin-top: 200px;
-  margin-left: 20%;
   border-radius: 50%;
   border: 15px solid;
   border-color: #A0A0A0;
@@ -1266,8 +1333,8 @@ div.edit-profile {
   color: #555555;
   position: relative;
   z-index: 555;
-  padding: 30px;
-  width: 650px;
+  padding: 10px 10px 30px 10px;
+  width: 680px;
 }
 
 div.edit-profile section.edit-pro-head {
@@ -1303,7 +1370,6 @@ div.edit-profile section.edit-pro-head img[alt="profile-pic"] {
   height: calc(95px);
   margin-left: 30px;
   border-radius: 50%;
-  border: 1px solid #000;
   display: inline-block;
   position: absolute;
 }
@@ -1323,14 +1389,14 @@ div.edit-profile section.edit-pro-head button[role="exit"] img {
 
 div.edit-profile section.edit-pro-left {
   flex: 1 1 50%;
-  padding: 10px 50px;
+  padding: 10px 35px;
 }
 
 div.edit-profile section.edit-pro-left img {
-  height: 20px;
-  width: 20px;
+  height: 30px;
+  width: 30px;
   position: absolute;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 div.edit-profile section.edit-pro-left input[type="text"] {
@@ -1338,13 +1404,34 @@ div.edit-profile section.edit-pro-left input[type="text"] {
   display: block;
   border: none;
   border-bottom: 1px solid #ccc;
-  width: 100%;
   margin-left: 45px;
-  width: 200px;
+  width: 260px;
   z-index: 560;
   font-family: inherit;
   font-size: 1em;
   margin-bottom: 5px;
+}
+
+div.edit-profile section.edit-pro-left input.w100 {
+  width: 100px;
+}
+
+div.edit-profile section.edit-pro-left input.w50 {
+  width: 50px;
+  margin-left: 15px;
+}
+
+div.edit-profile section.edit-pro-left div {
+  display: flex;
+}
+
+div.edit-profile section.edit-pro-left p {
+  padding: 8px;
+  display: block;
+  border: none;
+  width: 200px;
+  z-index: 560;
+  margin: 0px 0px 5px 45px;
 }
 
 div.edit-profile section.edit-pro-right {
@@ -1353,14 +1440,15 @@ div.edit-profile section.edit-pro-right {
 }
 
 div.edit-profile section.edit-pro-right p {
-  margin-left: 30px;
+  margin-left: 40px;
   margin-bottom: 5px;
 }
 
 div.edit-profile section.edit-pro-right img {
-  height: 20px;
-  width: 20px;
+  height: 30px;
+  width: 30px;
   position: absolute;
+  margin-top: -6px;
 }
 
 div.edit-profile section.edit-pro-right button.unlink {
@@ -1442,10 +1530,10 @@ div.edit-profile section.edit-pro-right div.btn-plane button.save {
 
 div.edit-profile p.sec-line {
   width: 1px;
-  height: 350px;
+  height: 390px;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.1);
-  left: 350px;
+  left: 400px;
 }
 
 ::-webkit-input-placeholder {
@@ -2617,4 +2705,9 @@ div.background-overlay-fix {
 
 .display-none {
   display: none !important;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }

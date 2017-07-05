@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import autoBind from '../hoc/autoBind';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
+import { hostname } from '../actions/index';
 
 class profilePopup extends Component {
 
@@ -9,13 +9,29 @@ class profilePopup extends Component {
         super(props);
 
         this.state = {
-          'isLoading': true
+            user: {
+                data: null,
+                isLoading: true
+            },
+            ownUser: {
+                data: null,
+                events: [],
+                isLoading: true
+            },
         };
 
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({updated: nextProps.updated});
+        if(this.state.user !== nextProps.user && nextProps.user.events !== null && nextProps.user.info !== null && nextProps.user.meta !== null) {
+            this.setState({
+                ...this.state,
+                'user': {
+                    'data': nextProps.user,
+                    'isLoading': false
+                }
+            });
+        }
     }
 
     componentWillMount() {
@@ -26,79 +42,47 @@ class profilePopup extends Component {
             }
         }
 
-        let _this = this;
+        axios.get(`${hostname}user`, config).then((data) => {
+            this.setState({
+                ...this.state,
+                'ownUser': {
+                    ...this.state.ownUser,
+                    'data': {
+                        'firstName': data.data.firstName,
+                        'lastName': data.data.lastName,
+                        'picture': data.data.picture_200px,
+                        'faculty': (data.data.faculty == null)? 'Faculty of Engineering': data.data.faculty,
+                        'join_events': data.data.join_events,
+                        'notification': data.data.notification,
+                        'n_noti': data.data.notification.length
+                    },
+                    'isLoading': false
+                }
 
-        axios.get('http://128.199.208.0:1111/user', config).then((data) => {
-            console.log("get!!!");
-            console.log(JSON.stringify(data.data.firstName));
-            _this.setState({
-                'firstName': data.data.firstName,
-                'lastName': data.data.lastName,
-                'picture': data.data.picture_200px,
-                'faculty': (data.data.faculty == null)? 'Faculty of Engineering': data.data.faculty,
-                'join_events': data.data.join_events,
-                'notification': data.data.notification,
-                'n_noti': data.data.notification.length,
-                'isLoading': false
             })
-            console.log("number of event : " + data.data.join_events.length);
-            _this.getEvent(0);
-            _this.getEvent(1);
-            _this.getEvent(2);
+
+            data.data.join_events.forEach((id) => {
+                axios.get(`${hostname}event?id=${id}&stat=false`).then((data) => {
+                    if(new Date(data.data.date_start) >= new Date()) {
+                        this.setState({
+                            ...this.state,
+                            'ownUser': {
+                                ...this.state.ownUser,
+                                'events': this.state.ownUser.events.concat([{
+                                    'title': data.data.title,
+                                    'date_start': new Date(data.data.date_start).toString().slice(0,15)
+                                }])
+                            }
+                        })
+                    }
+                }, (error) => {
+                    console.log("get event error");
+                });
+            })
         }, (error) => {
             console.log("get user error");
         });
 
-        // for (var i = 0; i < this.state.join_events.length; i++) {
-        //     if(i < 3){
-        //         axios.get('http://128.199.208.0:1111/event?id=' + this.state.join_events[i]).then((data) => {
-        //             console.log("get!!!");
-        //             console.log(JSON.stringify(data.data.title))
-        //             _this.setState({
-        //                 'event{i}_title': data.data.title,
-        //                 'event{i}_date_start': data.data.date_start,
-        //             })
-        //         }, (error) => {
-        //             console.log("get event error");
-        //         });
-        //     }
-        // }
-    }
-
-    getEvent(i) {
-        let _this = this;
-
-        console.log("get event : " + this.state.join_events[i]);
-
-        if(this.state.join_events.length >= i+1){
-            axios.get('http://128.199.208.0:1111/event?id=' + this.state.join_events[i]).then((data) => {
-                console.log("get!!!");
-                console.log(JSON.stringify(data.data.title))
-                if(i == 0){
-                    _this.setState({
-                        'event1_title': data.data.title,
-                        'event1_date_start': data.data.date_start,
-                    })
-                } else if (i == 1) {
-                    _this.setState({
-                        'event2_title': data.data.title,
-                        'event2_date_start': data.data.date_start,
-                    })
-                } else if (i == 2) {
-                    _this.setState({
-                        'event3_title': data.data.title,
-                        'event3_date_start': data.data.date_start,
-                    })
-                }
-
-            }, (error) => {
-                console.log("get event error");
-            });
-        }
-    }
-
-    onExit() {
-        this.props.toggle_pop_item();
     }
 
     render() {
@@ -111,37 +95,32 @@ class profilePopup extends Component {
 
         return (
             <div>
-              {(this.state.isLoading) ? (<div>Loading...</div>) : (
+              {(this.state.ownUser.isLoading) ? (<div>Loading...</div>) : (
                 <div className="profile-popup">
                     <div>
                         <div>
-                            <img src={this.state.picture} alt="profile-pic" />
+                            <img src={this.state.ownUser.data.picture} alt="profile-pic" />
                         </div>
                         <div className="profile-head" aria-hidden="true">
-                            <h2 alt="profile-name">{this.state.firstName+" "+this.state.lastName}</h2>
-                            <div><div alt="faculty-icon" /> <p>{this.state.faculty}</p></div>
+                            <h2 alt="profile-name">{this.state.ownUser.data.firstName+" "+this.state.ownUser.data.lastName}</h2>
+                            <div><div alt="faculty-icon" /> <p>{this.state.ownUser.data.faculty}</p></div>
                         </div>
                     </div>
-
                     <div className="profile-section">
                         <h4>YOUR UPCOMING EVENT</h4>
-                        <div className="my-event1">
-                            {(this.state.join_events.length < 1) ? (<div></div>) : (
-                                <div><div alt="event-icon"/> <p><strong>{this.state.event1_title} : </strong> {this.state.event1_date_start}</p></div>
-                            )}
-                        </div>
-                        <div className="my-event2">
-                            {(this.state.join_events.length < 2) ? (<div></div>) : (
-                                <div><div alt="event-icon"/> <p><strong>{this.state.event2_title} : </strong> {this.state.event2_date_start}</p></div>
-                            )}
-                        </div>
-                        <div className="my-event3">
-                            {(this.state.join_events.length < 3) ? (<div></div>) : (
-                                <div><div alt="event-icon"/> <p><strong>{this.state.event3_title} : </strong> {this.state.event3_date_start}</p></div>
-                            )}
-                        </div>
+                        {
+                            this.state.ownUser.events.map((item, index) => {
+                                if(index < 3) {
+                                    return (
+                                        <div className={`my-event${index+1}`} key={index}>
+                                            <div><div alt="event-icon"/> <p><strong>{item.title} : </strong> {item.date_start}</p></div>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })
+                        }
                     </div>
-
                     <div className="profile-section">
                         <h4>NOTIFICATION</h4>
                         <div className="my-noti profile-scroll">
@@ -160,4 +139,4 @@ class profilePopup extends Component {
     }
 }
 
-export default autoBind(profilePopup);
+export default profilePopup;
