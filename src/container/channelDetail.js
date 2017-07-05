@@ -46,7 +46,7 @@ class channelInfo extends Component {
     }
 
     render () {
-console.log(this.state.picture);
+console.log(this.state.picture_large);
         return (
             <div>
                 <article className="edit-event basic-card-no-glow modal-main">
@@ -68,13 +68,11 @@ console.log(this.state.picture);
                     </div>
                 <div className="marginleft">
                     <div className="chan-img-slide">
-                        {() => {
-                            if(this.state.picture_large.length > 0) {
+                        {
                                 this.state.picture_large.map((url) => {
                                     return <a href={url}><img src={url} /></a>
                                 })
-                            }
-                        }}
+                        }
                     </div>
                     <a href="#" className="box">
                         FACEBOOK
