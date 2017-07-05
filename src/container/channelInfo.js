@@ -18,12 +18,16 @@ class channelInfo extends Component {
         let _this = this;
 
         this.state = {
-            'channel_id': "5946205a4b908f001403aba5"
+            'channel_id': "5953e2f4dd3c09001422e9ed"
         }
 
-        axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id).then((data) => {
+           axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.name))
+            console.log(JSON.stringify(data.data.picture))
+            console.log(JSON.stringify(data.data.picture_large))
+            console.log(JSON.stringify(data.data.picture_large))
+
             _this.state = {
                 'name': data.data.name,
                 'picture': data.data.picture,
@@ -54,12 +58,13 @@ class channelInfo extends Component {
     }
 
     save() {
+        console.log("kuyyyyy");
         const newState = {
             ...this.state,
-            'name': this.refs.name.value,
-            'picture': this.refs.picture.value,
-            'detail': this.refs.detail.value,
-            'picture_large': this.refs.picture_large.value,
+            'name': this.state.name.value,
+            'picture': this.state.picture.value,
+            'detail': this.state.detail.value,
+            'picture_large': this.state.picture_large.value,
         };
         this.setState(newState);
 
@@ -70,10 +75,10 @@ class channelInfo extends Component {
         }
 
         let responseBody = {
-            'name': this.refs.name.value,
-            'picture': this.refs.picture.value,
-            'detail': this.refs.detail.value,
-            'picture_large': this.refs.picture_large.value,
+            'name': this.state.name.value,
+            'picture': this.state.picture.value,
+            'detail': this.state.detail.value,
+            'picture_large': this.state.picture_large.value,
         }
 
         let _this = this;
@@ -101,6 +106,35 @@ class channelInfo extends Component {
         this.props.toggle_pop_item();
     }
 
+    onSelectedPicture() {
+
+    }
+     
+
+    onSelectedPoster() {
+        const input = this.refs["poster"]
+        const div = this.refs["preview-image"];
+        const _this = this;
+
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+
+            reader.onload = function (e) {
+                div.style.backgroundImage = `url('${e.target.result}')`;
+
+                _this.setState({
+                    ..._this.state,
+                    'new': {
+                        ..._this.state.new,
+                        'picture': e.target.result
+                    }
+                })
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     onExit() {
         this.props.onToggle();
     }
@@ -118,7 +152,13 @@ class channelInfo extends Component {
                         <img src="../../resource/images/X.svg" />
                     </button>
 
-                    <img src="../resource/images/dummyProfile.png" className="chan-img" alt="cn-profile-pic"/>
+            
+                    <label className="changeprofile">
+                        <img src={this.state.new_picture} className="chan-img" alt="cn-profile-pic"/>
+                        <input type="file" ref="picture" onChange={this.onSelectedPicture} name="picture" className="fileInput" accept="image/*" />
+                     </label>
+
+
                     <input className="chan-name" ref="name" type="text" placeholder="" value={this.state.new_name} onChange={this.onKeyPressed} />
 
                     <p className="l1"></p>
@@ -129,8 +169,11 @@ class channelInfo extends Component {
                         
                         <div>
                             <h1>PHOTO</h1> 
-                            <button className="fill">UPLOAD</button>
-                            <input type="file" ref="poster" onChange={this.onSelectedPoster} id="poster" name="poster" className="fill" accept="image/*" />
+
+                            <label className="fileContainer">
+                                <div>UPLOAD</div>
+                                <input type="file" ref="poster" onChange={this.onSelectedPoster} id="poster" name="poster" className="fileInput" accept="image/*" />
+                            </label>
 
                             <div className="photo-upload">
                                 pic1.png
@@ -138,6 +181,8 @@ class channelInfo extends Component {
                                     <img src="../../resource/images/X.svg" />
                                 </button>
                             </div>
+
+                            <div data-alt="preview-image" ref="preview-image" />
 
                             <div className="photo-upload">
                                 pic1.png
@@ -162,6 +207,7 @@ class channelInfo extends Component {
                     
                     <div className="chan-tag">
                         <h1>TAG</h1>
+                        
                         <button className="tag">CAMP</button>
                         <button className="tag">THEATRE</button>
                         <button className="tag">TALK</button>

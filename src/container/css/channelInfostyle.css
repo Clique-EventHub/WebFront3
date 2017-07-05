@@ -26,42 +26,78 @@ article.edit-event input.chan-name {
 .chan-img {
   height: 135px;
   width: 135px;
-  margin: 15px 0px 15px 15px;
   border-radius: 100%;
-  background-color: pink;
   display: inline;
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid white;
+
 } 
 
-article.edit-event button.fill {
-  border: 1.8px solid;
-  border-radius: 5px;
-  font-size: 0.9em;
-  font-weight: normal;
-  margin-right: 50px;
-  margin-bottom: 10px;
-  width: 120px;
-  height: 40px;
-  border-color: #CCCCCC;
-  color: #999999;
-  background-color: #FFFFFF;
-  display: inline;
-  margin-right: 15px;
+.changeprofile {
+    display: inline-block;
+    border-radius: 100%;
+    padding: 0px;
+    margin: 15px 0px 15px 15px;
 }
 
-input.fill {
-  border: 1.8px solid;
-  border-radius: 5px;
-  font-size: 0.9em;
-  font-weight: normal;
-  margin-right: 50px;
-  margin-bottom: 10px;
-  width: 120px;
-  height: 40px;
-  border-color: #CCCCCC;
-  color: #999999;
-  background-color: #FFFFFF;
-  display: inline;
-  margin-right: 15px; 
+.changeprofile:hover .chan-img {
+    border: 1px solid lightgrey;
+
+}
+
+
+.changeprofile [type=file] {
+    cursor: inherit;
+    display: none;    
+    filter: alpha(opacity=0);
+    height: 0px;
+    width: 0px;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    top: 0;
+}
+
+
+
+
+.fileContainer {
+    border: 1.8px solid #CCCCCC;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: normal;
+    text-align: center;
+    padding: 10px 20px;
+    margin-right: 15px;
+    border-color: #CCCCCC;
+    color: #999999;
+    background-color: #FFFFFF;
+    display: inline-block;
+}
+
+.fileContainer:hover {
+    background-color: #4caf50;
+    color: #FFF;
+}
+.fileContainer:active {
+    background-color: #ff636d ;
+    color: #FFF;
+}
+
+.fileContainer [type=file] {
+    cursor: inherit;
+    display: none;
+    font-size: 1em;
+    filter: alpha(opacity=0);
+    height: 0px;
+    width: 0px;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    top: 0;
 }
 
 article.edit-event div.photo-upload {
@@ -72,7 +108,7 @@ article.edit-event div.photo-upload {
   color: #999999;
   background-color: #FFFFFF;
   padding: 3px 18px 3px 10px;
-  display: inline;
+  display: inline-block;
   margin-right: 5px;
   margin-bottom: 5px; 
 }
@@ -104,6 +140,7 @@ div.chan-tag button.tag {
 
 }
 
+
 article.edit-event div.full-input input[type="text"] {
   display: block;
   border: 1.8px solid #ccc;
@@ -121,3 +158,7 @@ article.edit-event div.full-input textarea[type="text"] {
   width: 100%;
   text-align: left;
 }
+
+
+
+
