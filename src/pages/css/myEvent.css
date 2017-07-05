@@ -1,14 +1,21 @@
 section[role="main-content"] {
   font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+  color: #555555;
+  padding: 10px 80px;
+}
+
+section.my-event h1 {
+  font-size: 2em;
+  margin: 15px 0px;
 }
 
 section.profile {
   color: #555555;
   background-color: #FFF;
-  width: 100%;
+  width: 100vw;
   padding: 40px;
   position: relative;
-  left: -20px;
+  left: -80px;
   display: flex;
 }
 
@@ -17,8 +24,9 @@ div.profile-left {
   padding: 0px 60px;
 }
 
-img[alt="profile-pic"] {
-  height: calc(200px);
+section.profile img[alt="profile-pic"] {
+  height: 200px;
+  width: 200px;
   /*max-height: calc(400px);
   min-height: calc(180px);*/
   margin-left: 50px;
@@ -62,8 +70,20 @@ div.profile-left button {
   margin-top: 10px;
 }
 
+div.profile-left button:hover {
+  border: 1.8px solid;
+  border-radius: 20px;
+  width: 125px;
+  height: 35px;
+  font-size: 1.1em;
+  border-color: #CCCCCC;
+  color: #AAAAAA;
+  background-color: #FFFFFF;
+  margin-top: 10px;
+}
+
 div.profile-center {
-  width: 20vw;
+  width: 23vw;
   padding: 0px 20px;
 }
 
@@ -71,12 +91,12 @@ div.profile-center img {
   height: 30px;
   width: 30px;
   position: absolute;
-  margin-top: 6px;
+  margin-top: -5px;
 }
 
 div.profile-center p {
-  margin-left: 40px;
-  margin-bottom: 5px;
+  margin: 0px 0px 20px 40px;
+  font-size: 1.1em;
 }
 
 @media screen and (max-width: 950px) {
@@ -114,12 +134,65 @@ div.profile-right {
 }
 
 div.profile-right p {
-  font-size: 1.2em;
+  font-size: 1.5em;
   font-weight: bold;
+  margin: 10px 0px;
 }
 
 div.profile-right h1 {
-  font-size: 5em;
+  font-size: 7em;
   font-weight: bold;
   margin: 10px 25px;
+}
+
+section.my-event-center h2 {
+  display: inline-block;
+  margin: 20px 20px 5px 20px;
+}
+
+section.my-event-center h2.join-true {
+  color: #1493FF;
+}
+
+section.my-event-center h2.join-false:hover {
+  color: #888888;
+}
+
+/*section.my-event-center h2.join-false:hover ~ p.join-false {
+  width: 190px;
+  height: 2px;
+  background-color: #888888;
+  z-index: 610px;
+  margin: 0px;
+  position: relative;
+  top: 0.5em;
+}*/
+
+section.my-event-center p.join-true {
+  width: 190px;
+  height: 2px;
+  background-color: #1493FF;
+  z-index: 600px;
+  margin: 0px;
+  position: relative;
+  top: 0.5em;
+}
+
+section.my-event p.warn {
+  margin: 25px 0px 45px 20px;
+}
+
+section.my-event-center p.join-false {
+  background-color: inherit;
+  position: absolute;
+}
+
+section.my-event-center p.l160 {
+  left: 190px;
+  width: 215px;
+}
+
+section.my-event-buttom h2 {
+  display: inline-block;
+  margin: 20px 20px 5px 20px;
 }

@@ -166,7 +166,7 @@ class profilePopup extends Component {
         var noti = this.state.notification;
 
         for(var i = 0; i < this.state.n_noti ; i++){
-            noti_list.push(<div><img src={noti[i].photo} alt="noti-icon" /><p><strong>{noti[i].source} : </strong>{noti[i].title}</p></div>);
+            noti_list.push(<div className="noti"><img src={noti[i].photo} alt="noti-icon" /><p><strong>{noti[i].source} : </strong>{noti[i].title}</p></div>);
         }
 
         return (

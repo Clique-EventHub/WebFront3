@@ -110,7 +110,7 @@ class channelPage extends Component {
                         <Circle parent="tag" />
                         <Circle parent="tag" />
                     </div>
-                    <img src={this.state.picture_large} alt="cn-cover-pic"/>
+                    <img src={this.state.cover_picture} alt="cn-cover-pic"/>
                     <img src={this.state.picture} alt="cn-profile-pic"/>
                     <div className="cn-detail">
                         <button>MORE DETAIL</button>

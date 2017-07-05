@@ -19,7 +19,7 @@ class myEventPage extends Component {
 
         this.state = {
           'isLoading': true,
-          'faculty': '99'
+          'faculty': '99',
         };
     }
 
@@ -56,23 +56,33 @@ class myEventPage extends Component {
                 'dorm_building': data.data.dorm_building,
                 'dorm_room': data.data.dorm_room,
                 'dorm_bed': data.data.dorm_bed,
-
-                'new_birth_day': data.data.birth_day,
-                'new_nick_name': data.data.nick_name,
-                'new_lineId': data.data.lineId,
-                'new_email': data.data.email,
-                'new_phone': data.data.phone,
-                'new_shirt_size': data.data.shirt_size,
-                'new_disease': data.data.disease,
-                'new_allergy': data.data.allergy,
-                'new_dorm_building': data.data.dorm_building,
-                'new_dorm_room': data.data.dorm_room,
-                'new_dorm_bed': data.data.dorm_bed,
-                'isLoading': false
+                'join_events': data.data.join_events,
+                'interest_events': data.data.interest_events,
+                'already_joined_events': data.data.already_joined_events,
+                'n_join': data.data.join_events.length,
+                'n_intr': data.data.interest_events.length,
+                'n_completed': data.data.already_joined_events.length,
+                'showJoin': true
             })
         }, (error) => {
             console.log("get user error");
         });
+    }
+
+    onShowJoin() {
+        // this.state.events_item = [];
+        // for(var i = 0; i < this.state.n_join; i++){
+        //     this.state.events_item.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+        // }
+        this.setState({'showJoin': true});
+    }
+
+    onShowIntr() {
+        // this.state.events_item = [];
+        // for(var i = 0; i < this.state.n_intr; i++){
+        //     this.state.events_item.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+        // }
+        this.setState({'showJoin': false});
     }
 
     onEditProfile() {
@@ -81,8 +91,33 @@ class myEventPage extends Component {
     }
 
     render() {
+        var i;
+        var join_events = [];
+        if(this.state.n_join === 0) {
+            join_events.push(<p className="warn">You don't have any Joined Events.</p>)
+        }
+        for(i = 0; i < this.state.n_join; i++){
+            join_events.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+        }
+
+        var intr_events = [];
+        if(this.state.n_intr === 0) {
+            intr_events.push(<p className="warn">You don't have any Interested Events.</p>)
+        }
+        for(i = 0; i < this.state.n_intr; i++){
+            intr_events.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+        }
+
+        var completed_events = [];
+        if(this.state.n_completed === 0) {
+            completed_events.push(<p className="warn">You don't have any Completed Events.</p>)
+        }
+        for(i = 0; i < this.state.n_completed; i++){
+            completed_events.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+        }
+
         return (
-            <section role="main-content">
+            <section className="my-event" role="main-content">
                 <h1>MY EVENT</h1>
                 <section className="profile">
                   <img src={this.state.picture} alt="profile-pic" />
@@ -95,11 +130,11 @@ class myEventPage extends Component {
                       <button onClick={this.onEditProfile.bind(this)}>Edit Profile</button>
                   </div>
                   <div className="profile-center">
-                      <img src="../../resource/icon/icon2.svg" alt="nickname"/> <p>{this.state.new_nick_name}</p>
+                      <img src="../../resource/icon/icon2.svg" alt="nickname"/> <p>{this.state.nick_name}</p>
                       <img src="../../resource/icon/icon3.svg" alt="id"/> <p>{this.state.regId}</p>
-                      <img src="../../resource/icon/icon6.svg" alt="birth"/> <p>{this.state.new_birth_day}</p>
-                      <img src="../../resource/icon/icon11.svg" alt="size"/> <p>{this.state.new_shirt_size}</p>
-                      <img src="../../resource/icon/icon12.svg" alt="med"/> <p>{this.state.new_disease}</p>
+                      <img src="../../resource/icon/icon6.svg" alt="birth"/> <p>{this.state.birth_day}</p>
+                      <img src="../../resource/icon/icon11.svg" alt="size"/> <p>{this.state.shirt_size}</p>
+                      <img src="../../resource/icon/icon12.svg" alt="med"/> <p>{this.state.disease}</p>
                   </div>
                   <div className="profile-right">
                       <p>MY point</p>
@@ -107,22 +142,24 @@ class myEventPage extends Component {
                   </div>
                 </section>
                 <p className="line"></p>
-                <h2>My Event</h2>
+                <section className="my-event-center">
+                <h2 className={`join-${this.state.showJoin}`} onClick={this.onShowJoin.bind(this)}>Joined Event</h2>
+                <h2 className={`join-${!this.state.showJoin}`} onClick={this.onShowIntr.bind(this)}>Interested Event</h2>
+                <p className={`join-${this.state.showJoin}`}></p>
+                <p className={`join-${!this.state.showJoin} l160`}></p>
                 <hr />
-                <section className="text-center">
-                    <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                    <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                    <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                    <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                    <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                    <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                    {(this.state.showJoin) ? join_events : intr_events}
                 </section>
-                <h2>Completed Event</h2>
-                <hr />
-                <CardList isContain={true} onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                <section className="my-event-buttom">
+                    <h2>Completed Event</h2>
+                    <hr />
+                    {completed_events}
+                </section>
             </section>
         );
     }
 }
+
+{/* <CardList isContain={true} onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} /> */}
 
 export default normalPage(pages(myEventPage));

@@ -200,10 +200,23 @@ div.btn-profile button[alt="btn-myevent"] {
   background-color: #00BFF0;
 }
 
+div.btn-profile button[alt="btn-myevent"]:hover {
+  border-color: #00CFFF;
+  background-color: #00CFFF;
+}
 
 div.btn-profile button[alt="btn-logout"] {
   width: 110px;
   border-color: #FF0000;
   color: #FF0000;
   background-color: #FFFFFF;
+}
+
+div.btn-profile button[alt="btn-logout"]:hover {
+  border-color: #FF5555;
+  color: #FF5555;
+}
+
+div.noti p:hover {
+  color: #999999;
 }
