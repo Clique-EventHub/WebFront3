@@ -23,14 +23,12 @@ article.edit-event input.chan-name {
   font-weight: bold;
 }
 
-
 .chan-img {
   height: 135px;
   width: 135px;
   margin: 15px 0px 15px 15px;
   border-radius: 100%;
   background-color: pink;
-  border: 1px solid pink;
   display: inline;
 } 
 
