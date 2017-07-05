@@ -128,7 +128,9 @@ class channelInfo extends Component {
                         <textarea className="detail" ref="about" type="text" placeholder="" value={this.state.new_detail} onChange={this.onKeyPressed}/>
                         
                         <div>
-                            <h1>PHOTO</h1> <button className="fill">UPLOAD</button>
+                            <h1>PHOTO</h1> 
+                            <button className="fill">UPLOAD</button>
+                            <input type="file" ref="poster" onChange={this.onSelectedPoster} id="poster" name="poster" className="fill" accept="image/*" />
 
                             <div className="photo-upload">
                                 pic1.png
