@@ -6,6 +6,66 @@ import './css/channelInfostyle.css';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
 
+const TAG_1 = [
+    "CAMP",
+    "THEATHRE",
+    "TALK",
+    "FIRSTMEET",
+    "RECRUITMENT",
+    "MARKET",
+    "VOLUNTEER",
+    "CONCERT",
+    "FESTIVAL",
+    "OPENING",
+    "CONTEST",
+    "EXHIBITION",
+    "WORKSHOP",
+    "RELIGION"
+];
+
+const TAG_2 = [
+    "CHARITY",
+    "ACADEMIC",
+    "BUSINESS",
+    "CAREER",
+    "SPORT",
+    "ARTS",
+    "FOOD&DRINK",
+    "EDUCATION",
+    "MUSIC",
+    "TECHNOLOGY",
+    "NATURAL",
+    "HEALTH"
+]
+
+class Btn extends Component {
+    //BtnToggleState
+    constructor(props) {
+        super(props);
+        this.state = {
+            'isActive': false
+        }
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick() {
+        let tmp = !this.state.isActive;
+        this.setState({
+            ...this.state,
+            'isActive': tmp
+        });
+        if(typeof(this.props.callback) === "function") this.props.callback(tmp);
+    }
+
+    render() {
+        return (
+            <button onClick={this.onClick} className={(this.state.isActive) ? this.props.classNameOn : this.props.classNameOff}>
+                {this.props.text}
+            </button>
+        );
+    }
+}
+
 class channelInfo extends Component {
     constructor(props) {
         super(props);
@@ -33,11 +93,13 @@ class channelInfo extends Component {
                 'picture': data.data.picture,
                 'detail': data.data.detail,
                 'picture_large': data.data.picture_large,
+                'tags': data.data.tags,
 
                 'new_name': data.data.name,
                 'new_picture': data.data.picture,
                 'new_detail': data.data.detail,
                 'new_picture_large': data.data.picture_large,
+                'new_tags': data.data.tags,
             }
         }, (error) => {
             console.log("get channel error");
@@ -53,6 +115,7 @@ class channelInfo extends Component {
             'new_picture': this.refs.picture.value,
             'new_detail': this.refs.detail.value,
             'new_picture_large': this.refs.picture_large.value,
+            'new_tags': this.refs.tags.value,
         };
         this.setState(newState);
     }
@@ -65,6 +128,7 @@ class channelInfo extends Component {
             'picture': this.state.picture.value,
             'detail': this.state.detail.value,
             'picture_large': this.state.picture_large.value,
+            'tags': this.state.tags.value,
         };
         this.setState(newState);
 
@@ -79,6 +143,7 @@ class channelInfo extends Component {
             'picture': this.state.picture.value,
             'detail': this.state.detail.value,
             'picture_large': this.state.picture_large.value,
+            'tags': this.state.tags.value,
         }
 
         let _this = this;
@@ -101,6 +166,7 @@ class channelInfo extends Component {
             'new_picture': this.state.picture,
             'new_detail': this.state.detail,
             'new_picture_large': this.state.picture_large,
+            'new_tags': this.state.tags,
         };
         this.setState(newState);
         this.props.toggle_pop_item();
@@ -183,59 +249,26 @@ class channelInfo extends Component {
                             </div>
 
                             <div data-alt="preview-image" ref="preview-image" />
-
-                            <div className="photo-upload">
-                                pic1.png
-                                <button role="event-exit" onClick={this.onDelect.bind(this)}>
-                                    <img src="../../resource/images/X.svg" />
-                                </button>
-                            </div>
-                            
-                            <div className="photo-upload">
-                                pic1.png
-                                <button role="event-exit" onClick={this.onDelect.bind(this)}>
-                                    <img src="../../resource/images/X.svg" />
-                                </button>
-                            </div>
                         </div>
 
                         <h1>URL</h1> <input ref="url" type="text" placeholder="" />
                         <h1>YOUTUBE</h1> <input ref="youtube" type="text" placeholder=""/>
                     </div>
-                        
-                        
                     
                     <div className="chan-tag">
-                        <h1>TAG</h1>
-                        
-                        <button className="tag">CAMP</button>
-                        <button className="tag">THEATRE</button>
-                        <button className="tag">TALK</button>
-                        <button className="tag">FIRSTMEET</button>
-                        <button className="tag">STAFF RECRUITMENT</button>
-                        <button className="tag">MARKET</button>
-                        <button className="tag">VOLUNTEER</button>
-                        <button className="tag">CONCERT</button>
-                        <button className="tag">FESTIVAL</button>
-                        <button className="tag">OPENING</button>
-                        <button className="tag">CONTEST</button>
-                        <button className="tag">EXHIBITION</button>
-                        <button className="tag">WORKSHOP</button>
-                        <button className="tag">RELIGION</button>
+                        <h1>TAG</h1>                    
+                        {
+                            TAG_1.map((key, index) => {
+                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag"/>);
+                            })
+                        }
                         <br />
                         <br />
-                        <button className="tag">CHARILY</button>
-                        <button className="tag">ACADEMIC</button>
-                        <button className="tag">BUSSINESS</button>
-                        <button className="tag">CAREER</button>
-                        <button className="tag">SPORT</button>
-                        <button className="tag">ARTS</button>
-                        <button className="tag">FOOD&DRINK</button>
-                        <button className="tag">EDUCATION</button>
-                        <button className="tag">MUSIC</button>
-                        <button className="tag">TECHNOLOGY</button>
-                        <button className="tag">NATURAL</button>
-                        <button className="tag">HEALTH</button>
+                        {
+                            TAG_2.map((key, index) => {
+                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag"/>);
+                            })
+                        }
                     </div>
                     
                     <br />
