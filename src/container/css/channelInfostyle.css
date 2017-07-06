@@ -125,6 +125,14 @@ article.edit-event div.photo-upload button img {
   right: -12px;
 }
 
+article.edit-event div[data-alt="preview-image"] {
+    height: 50px;
+    width: 50px;
+    display: inline;
+    background-size: cover;
+    background-position: center;
+}
+
 article.edit-event div.full-input input[type="text"] {
   display: block;
   border: 1.8px solid #ccc;
@@ -157,7 +165,6 @@ article.edit-event button.tag {
   background-color: #FFFFFF;
   padding: 0px;
 }
-
 
 
 article.edit-event button.Btn.wBorder {

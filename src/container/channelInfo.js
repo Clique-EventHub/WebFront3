@@ -178,10 +178,10 @@ class channelInfo extends Component {
      
 
     onSelectedPoster() {
-        const input = this.refs["poster"]
+        const input = this.refs["picture_large"];
         const div = this.refs["preview-image"];
         const _this = this;
-
+ 
         if (input.files && input.files[0]) {
             let reader = new FileReader();
 
@@ -192,13 +192,15 @@ class channelInfo extends Component {
                     ..._this.state,
                     'new': {
                         ..._this.state.new,
-                        'picture': e.target.result
+                        'picture_large': e.target.result
                     }
                 })
             }
 
             reader.readAsDataURL(input.files[0]);
         }
+
+
     }
 
     onExit() {
