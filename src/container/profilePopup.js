@@ -38,7 +38,8 @@ class profilePopup extends Component {
 
         let config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
             }
         }
 
@@ -62,7 +63,7 @@ class profilePopup extends Component {
             })
 
             data.data.join_events.forEach((id) => {
-                axios.get(`${hostname}event?id=${id}&stat=false`).then((data) => {
+                axios.get(`${hostname}event?id=${id}&stat=false`, { headers: { 'crossDomain': true }}).then((data) => {
                     if(new Date(data.data.date_start) >= new Date()) {
                         this.setState({
                             ...this.state,

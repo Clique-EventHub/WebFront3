@@ -32,7 +32,8 @@ class DatePicker extends Component {
             },
             'disabledDays': disabled,
             'controlEnable': (this.props.controlEnable) ? true : false,
-            'showSelectedDate': (this.props.showSelectedDate) ? true : false
+            'showSelectedDate': (this.props.showSelectedDate) ? true : false,
+            'isFirst': true
         }
 
         this.onDayClick = this.onDayClick.bind(this);
@@ -40,6 +41,50 @@ class DatePicker extends Component {
         this.generateDayRange = this.generateDayRange.bind(this);
         this.onChangeMode = this.onChangeMode.bind(this);
         this.onClearDates = this.onClearDates.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.initialDates) {
+            const oldD = this.props.initialDates;
+            const newD = nextProps.initialDates;
+            let tmp = true;
+
+            if(this.state.isFirst) {
+                this.setState({
+                    ...this.state,
+                    'isFirst': false
+                });
+                tmp = false;
+            }
+            else if(oldD.length === newD.length) {
+                for(let i = 0; i < oldD.length && tmp; i++) {
+                    if(oldD[i].constructor === Array && newD[i].constructor === Array) {
+                        tmp = this.compareDate(new Date(oldD[i][0]), new Date(newD[i][0])) && this.compareDate(new Date(oldD[i][1]), new Date(newD[i][1]));
+                    } else if(typeof(oldD[i].getMonth) === "function" && typeof(newD[i].getMonth) === "function" ) {
+                        tmp = this.compareDate(new Date(oldD[i]), new Date(newD[i]));
+                    }
+                }
+            } else {
+                tmp = false;
+            }
+
+            if(!tmp) {
+                let new_selectedDates = [];
+                newD.forEach((item) => {
+                    if(item.constructor === Array) {
+                        new_selectedDates.push(...this.generateDayRange(item[0], item[1]));
+                    } else {
+                        new_selectedDates.push(item);
+                    }
+                });
+
+                this.setState({
+                    ...this.state,
+                    'selectedDays': new_selectedDates,
+                    'isFirst': false
+                })
+            }
+        }
     }
 
     compareDate(day1, day2) {
@@ -87,9 +132,10 @@ class DatePicker extends Component {
     generateDayRange(from, to) {
         if(!from || !to || from === null || to === null) return [];
         let tmp = new Date(from);
+        let tmp2 = new Date(to);
         let new_array = [];
         const { daysOfWeek, after, before } = this.state.disabledDays;
-        while(tmp.getTime() <= to.getTime()) {
+        while(tmp.getTime() <= tmp2.getTime()) {
             if(after !== null || before !== null) {
                 new_array.push(new Date(tmp));
             } else if(daysOfWeek.indexOf(tmp.getDay()) === -1) {

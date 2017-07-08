@@ -3,11 +3,13 @@ import autoBind from '../hoc/autoBind';
 import EventItem from '../container/eventItem';
 import './css/editEvent2.css';
 import axios from 'axios';
-import { getCookie } from '../actions/common';
+import { getCookie, objModStr } from '../actions/common';
 import CustomRadio from '../components/CustomRadio';
 import DatePicker from '../components/datePicker';
 import TimeInput from '../components/TimeInput';
 import { fullId, findInfoById } from '../actions/facultyMap';
+import { hostname } from '../actions/index';
+import series from '../functions/PromiseSeries';
 
 const state = [{
         'type': 'none',
@@ -63,13 +65,102 @@ const TAG_2 = [
     }
 */
 
+/* refs and notes
+    Sub event (Not enable yet)
+    {
+        'title': '...',
+        'content': {
+            'location': <String>,
+            'dates': [<Date()>],
+            'time': <String>
+        },
+        'note': <String>
+    }
+
+    FIRSTMEET format
+    {
+        'title': 'FIRSTMEET',
+        'content': {
+            'location': <String>,
+            'dates': [<Date()>],
+            'time': <String>
+        },
+        'note': <String>
+    }
+
+    refs
+    {
+        'title': <String>
+        'content': <String>
+        'note': <String>
+    }
+*/
+
+/*
+form on put/post
+
+{
+    'title': <String>,
+    'channel': <String of ID>,
+    'about': [<String>],
+    'picture': <String>,
+    'picture_large': [<String>],
+    'year_require': [<String>],
+    'location': <String>,
+    'date_start': Date(),
+    'date_end': Date(),
+    'contact_information': [{
+        'name': <String>,
+        'info': <String>,
+        'note': <String>
+    }],
+    'tags': [<String>],
+    'time_start': Date(),
+    'time_end': Date(),
+    'optional_field': [<String>],
+    'require_field': [<String>],
+    'notes': [{ //for sub event and notes
+        'title': 'FIRSTMEET',
+        'content': {
+            'location': <String>,
+            'dates': [Dates],
+            'time': <String>
+        },
+        'note': <String>
+    }, {
+        'title': <String>,
+        'content': <String>,
+        'note': <String>
+    }],
+    'refs': [{
+        'title': 'url',
+        'content': <String>,
+        'note': 'url'
+    }, {
+        'title': <String>,
+        'content': <String>,
+        'note': 'file'
+    }] // for files and url
+}
+
+*/
+
 const defaultDate = {
     'dates': [],
     'time': {
         'start': '',
         'end': ''
-    },
-    'enableRecruitment': false
+    }
+}
+
+function replaceIncorrectLink(str) {
+    if(typeof(str) === "string") {
+        if(str.indexOf("128.199.208.0/") === 0) str = str.replace("128.199.208.0/", hostname);
+        else if(str.indexOf("cueventhub.com/") === 0) str = str.replace("cueventhub.com/", hostname)
+        else if(str.indexOf("139.59.97.65:1111/") === 0) str = str.replace("139.59.97.65:1111/", hostname)
+        return str;
+    }
+    return null;
 }
 
 class Btn extends Component {
@@ -88,12 +179,12 @@ class Btn extends Component {
             ...this.state,
             'isActive': tmp
         });
-        if(typeof(this.props.callback) === "function") this.props.callback(tmp);
+        if(typeof(this.props.callback) === "function") this.props.callback(tmp, this.props.text);
     }
 
     render() {
         return (
-            <button onClick={this.onClick} className={(this.state.isActive) ? this.props.classNameOn : this.props.classNameOff}>
+            <button onClick={this.onClick} className={(this.state.isActive) ? this.props.classNameOn : this.props.classNameOff} style={this.props.style}>
                 {this.props.text}
             </button>
         );
@@ -101,7 +192,7 @@ class Btn extends Component {
 }
 
 const defaultState = {
-    'event_id': "594bf476e374d100140f04ec",
+    'event_id': "595ef6c7822dbf0014cb821c",
     'isLoading': true,
     'old': {
         'title': '',
@@ -131,6 +222,217 @@ const defaultState = {
         'faculty_require': '',
         'tags': '',
         'forms': '',
+        'firstmeet': {
+            'date': null
+        }
+    },
+    'enableRecruitment': false,
+    'enableForm': false,
+    'option': {
+        'contact': [],
+        'time_start': '',
+        'time_end': '',
+        'tags_1': TAG_1.map(() => false),
+        'tags_2': TAG_2.map(() => false),
+        'fields': [],
+        'contact': [],
+        'url': [],
+        'file': [],
+        'recruitment': {
+            'firstmeet': {
+                'location': '',
+                'note': '',
+                'date': '',
+                'closeWhenFull': false
+            },
+            'recruitmentDuration': [],
+            'filter': {
+                'onlyChula': false,
+                'faculty': [],
+                'year': []
+            }
+        }
+    }
+}
+
+class AddAdmin extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            'isOpen': false,
+            'selected': [],
+            'filter': [],
+            'keyword': '',
+            'btnStyle': {
+                    'marginLeft': '5px',
+                    'height': '35px',
+                    'border': '1.8px solid #CCC',
+                    'borderRadius': '5px',
+                    'fontSize': '1em',
+                    'minWidth': '90px',
+                    'whiteSpace': 'nowrap'
+                }
+        }
+        this.filterName = this.filterName.bind(this);
+        this.onToggle = this.onToggle.bind(this);
+        this.toggleShowReset = this.toggleShowReset.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.user.info.friends_list.length !== this.props.user.info.friends_list.length) {
+            this.setState({
+                ...this.state,
+                'selected': nextProps.user.info.friends_list.map(() => false),
+                'filter': nextProps.user.info.friends_list.map(() => false)
+            })
+        }
+    }
+
+    toggleShowReset() {
+        let tmp = true;
+        for(let i = 0; i < this.state.filter.length && tmp; i++) {
+            tmp = this.state.filter[i];
+        }
+
+        this.setState({
+            ...this.state,
+            'filter': this.props.user.info.friends_list.map(() => !tmp)
+        })
+    }
+
+    filterName() {
+        if(this.refs.me.value === '') {
+            this.setState({
+                ...this.state,
+                'filter': this.props.user.info.friends_list.map(() => false),
+                'keyword': ''
+            })
+        } else {
+            this.setState({
+                ...this.state,
+                'filter': this.props.user.info.friends_list.map((item) => {
+                    return (item.fb.name.split(" ")[0].toLowerCase().indexOf(this.refs.me.value.toLowerCase()) !== -1) || (item.fb.name.split(" ")[1].toLowerCase().indexOf(this.refs.me.value.toLowerCase()) !== -1)
+                }),
+                'keyword': this.refs.me.value
+            })
+        }
+    }
+
+    onToggle(index, defaultValue) {
+        if(index < 0 || index >= this.state.selected.length) return;
+        let new_selected = [...this.state.selected];
+        new_selected[index] = (typeof(defaultValue) === "boolean") ? defaultValue : !new_selected[index];
+
+        this.setState({
+            ...this.state,
+            'selected': new_selected
+        })
+
+        if(typeof(this.props.onSelected) === "function") {
+            this.props.onSelected(this.props.user.info.friends_list.filter((item, index) => new_selected[index]));
+        }
+    }
+
+    onMouseEnter() {
+        const defaultStyle = {
+                'marginLeft': '5px',
+                'height': '35px',
+                'border': '1.8px solid #CCC',
+                'borderRadius': '5px',
+                'fontSize': '1em',
+                'minWidth': '90px',
+                'whiteSpace': 'nowrap'
+            };
+
+        this.setState({
+            ...this.state,
+            btnStyle: {
+                ...defaultStyle,
+                'backgroundColor': '#4caf50'
+            }
+        })
+    }
+
+    onMouseLeave() {
+        const defaultStyle = {
+                'marginLeft': '5px',
+                'height': '35px',
+                'border': '1.8px solid #CCC',
+                'borderRadius': '5px',
+                'fontSize': '1em',
+                'minWidth': '90px',
+                'whiteSpace': 'nowrap'
+            };
+        this.setState({
+            ...this.state,
+            btnStyle: {
+                ...defaultStyle
+            }
+        })
+    }
+
+    onMouseClick() {
+        const defaultStyle = {
+                'marginLeft': '5px',
+                'height': '35px',
+                'border': '1.8px solid #CCC',
+                'borderRadius': '5px',
+                'fontSize': '1em',
+                'minWidth': '90px',
+                'whiteSpace': 'nowrap'
+            };
+        this.setState({
+            ...this.state,
+            btnStyle: {
+                ...defaultStyle,
+                'backgroundColor': '#729afd'
+            }
+        })
+    }
+
+    render() {
+        return (
+            <div className="basic-card-no-glow" style={{'width': '100%', 'minWidth': '150px', 'maxWidth': '250px', 'padding': '30px', 'margin': 'auto'}}>
+                <div style={{'display': 'flex', 'maxHeight': '50px'}}>
+                    <input type="text" placeholder="search" value={this.state.keyword} onChange={this.filterName} ref="me" style={{
+                            'border': '1.8px solid #ccc',
+                            'borderRadius': '5px',
+                            'height': '35px',
+                            'fontSize': '1em',
+                            'marginBottom': '5px',
+                            'width': '100%',
+                            'paddingLeft': '5px',
+                            'boxSizing': 'border-box',
+                            'flex': '1'
+                        }}/>
+                    <button onClick={this.toggleShowReset} style={this.state.btnStyle} onMouseOver={this.onMouseEnter.bind(this)} onMouseLeave={this.onMouseLeave.bind(this)} onMouseDown={this.onMouseClick.bind(this)} onMouseUp={this.onMouseEnter.bind(this)}>Show All</button>
+                </div>
+                <div style={{'padding': '5px', 'backgroundColor': '#F1F1F1', 'maxHeight': '200px', 'overflowY': 'scroll'}} >
+                    {
+                        (this.props.user.info.friends_list).map((item, index) => {
+                            return ((this.state.filter[index]) ? (
+                                <div key={index} onClick={() => {
+                                        this.onToggle(index);
+                                    }} style={(this.state.selected[index]) ? {'backgroundColor': 'lightgreen', 'display': 'flex', 'alignItems': 'center', 'border': '1px solid rgba(0,0,0,0.05)', 'padding': '10px 0px'} : {'display': 'flex', 'alignItems': 'center', 'border': '1px solid rgba(0,0,0,0.05)', 'padding': '10px 0px'}}>
+                                    <img src={replaceIncorrectLink(item.fb.picture.data.url)} height="50px" width="50px" style={{'borderRadius': '50%', 'marginRight': '20px'}} />
+                                    <span>{item.fb.name}</span>
+                                </div>
+                            ) : (null)
+                        )
+                    })
+                }
+                </div>
+                <div style={{'textAlign': 'center'}}>
+                    {
+                        (this.props.user.info.friends_list).map((item, index) => {
+                            return ((this.state.selected[index]) ? (
+                                <img key={index} src={replaceIncorrectLink(item.fb.picture.data.url)} height="50px" width="50px" style={{'borderRadius': '50%', 'margin': '5px 5px 0px 0px'}} />
+                            ) : (null)
+                        )})
+                    }
+                </div>
+            </div>
+        );
     }
 }
 
@@ -149,19 +451,27 @@ class AddList extends Component {
     onClickAdd() {
         switch (this.state.mode) {
             case 0:
+                const new_children_1 = [...this.state.children].concat([""]);
+                if(typeof(this.props.onUpdate) === "function") {
+                    this.props.onUpdate(new_children_1);
+                }
                 this.setState({
                     ...this.state,
-                    'children': this.state.children.concat([""])
+                    'children': new_children_1
                 })
                 break;
             default:
+                const new_children_2 = [...this.state.children].concat([{
+                    "title": "",
+                    "content": [],
+                    "note": ""
+                }]);
+                if(typeof(this.props.onUpdate) === "function") {
+                    this.props.onUpdate(new_children_2);
+                }
                 this.setState({
                     ...this.state,
-                    'children': this.state.children.concat([{
-                        "title": "",
-                        "content": [],
-                        "note": ""
-                    }])
+                    'children': new_children_2
                 })
         }
     }
@@ -185,18 +495,21 @@ class AddList extends Component {
             ...this.state,
             'children': new_children
         })
+
+        if(typeof(this.props.onUpdate) === "function") {
+            this.props.onUpdate(new_children);
+        }
     }
 
     onRemove(index) {
+        const new_children = this.state.children.slice(0, index).concat(this.state.children.slice(index+1, this.state.children.length));
         this.setState({
             ...this.state,
-            'children': this.state.children.slice(0, index).concat(this.state.children.slice(index+1, this.state.children.length))
+            'children': new_children
         })
-    }
 
-    componentDidUpdate() {
         if(typeof(this.props.onUpdate) === "function") {
-            this.props.onUpdate(this.state.children);
+            this.props.onUpdate(new_children);
         }
     }
 
@@ -251,10 +564,21 @@ class EditEvent extends Component {
         this.onSelectedPoster = this.onSelectedPoster.bind(this);
         this.resizeTextArea = this.resizeTextArea.bind(this);
         this.toggleRecruitment = this.toggleRecruitment.bind(this);
+        this.onTagChange = this.onTagChange.bind(this);
+        this.onClickField = this.onClickField.bind(this);
+        this.onChangeText = this.onChangeText.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({updated: nextProps.updated});
+    }
+
+    onChangeText(event, location) {
+        let new_state = {...this.state};
+        objModStr(new_state, location, event.target.value);
+        this.setState({
+            ...new_state
+        });
     }
 
     onDateSet(dateList) {
@@ -320,41 +644,35 @@ class EditEvent extends Component {
     }
 
     componentWillMount() {
-        let _this = this;
 
-        axios.get('http://128.199.208.0:1111/event?id=' + _this.state.event_id).then((data) => {
-            console.log("get!!!");
-            console.log(JSON.stringify(data.data.title))
-            _this.setState({
+        axios.get(`${hostname}event?id=${this.state.event_id}&stat=false`, { headers: { 'crossDomain': true }})
+        .then((data) => data.data).then((data) => {
+            let ttmp = data.time_each_day.map((item) => {
+                if(item.constructor === Array) return ([new Date(item[0]), new Date(item[1])]);
+                return new Date(item);
+            })
+            this.setState({
                 ...this.state,
                 'old': {
-                    'title': data.data.title,
-                    'about': data.data.about,
-                    'channel': data.data.channel,
-                    'video': data.data.video,
-                    'location': data.data.location,
-                    'date_start': data.data.date_start,
-                    'date_end': data.data.date_end,
-                    'picture': data.data.picture,
-                    'picture_large': data.data.picture_large,
-                    'year_require': data.data.year_require,
-                    'faculty_require': data.data.faculty_require,
-                    'tags': data.data.tags,
-                    'forms': data.data.forms,
+                    ...data
                 },
                 'new': {
-                    'title': data.data.title,
-                    'about': data.data.about,
-                    'channel': data.data.channel,
-                    'video': data.data.video,
-                    'location': data.data.location,
-                    'date_time': defaultDate,
-                    'picture': data.data.picture,
-                    'picture_large': data.data.picture_large,
-                    'year_require': data.data.year_require,
-                    'faculty_require': data.data.faculty_require,
-                    'tags': data.data.tags,
-                    'forms': data.data.forms,
+                    ...this.state.new,
+                    'title': data.title,
+                    'about': data.about.join("\n\n"),
+                    'channel': data.channel,
+                    'video': data.video,
+                    'location': data.location,
+                    'date_time': {
+                        'dates': ttmp,
+
+                    },
+                    'picture': data.picture,
+                    'picture_large': data.picture_large,
+                    'year_require': data.year_require,
+                    'faculty_require': data.faculty_require,
+                    'tags': data.tags,
+                    'forms': data.forms,
                 }
             })
             this.resizeTextArea("about");
@@ -367,10 +685,31 @@ class EditEvent extends Component {
         console.log(this.state);
     }
 
+    onClickField(obj) {
+        let new_field = [...this.state.option.fields]
+        const index = new_field.findIndex((item) => {
+            return item.text === obj.text
+        })
+        if(index === -1) {
+            new_field.push(obj);
+        } else {
+            new_field[index] = obj
+        }
+
+        this.setState({
+            ...this.state,
+            option: {
+                ...this.state.option,
+                fields: new_field
+            }
+        });
+    }
+
     onKeyPressed() {
         const newState = {
             ...this.state,
             'new': {
+                ...this.state.new,
                 'title': (this.refs.title) ? this.refs.title.value : '',
                 'about': (this.refs.about) ? this.refs.about.value : '',
                 'channel': (this.refs.channel) ? this.refs.channel.value : '',
@@ -382,7 +721,7 @@ class EditEvent extends Component {
                 'year_require': (this.refs.year_require) ? this.refs.year_require.value : '',
                 'faculty_require': (this.refs.faculty_require) ? this.refs.faculty_require.value : '',
                 'tags': (this.refs.tags) ? this.refs.tags.value : '',
-                'forms': (this.refs.forms) ? this.refs.forms.value : '',
+                'forms': (this.refs.forms) ? this.refs.forms.value : ''
             }
         };
         this.setState(newState);
@@ -392,23 +731,121 @@ class EditEvent extends Component {
 
         let config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
             }
         }
 
+        //finish
+        const date_start = (this.state.new.date_time && this.state.new.date_time.dates[0].constructor === Array) ? new Date(this.state.new.date_time.dates[0][0]) : new Date(this.state.new.date_time.dates[0])
+        const date_end = (this.state.new.date_time && this.state.new.date_time.dates[this.state.new.date_time.dates.length-1].constructor === Array) ? new Date(this.state.new.date_time.dates[this.state.new.date_time.dates.length-1][1]) : new Date(this.state.new.date_time.dates[this.state.new.date_time.dates.length-1]);
+
+        const time_s = this.state.option.time_start.split(":");
+        const time_e = this.state.option.time_end.split(":");
+        let time_start = new Date(date_start);
+        let time_end = new Date(date_end);
+        if(time_s.length === 2) time_start.setHours(Number(time_s[0]), Number(time_s[1]), 0);
+        if(time_e.length === 2) time_end.setHours(Number(time_e[0]), Number(time_e[1]), 0);
+
+        const contact = this.state.option.contact;
+        let refs = [];
+        this.state.option.file.forEach((item) => refs.push({...item, 'note': 'file'}));
+        this.state.option.url.forEach((item) => refs.push({'title': 'url', 'content': item, 'note': 'url'}));
+
+        const optional_field = this.state.option.fields.filter((item) => {
+            return item.value === "optional";
+        }).map((item) => item.text)
+        const require_field = this.state.option.fields.filter((item) => {
+            return item.value === "require";
+        }).map((item) => item.text)
+
+        let notes = (this.state.enableRecruitment) ? (
+            [{
+                'title': 'FIRSTMEET',
+                'content': {
+                    'location': this.state.option.recruitment.firstmeet.location,
+                    'dates': [new Date(this.state.option.recruitment.firstmeet.date)],
+                    'time': null,
+                    'closeWhenFull': this.state.option.recruitment.firstmeet.closeWhenFull
+                },
+                'note': this.state.option.recruitment.firstmeet.note
+            }, {
+                'title': 'Recruitment Duration',
+                'content': this.state.option.recruitment.recruitmentDuration,
+                'note': null
+            }]
+        ) : []
+
+        let tags = TAG_1.filter((item, index) => this.state.option.tags_1[index]).concat(TAG_2.filter((item, index) => this.state.option.tags_2[index]));
+
         let responseBody = {
-            ...this.state.new
+            ...this.state.old,
+            'date_start': date_start,
+            'date_end': date_end,
+            'time_start': time_start,
+            'time_end': time_end,
+            'time_each_day': this.state.new.date_time.dates,
+            'contact_information': contact,
+            'notes': notes,
+            'refs': refs,
+            'optional_field': optional_field,
+            'require_field': require_field,
+            'tags': tags
         }
 
+        console.log(responseBody);
+        console.log(JSON.stringify(responseBody));
+
+        /*Picture Process --- must happen sometime after upload form to server complete*/
         let _this = this;
 
-        axios.put('http://128.199.208.0:1111/event?id='+ _this.state.event_id, responseBody, config).then((response) => {
-            console.log("saved!!!");
-            return true;
-        }, (error) => {
-            console.log("save error");
-            return false;
-        })
+        function overallPictureProcess(id) {
+            let overall_process = [0, 0];
+            pictureProcess("poster", "small", 0);
+            pictureProcess("picture", "large", 1);
+
+            function pictureProcess(refName, size, processIndex) {
+                size = size || "large";
+                let process_inner = 0;
+                const configs = {
+                    ...config,
+                    onUploadProgress: (progressEvent) => {
+                        process_inner = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
+                        overall_process[processIndex] = process_inner;
+                        console.log([...overall_process]);
+                    }
+                }
+
+                let data = new FormData();
+                for(let i = 0; i < _this.refs[refName].files.length; i++) {
+                    data.append('pictures', _this.refs[refName].files[i]);
+                }
+
+                axios.post(`${hostname}picture?field=event&size=${size}&id=${id}`, data, configs).then((res) => {
+                    console.log(res);
+                }).catch((err) => {
+                    console.error(err);
+                })
+            }
+        }
+
+        if(this.state.event_id) {
+            overallPictureProcess(this.state.event_id);
+            axios.put(`${hostname}event?id=${this.state.event_id}`, responseBody, config).then((response) => {
+                return true;
+            }).catch((err) => {
+                console.error(err);
+                return false;
+            })
+        } else {
+            axios.post(`${hostname}event`, responseBody, config).then((response) => {
+                return response._id;
+            }).then((id) => {
+                if(typeof(id) === "string") {
+                    overallPictureProcess(id);
+                }
+            })
+        }
 
         this.props.toggle_pop_item();
     }
@@ -456,7 +893,24 @@ class EditEvent extends Component {
         });
     }
 
+    onTagChange(no, isActive, index) {
+        const referList = (no === 1) ? 'tags_1' : 'tags_2';
+        let new_option = {
+            ...this.state.option
+        }
+        new_option[referList] = this.state.option[referList].map((item, i) => {
+                    if(i === index) return isActive;
+                    return item;
+                });
+        this.setState({
+            ...this.state,
+            'option': new_option
+        })
+    }
+
     render () {
+        const firstMeetDate = (this.state.new.firstmeet.date) ? new Date(this.state.new.firstmeet.date).toString() : null;
+        let firstMeetDateStr = (firstMeetDate !== null) ? (`${firstMeetDate.slice(8,10)} ${firstMeetDate.slice(4,7)} ${firstMeetDate.slice(13,15)}`) : 'Date';
         return (
             <div className="modal-container">
                 <article className="edit-event basic-card-no-glow modal-main card-width">
@@ -471,7 +925,7 @@ class EditEvent extends Component {
                                     'title': this.state.new.title,
                                     'location': this.state.new.location,
                                     'date_time': this.state.new.date_time.dates,
-                                    'about': this.state.new.about,
+                                    'about': this.state.new.about.split("\n\n")[0],
                                     'poster': this.state.new.picture
                                 }} />
                         </div>
@@ -493,14 +947,26 @@ class EditEvent extends Component {
                     </div>
                     <div>
                         <h1>DATE & TIME</h1>
-                        <div className="basic-card-no-glow date" style={{'width': '500px', 'display': 'flex', 'padding': '30px 0px', 'alignsItem': 'center', 'justifyContent': 'center'}}>
-                            <DatePicker controlEnable={true} initialMode={2} onSetDates={this.onDateSet} />
+                        <div className="basic-card-no-glow date" style={{'width': '100%', 'padding': '30px 0px', 'alignsItem': 'center', 'justifyContent': 'center', 'minWidth': '300px', 'maxWidth': '500px'}}>
+                            <DatePicker initialDates={(this.state.old.time_each_day) ? this.state.old.time_each_day : []} controlEnable={true} initialMode={2} onSetDates={this.onDateSet} />
                             <div className="TimeInput">
                                 <div>
                                     <h3>Start Time</h3>
-                                    <TimeInput placeholder="start" onTimeChange={(val) => console.log(val)} />
+                                    <TimeInput placeholder="start" onTimeChange={(val) => this.setState({
+                                            ...this.state,
+                                            'option': {
+                                                ...this.state.option,
+                                                'time_start': val
+                                            }
+                                        })} />
                                     <h3>End Time</h3>
-                                    <TimeInput placeholder="end"  onTimeChange={(val) => console.log(val)}/>
+                                    <TimeInput placeholder="end"  onTimeChange={(val) => this.setState({
+                                            ...this.state,
+                                            'option': {
+                                                ...this.state.option,
+                                                'time_end': val
+                                            }
+                                        })}/>
                                 </div>
                             </div>
                         </div>
@@ -510,25 +976,53 @@ class EditEvent extends Component {
                         <textarea type="text" placeholder="" value={this.state.new.about} onChange={() => {this.onKeyPressed();  this.resizeTextArea("about");}} ref="about" style={{'fontSize': '1em', 'width': 'calc(100% - 3px)', 'padding': '15px', 'boxSizing': 'border-box', 'marginBottom': '20px'}} />
                         <p className="l1"></p>
                         <div className="flex add" style={{'marginBottom': '20px'}}>
-                            <AddList text="ADD CONTACT" mode={1} placeholder={["NAME", "CONTACT INFO", "NOTE"]} />
-                            <AddList text="ADD FILE (URL)" mode={1} placeholder={["FILE NAME", "URL"]} />
-                            <AddList text="ADD URL" placeholder="URL" />
+                            <AddList text="ADD CONTACT" mode={1} placeholder={["NAME", "CONTACT INFO", "NOTE"]} onUpdate={(val) => {
+                                    this.setState({
+                                        ...this.state,
+                                        'option': {
+                                            ...this.state.option,
+                                            'contact': val
+                                        }
+                                    })
+                                }} />
+                            <AddList text="ADD FILE (URL)" mode={1} placeholder={["FILE NAME", "URL"]} onUpdate={(val) => {
+                                this.setState({
+                                    ...this.state,
+                                    'option': {
+                                        ...this.state.option,
+                                        'file': val
+                                    }
+                                })
+                                }} />
+                            <AddList text="ADD URL" placeholder="URL" onUpdate={(val) => {
+                                this.setState({
+                                    ...this.state,
+                                    'option': {
+                                        ...this.state.option,
+                                        'url': val
+                                    }
+                                })
+                                }}/>
                         </div>
+                        <label className="fileContainer">
+                            <div>Upload</div>
+                            <input type="file" ref="picture" id="picture" name="picture" className="fileInput" accept="image/*" multiple />
+                        </label>
                     </div>
                     <p className="l1"></p>
                     <div>
                         <h1>TAG</h1>
                         {
                             TAG_1.map((key, index) => {
-                                if(key.length > 7) return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag long" classNameOff="Btn tag long"/>);
-                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag"/>);
+                                if(key.length > 7) return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag long" classNameOff="Btn tag long" callback={(isActive) => {this.onTagChange(1, isActive, index);}} />);
+                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag" callback={(isActive) => {this.onTagChange(1, isActive, index);}} />);
                             })
                         }
                         <p className="l2 ltag"></p>
                             {
                                 TAG_2.map((key, index) => {
-                                    if(key.length > 7) return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag long" classNameOff="Btn tag long"/>);
-                                    return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag"/>);
+                                    if(key.length > 7) return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag long" classNameOff="Btn tag long" callback={(isActive) => {this.onTagChange(2, isActive, index);}} />);
+                                    return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag" callback={(isActive) => {this.onTagChange(2, isActive, index);}} />);
                                 })
                             }
                     </div>
@@ -538,38 +1032,99 @@ class EditEvent extends Component {
                         (this.state.enableRecruitment) ? (
                             <div className="add">
                                 <h1>ADD FIRSTMEET</h1>
-                                <div className="flex">
-                                    <input ref="loc" type="text" placeholder="LOCATION" />
-                                    <input ref="loc" type="text" placeholder="DATE" />
+                                <div className="firstmeet">
+                                    <input type="text" placeholder="LOCATION" style={{'margin': '5px 0px'}} onChange={(event) => {this.onChangeText(event, "option.recruitment.firstmeet.location")}} />
+                                    <input type="text" placeholder="NOTE" onChange={(event) => {this.onChangeText(event, "option.recruitment.firstmeet.note")}} />
+                                    <div className="button">
+                                        <div className="DateClick">
+                                            <button onClick={() => {
+                                                    if(this.refs["firstmeetDate"].classList.contains("on")) this.refs["firstmeetDate"].classList.remove("on");
+                                                    else this.refs["firstmeetDate"].classList.add("on");
+                                                }} className="Btn" style={{'whiteSpace': 'nowrap', 'width': '100px'}}>{firstMeetDateStr}</button>
+                                                <div className="DatePickerItem basic-card-no-glow" ref="firstmeetDate">
+                                                    <DatePicker controlEnable={false} initialMode={0} onSetDates={(date) => {
+                                                        this.setState({
+                                                            ...this.state,
+                                                            'new': {
+                                                                ...this.state.new,
+                                                                'firstmeet': {
+                                                                    ...this.state.firstmeet,
+                                                                    'date': date[0]
+                                                                }
+                                                            },
+                                                            'option': {
+                                                                ...this.state.option,
+                                                                'recruitment': {
+                                                                    ...this.state.option.recruitment,
+                                                                    'firstmeet': {
+                                                                        ...this.state.option.recruitment.firstmeet,
+                                                                        'date': date[0]
+                                                                    }
+                                                                }
+                                                            }
+                                                        });}}/>
+                                                </div>
+                                            </div>
+                                            <Btn text="CLOSE WHEN FULL" classNameOn="Btn-active fill BtnCustom" classNameOff="Btn fill BtnCustom" callback={(isActive) => {
+                                                    this.setState({
+                                                        ...this.state,
+                                                        'option': {
+                                                            ...this.state.option,
+                                                            'recruitment': {
+                                                                ...this.state.option.recruitment,
+                                                                'firstmeet': {
+                                                                    ...this.state.option.recruitment.firstmeet,
+                                                                    'closeWhenFull': isActive
+                                                                }
+                                                            }
+                                                        }
+                                                    })
+                                                }} />
+                                    </div>
                                 </div>
-                                <textarea ref="loc" type="text" placeholder="ADD DESCRIPTION" />
                                 <h1>RECRUITMENT DURATION</h1>
                                 <div className="basic-card-no-glow" style={{'width': '340px', 'margin': 'auto', 'padding': '30px 0px', 'display': 'flex', 'alignsItem': 'center', 'justifyContent': 'center'}}>
-                                    <DatePicker controlEnable={false} initialMode={2} />
-                                </div>
-                                <h1>ADD FIRSTMEET</h1>
-                                <div className="flex">
-                                    <input ref="loc" type="text" placeholder="" value={this.state.loc} onChange={this.onKeyPressed}/>
-                                    <Btn text="CLOSE WHEN FULL" classNameOn="Btn-active fill" classNameOff="Btn fill" />
-                                </div>
+                                    <DatePicker controlEnable={false} initialMode={2} onSetDates={(dates) => {
+                                            let date_start = dates[0];
+                                            if(date_start.constructor === Array) date_start = new Date(date_start[0]);
+                                            else date_start = new Date(date_start)
+                                            let date_end = dates[dates.length - 1];
+                                            if(date_end.constructor === Array) date_end = new Date(date_end[1]);
+                                            else date_end = new Date(date_end);
 
-                                <h1>PARTICIPANTS FILTER</h1>
-                                <Btn text="ONLY CHULA" classNameOn="Btn-active fill tg" classNameOff="Btn fill tg" />
-                                <select>
-                                    <option value="ALL">ALL</option>
-                                    {
-                                        fullId.map((id, index) => {
-                                            return <option value={findInfoById(id).FullName} key={index}>{findInfoById(id).FullName}</option>
-                                        })
-                                    }
-                                </select>
-                                <select>
-                                    {
-                                        ["ALL", "1", "2", "3", "4", "5", "6", "OTHER"].map((item, index) => {
-                                            return <option value={item} key={index}>{item}</option>
-                                        })
-                                    }
-                                </select>
+                                            this.setState({
+                                                ...this.state,
+                                                'option': {
+                                                    ...this.state.option,
+                                                    'recruitment': {
+                                                        ...this.state.option.recruitment,
+                                                        'recruitmentDuration': [date_start, date_end]
+                                                    }
+                                                }
+                                            })
+                                        }} />
+                                </div>
+                                <h1 className="display-none">PARTICIPANTS FILTER</h1>
+                                <div className="flex display-none" style={{'width': '100%', 'alignItems': 'center'}}>
+                                    <Btn text="ONLY CHULA" classNameOn="Btn-active fill tg flex-1" classNameOff="Btn fill tg" style={{'marginBottom': '0px', 'maxWidth': '120px'}} callback={(isActive) => {
+                                            this.onChangeText({target: {value: isActive}}, "option.recruitment.filter.onlyChula")
+                                        }} />
+                                    <select style={{'width': '50%', 'height': '35px', 'marginRight': '10px'}}>
+                                        <option value="ALL">ALL</option>
+                                        {
+                                            fullId.map((id, index) => {
+                                                return <option value={findInfoById(id).FullName} key={index}>{findInfoById(id).FullName}</option>
+                                            })
+                                        }
+                                    </select>
+                                    <select style={{'width': '20%', 'height': '35px'}}>
+                                        {
+                                            ["ALL", "1", "2", "3", "4", "5", "6", "7", "OTHER"].map((item, index) => {
+                                                return <option value={item} key={index}>{item}</option>
+                                            })
+                                        }
+                                    </select>
+                                </div>
                             </div>
                         ) : (null)
                     }
@@ -578,34 +1133,40 @@ class EditEvent extends Component {
                         <h1>REQUIRED INFORMATION</h1>
                         <div className="flex">
                         <div className="w30">
-                            <CustomRadio state={state} text="NAME and SURNAME" />
-                            <CustomRadio state={state} text="NICKNAME" />
-                            <CustomRadio state={state} text="STUDENT ID" />
-                            <CustomRadio state={state} text="FACULTY" />
-                            <CustomRadio state={state} text="YEAR" />
+                            <CustomRadio state={state} text="NAME and SURNAME" onClick={(this.onClickField)} />
+                            <CustomRadio state={state} text="NICKNAME" onClick={(this.onClickField)} />
+                            <CustomRadio state={state} text="STUDENT ID" onClick={(this.onClickField)} />
+                            <CustomRadio state={state} text="FACULTY" onClick={(this.onClickField)} />
+                            <CustomRadio state={state} text="YEAR" onClick={(this.onClickField)} />
                         </div>
                         <div className="w30">
-                            <CustomRadio state={state} text="BIRTHDAY" />
-                            <CustomRadio state={state} text="FACEBOOK" />
-                            <CustomRadio state={state} text="LINE ID" />
-                            <CustomRadio state={state} text="EMAIL" />
-                            <CustomRadio state={state} text="MOBILE NUMBER" />
+                            <CustomRadio state={state} text="BIRTHDAY" onClick={(this.onClickField)} />
+                            <CustomRadio state={state} text="FACEBOOK" onClick={(this.onClickField)} />
+                            <CustomRadio state={state} text="LINE ID" onClick={(this.onClickField)} />
+                            <CustomRadio state={state} text="EMAIL" onClick={(this.onClickField)} />
+                            <CustomRadio state={state} text="MOBILE NUMBER" onClick={(this.onClickField)} />
                         </div>
                         <div className="w30">
-                            <CustomRadio state={state} text="T-SHIRT SIZE" />
-                            <CustomRadio state={state} text="MEDICAL PROBLEM" />
-                            <CustomRadio state={state} text="FOOD ALLERGIES" />
+                            <CustomRadio state={state} text="T-SHIRT SIZE" onClick={(this.onClickField)} />
+                            <CustomRadio state={state} text="MEDICAL PROBLEM" onClick={(this.onClickField)} />
+                            <CustomRadio state={state} text="FOOD ALLERGIES" onClick={(this.onClickField)} />
                         </div>
                         </div>
                     </div>
                     <p className="l2"></p>
                     <div>
-                        <button className="bl">ADD QUESTION</button> Click to create your form.
+                        <Btn text="ENABLE QUESTION" classNameOn="bl Btn-active" classNameOff="bl Btn" callback={(isActive) => {
+                            this.setState({
+                                ...this.state,
+                                enableForm: isActive
+                            })
+                        }} />
+                        Click to create your form after submit.
                     </div>
                     <p className="l1"></p>
                     <div className="admin">
                         <h1>ADD EVENT ADMIN</h1>
-                        <AddList text="ADD ADMIN" placeholder="STUDENT ID/FACEBOOK ID" />
+                        <AddAdmin user={this.props.user} onSelected={(d) => {console.log(d)}}/>
                     </div>
                     <div>
                         <button className="bt blue">PUBLIC</button>

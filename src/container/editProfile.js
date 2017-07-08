@@ -23,7 +23,8 @@ class editProfile extends Component {
     componentWillMount() {
         let config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
             }
         }
 

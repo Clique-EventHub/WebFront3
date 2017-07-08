@@ -45,7 +45,7 @@ class tablePage extends Component {
         this.checkDisable = this.checkDisable.bind(this);
         // this.onMouseMove = this.onMouseMove.bind(this);
 
-        axios.get(`${hostname}event?id=${this.props.eventId}`).then((data) => {
+        axios.get(`${hostname}event?id=${this.props.eventId}`, { headers: { 'crossDomain': true }}).then((data) => {
             this.setState({
                 ...this.state,
                 'formId': data.data.forms[testFormId][Object.keys(data.data.forms[testFormId])[0]],
@@ -57,7 +57,8 @@ class tablePage extends Component {
         }).then((formId) => {
             let config = {
                 'headers': {
-                    'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                    'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                    'crossDomain': true
                 }
             }
 

@@ -81,7 +81,7 @@ article.edit-event button.tag {
   font-weight: normal;
   margin-right: 20px;
   margin-bottom: 10px;
-  width: 90px;
+  width: 95px;
   height: 35px;
   border-color: #CCCCCC;
   color: #999999;
@@ -154,6 +154,18 @@ article.edit-event .position-relative {
 
 article.edit-event .date {
     margin: 0px auto 30px auto;
+    display: flex;
+
+}
+
+@media all and (max-width: 478px) {
+    article.edit-event .date {
+        display: block;
+    }
+
+    article.edit-event .date .DatePicker {
+        margin: auto;
+    }
 }
 
 article.edit-event .TimeInput {
@@ -214,6 +226,10 @@ article.edit-event input[type="text"] {
 
 article.edit-event div.w55 input[type="text"] {
   width: 80%
+}
+
+article.edit-event div.admin {
+    margin-bottom: 80px;
 }
 
 article.edit-event div.admin input[type="text"] {
@@ -516,4 +532,56 @@ article.edit-event div[data-alt="preview-image"] {
     width: 50px;
     background-size: cover;
     background-position: center;
+}
+
+.DateClick {
+    position: relative;
+
+}
+
+.DateClick .Btn {
+    border: 1.8px solid;
+    border-radius: 5px;
+    font-size: 1em;
+    height: 35px;
+    font-weight: normal;
+    margin-right: 5px;
+    border-color: #CCCCCC;
+    color: inherit;
+    background-color: inherit;
+    margin-bottom: 5px;
+}
+
+.DateClick > div.DatePickerItem {
+    position: absolute;
+    display: none;
+    z-index: 320;
+    padding: 20px;
+}
+
+.DateClick > div.DatePickerItem.on {
+    display: block;
+}
+
+.firstmeet {
+    width: 100%;
+    margin: auto;
+    position: relative;
+}
+
+.firstmeet div.button {
+    display: flex;
+}
+
+.firstmeet input {
+    width: 100% !important;
+    margin-bottom: 10px !important;
+}
+
+.BtnCustom {
+    white-space: nowrap;
+    width: auto !important;
+    padding: 7px 30px;
+    height: 35px !important;
+    box-sizing: border-box;
 }

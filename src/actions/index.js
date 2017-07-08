@@ -7,7 +7,7 @@ import * as facultyMap from './facultyMap';
 //myStore.getState()
 
 // const hostname = "https://api.cueventhub.com/";
-export const hostname = "https://api.cueventhub.com/";
+export const hostname = "http://139.59.97.65:1111/";
 const expireDefaultInterval = 1000*60*60*3;
 
 export const requestActionList = [
@@ -149,7 +149,8 @@ function request(url, method, types) {
 function requestWithAuthorization(url, options) {
     let config = {
         'headers': {
-            'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+            'crossDomain': true
         }
     }
 
@@ -315,27 +316,63 @@ function updateAllFriendsInfo(dispatch) {
     if(FB && fb.user_friends.length > 0) {
         let tmp = fb.user_friends.map((info) => {
             return new Promise((resolve, reject) => {
-                axios.get(`${hostname}findfb?user=${info.id}`).then((data) => {
+
+                axios.get(`${hostname}findfb?user=${info.fb.id}`, { headers: {'crossDomain': true}}).then((data) => {
                     resolve({
+                        ...info,
                         server: {...data.data.user_info},
-                        isError: false,
-                        fb: {...info}
+                        isError: false
                     });
                 }).catch((error) => {
                     resolve({
-                        server: {...error.response.data},
-                        isError: true,
-                        fb: {...info}
+                        ...info,
+                        server: {...error},
+                        isError: true
                     });
                 });
             })
         });
 
         Promise.all(tmp).then((datas) => {
-            dispatch({
-                type: types.UPDATE_USER_FRIENDS_INFO,
-                payload: datas
-            })
+            let isError = true;
+            for(let i = 0; i < datas.length && isError; i++) {
+                isError = datas[i].isError;
+            }
+            if(isError) {
+                setTimeout(() => {
+                    let tmp2 = fb.user_friends.map((info) => {
+                        return new Promise((resolve, reject) => {
+                            axios.get(`${hostname}findfb?user=${info.fb.id}`, {headers: {'crossDomain': true}}).then((data) => {
+                                resolve({
+                                    ...info,
+                                    server: {...data.data.user_info},
+                                    isError: false
+                                });
+                            }).catch((error) => {
+                                resolve({
+                                    ...info,
+                                    server: {...error},
+                                    isError: true
+                                });
+                            });
+                        })
+                    });
+
+                    Promise.all(tmp2).then((datas) => {
+                        // console.log(datas);
+                        dispatch({
+                            type: types.UPDATE_USER_FRIENDS_INFO,
+                            payload: datas
+                        })
+                    });
+                }, 1200);
+            } else {
+                // console.log(datas);
+                dispatch({
+                    type: types.UPDATE_USER_FRIENDS_INFO,
+                    payload: datas
+                })
+            }
         })
     }
 }
@@ -443,7 +480,7 @@ function fbGetFriendsList(dispatch) {
             if(res.data) {
                 dispatch({
                     type: types.FB_FETCH_USERS_FRIENDS_LIST,
-                    payload: res
+                    payload: {data: res.data.map((item) => {return {fb: item, isError: false, server: null}})}
                 });
                 updateAllFriendsInfo(dispatch);
             }
@@ -456,8 +493,7 @@ export function fbGetSeverToken(dispatch) {
     const fb = myStore.getState().fb;
     return new Promise((resolve, reject) => {
         if(FB && fb.status === "connected") {
-            console.log(`${hostname}login/facebook?access_token=${myStore.getState().fb.authResponse.accessToken}&id=${myStore.getState().fb.authResponse.userID}`);
-            axios.get(`${hostname}login/facebook?access_token=${myStore.getState().fb.authResponse.accessToken}&id=${myStore.getState().fb.authResponse.userID}`).then((res) => {
+            axios.get(`${hostname}login/facebook?access_token=${myStore.getState().fb.authResponse.accessToken}&id=${myStore.getState().fb.authResponse.userID}`, {headers: {'crossDomain': true}}).then((res) => {
                 setCookie(`fb_sever_token`, res.data.access_token, expireDefaultInterval);
                 dispatch({
                     type: types.FB_GET_TOKEN,
@@ -466,6 +502,7 @@ export function fbGetSeverToken(dispatch) {
                 resolve(true);
             }).catch((err) => {
                 console.log(err);
+                console.log(err.toString());
             })
         } else {
             dispatch({
@@ -533,12 +570,12 @@ export function getAllChannel() {
 }
 
 export function getChannel(id) {
-    axios.get(`${hostname}channel?id=${id}`).then((channel) => {
+    axios.get(`${hostname}channel?id=${id}`,{headers: {'crossDomain': true}}).then((channel) => {
         var eventsPromiseAsync = [];
 
         channel.data.events.map((event_id) => {
             var tmp = new Promise((resolve, reject) => {
-                axios.get(`${hostname}event?id=${event_id}`).then((data) => {
+                axios.get(`${hostname}event?id=${event_id}`,{headers: {'crossDomain': true}}).then((data) => {
 
                     myStore.dispatch({
                         type: `${types.SET_EVENTS_IN_CHANNEL}_FULFILLED`,

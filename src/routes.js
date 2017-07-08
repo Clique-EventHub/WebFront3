@@ -16,6 +16,7 @@ import ChannelInfo from './container/channelInfo';
 import FormPage from './pages/formPage';
 import EditChannelPage from './pages/editChannel';
 import ChannelDetail from './container/channelDetail';
+import MyEventPage from './pages/myEventPage';
 
 class FallbackPage extends Component {
 
@@ -66,6 +67,7 @@ export default (
         <Route path="channel/:id" component={ChannelPage} />
         <Route path="editchannel/:id" component={EditChannelPage} />
         <Route path="profile" component={EditProfile} />
+        <Route path="myEvent" component={MyEventPage} />
         <Route path="table" component={TablePage} />
         <Route path="calendar" component={CalendarPage} />
         <Route path="event" component={EditEvent}/>

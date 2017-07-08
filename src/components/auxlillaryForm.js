@@ -6,7 +6,8 @@ export function getForm(form_id, option) {
     if(option) {
         let config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
             }
         }
 
@@ -35,7 +36,8 @@ export function getForm(form_id, option) {
 export function CreateFrom(bodyData, option) {
     let config = {
         'headers': {
-            'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+            'crossDomain': true
         }
     }
     axios.post(`${hostname}form`, bodyData, config).then((response) => {
@@ -54,7 +56,8 @@ export function EditForm(bodyData, option) {
 export function saveResponse(form_id, responseBody, option) {
     let config = {
         'headers': {
-            'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+            'crossDomain': true
         }
     }
     axios.put(`${hostname}form?id=${form_id}`, responseBody, config).then((response) => {
@@ -69,7 +72,8 @@ export function saveResponse(form_id, responseBody, option) {
 export function deleteForm(form_id, option) {
     let config = {
         'headers': {
-            'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+            'crossDomain': true
         }
     }
     axios.delete(`${hostname}form`, config).then((response) => {

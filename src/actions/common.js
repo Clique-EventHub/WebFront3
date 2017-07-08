@@ -124,3 +124,14 @@ export function afterSlash(str) {
     if(typeof(str) !== "string") return "";
     return str.slice(str.indexOf('/')+1, str.length);
 }
+
+export function objModStr(obj,is, value) {
+    if (typeof is == 'string')
+        return objModStr(obj,is.split('.'), value);
+    else if (is.length == 1 && value!==undefined)
+        return obj[is[0]] = value;
+    else if (is.length == 0)
+        return obj;
+    else
+        return objModStr(obj[is[0]],is.slice(1), value);
+}

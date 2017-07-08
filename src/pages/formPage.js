@@ -48,7 +48,8 @@ class formPage extends Component {
     onStart() {
         let config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
             }
         }
 
@@ -139,7 +140,8 @@ class formPage extends Component {
 
         let config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
             }
         }
 
@@ -169,7 +171,8 @@ class formPage extends Component {
 
         let config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
             }
         }
 

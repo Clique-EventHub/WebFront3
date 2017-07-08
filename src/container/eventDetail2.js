@@ -35,6 +35,7 @@ function replaceIncorrectLink(str) {
     if(typeof(str) === "string") {
         if(str.indexOf("128.199.208.0/") === 0) str = str.replace("128.199.208.0/", hostname);
         else if(str.indexOf("cueventhub.com/") === 0) str = str.replace("cueventhub.com/", hostname)
+        else if(str.indexOf("139.59.97.65:1111/") === 0) str = str.replace("139.59.97.65:1111/", hostname)
         return str;
     }
     return null;
@@ -78,7 +79,7 @@ class eventDetailFix extends Component {
             ...this.state,
             'isLoading': true
         });
-        axios.get(`${hostname}event?id=${this.props.eventId}`).then((data) => {
+        axios.get(`${hostname}event?id=${this.props.eventId}`, { headers: { 'crossDomain': true }}).then((data) => {
             let rObj = {
                 ...defaultState,
                 ...data.data,
@@ -88,7 +89,7 @@ class eventDetailFix extends Component {
             this.onResetPopup();
             return data.data;
         }).then((event) => {
-            axios.get(`${hostname}channel?id=${event.channel}&stat=false`).then((res) => {
+            axios.get(`${hostname}channel?id=${event.channel}&stat=false`, { headers: { 'crossDomain': true }}).then((res) => {
                 this.setState({
                     ...this.state,
                     'channel': res.data
@@ -149,7 +150,7 @@ class eventDetailFix extends Component {
                         {eventName}
                     </div>
                     <div className="event-poster-fix">
-                        <Image src={replaceIncorrectLink(this.state.picture)} imgAlt="main-poster" rejectClass="flex-1 min-height-400" />
+                        <Image src={replaceIncorrectLink(this.state.picture)} imgOption={{'alt': 'main-poster'}} rejectClass="flex-1 min-height-400" />
                         <div className="tags-container">
                             <div data-icon="tag" />
                             <div data-icon="tag" />

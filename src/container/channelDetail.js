@@ -26,7 +26,7 @@ class channelInfo extends Component {
             'channel_id': "5946205a4b908f001403aba5"
         }
 
-        axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id).then((data) => {
+        axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id, { headers: { 'crossDomain': true }}).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.name))
             _this.state = {
@@ -44,7 +44,7 @@ class channelInfo extends Component {
             console.log("get channel error");
         });
     }
-    
+
     onExit() {
         this.props.onToggle();
     }
@@ -62,9 +62,9 @@ class channelInfo extends Component {
                     <button className="bt-fol" alt="btn-follow">FOLLOW</button>
 
                     <p className="l1"></p>
-                    
+
                     <div className="event-bio">
-                    
+
                         <h3 className="display-none">Bio</h3>
                         <p>     Event Detail  Event Detail Event Detail Event Detail Event Detail
                         Event Detail  Event Detail Event Detail Event Detail Event Detail
@@ -108,7 +108,7 @@ class channelInfo extends Component {
             </div>
 
         )
-        
+
     }
 }
 

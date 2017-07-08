@@ -78,7 +78,7 @@ class CustomRadio extends Component {
         let new_mode = (this.state.mode + 1)%this.state.state.length;
 
         //logic here
-        if(isExist(this.props.onClick) && typeof(this.props.onClick) === "function") this.props.onClick(this.state.state[new_mode]);
+        if(isExist(this.props.onClick) && typeof(this.props.onClick) === "function") this.props.onClick({...this.state.state[new_mode], text: this.props.text});
 
         this.setState({
             ...this.state,

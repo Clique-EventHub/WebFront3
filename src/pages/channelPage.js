@@ -28,7 +28,8 @@ class channelPage extends Component {
         if(!this.state.isFollow) {
             let config = {
                 'headers': {
-                    'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                    'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                    'crossDomain': true
                 }
             }
 
@@ -66,7 +67,7 @@ class channelPage extends Component {
             }
         }
 
-        axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id).then((data) => {
+        axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id, { headers: { 'crossDomain': true }}).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.name));
             _this.setState({

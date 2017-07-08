@@ -22,6 +22,16 @@ const defaultState = {
 
 const maxLength = 212;
 
+function replaceIncorrectLink(str) {
+    if(typeof(str) === "string") {
+        if(str.indexOf("128.199.208.0/") === 0) str = str.replace("128.199.208.0/", hostname);
+        else if(str.indexOf("cueventhub.com/") === 0) str = str.replace("cueventhub.com/", hostname)
+        else if(str.indexOf("139.59.97.65:1111/") === 0) str = str.replace("139.59.97.65:1111/", hostname)
+        return str;
+    }
+    return null;
+}
+
 /*
 Override State Format
 {
@@ -91,7 +101,7 @@ class DivImg extends Component {
         let new_className = `${(this.props.options && this.props.options.className) ? this.props.options.className : ''} ${(this.state.isError) ? this.state.defaultShade : ''}`;
         return (
             <div className={new_className} style={this.setStyle()} {...this.props.options}>
-                <img src={this.props.src} style={{
+                <img src={replaceIncorrectLink(this.props.src)} style={{
                         'position': 'absolute',
                         'height': '0px',
                         'width': '0px',
@@ -124,15 +134,16 @@ class eventItem extends Component {
     }
 
     onLoadData(id) {
-        axios.get(`${hostname}event?id=${id}&stat=false`).then((res) => {
+        axios.get(`${hostname}event?id=${id}&stat=false`, { headers: { 'crossDomain': true }}).then((res) => {
             this.setState({
                 ...this.state,
                 'title': res.data.title,
-                'poster': res.data.picture_large[0],
+                'poster': res.data.picture,
                 'channel_name': res.data.channel_name,
                 'location': res.data.location,
-                'about': res.data.about,
-                'isLoad': true
+                'about': res.data.about[0],
+                'isLoad': true,
+                'date_time': res.data.time_each_day
             });
         }).catch((e) => {
             console.log(e);
@@ -140,7 +151,7 @@ class eventItem extends Component {
     }
 
     onButtonClick() {
-        this.props.onSetItem(<EventDetailFix onToggle={this.props.onToggle} />);
+        this.props.onSetItem(<EventDetailFix eventId={this.props.eventId} onToggle={this.props.onToggle} />);
         this.props.onToggle();
     }
 
@@ -159,9 +170,11 @@ class eventItem extends Component {
 
         if(tmp.date_time.length > 0) {
             let dateStart = tmp.date_time[0];
-            if(dateStart.constructor === Array) dateStart = dateStart[0];
+            if(dateStart.constructor === Array) dateStart = new Date(dateStart[0]);
+            else dateStart = new Date(dateStart);
             let dateEnd = tmp.date_time[tmp.date_time.length - 1];
-            if(dateEnd.constructor === Array) dateEnd = dateEnd[1];
+            if(dateEnd.constructor === Array) dateEnd = new Date(dateEnd[1]);
+            else dateEnd = new Date(dateEnd);
 
             let toNormString = function(date) {
                 return date.toString().slice(8, 10) + ' ' + date.toString().slice(4,7) + ' ' + date.toString().slice(11,15);
@@ -178,7 +191,7 @@ class eventItem extends Component {
         return (
             <article role="event-item" className={detailShownClass} onClick={this.onButtonClick}>
                 <h3 className="display-none">{tmp.title}</h3>
-                <DivImg src={tmp.poster} options={{'role': 'main-poster', 'alt': 'main-poster'}} />
+                <DivImg src={replaceIncorrectLink(tmp.poster)} options={{'role': 'main-poster', 'alt': 'main-poster'}} />
                 <div role="overlay" aria-hidden="true"></div>
                 {
                     (this.state.isJoined) ? (<span className="small top" role="joined"><i className="fa fa-check" aria-hidden="true"></i> Joined</span>) : (<span className="small top" role="joined" style={{'display': 'block', 'height': '1em'}}/>)
@@ -220,7 +233,7 @@ class eventItem extends Component {
 }
 
 eventItem.defaultProps = {
-    'eventId': '594bf476e374d100140f04ec'
+    'eventId': '595ef6c7822dbf0014cb821c'
 }
 
 export default eventItem;
