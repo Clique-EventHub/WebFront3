@@ -10,6 +10,7 @@ import TimeInput from '../components/TimeInput';
 import { fullId, findInfoById } from '../actions/facultyMap';
 import { hostname } from '../actions/index';
 import series from '../functions/PromiseSeries';
+import PictureUpload from '../components/PictureUpload';
 
 const state = [{
         'type': 'none',
@@ -168,9 +169,19 @@ class Btn extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            'isActive': false
+            'isActive': false,
+            'isInit': false
         }
         this.onClick = this.onClick.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(this.props.isInit !== nextProps.isInit && nextProps.isInit === true && !this.state.isInit) {
+            this.setState({
+                'isInit': true,
+                'isActive': this.props.initialState || false
+            })
+        }
     }
 
     onClick() {
@@ -203,7 +214,7 @@ const defaultState = {
         'date_start': '',
         'date_end': '',
         'picture': '',
-        'picture_large': '',
+        'picture_large': [],
         'year_require': '',
         'faculty_require': '',
         'tags': '',
@@ -251,7 +262,9 @@ const defaultState = {
                 'faculty': [],
                 'year': []
             }
-        }
+        },
+        'picture_file': null,
+        'picture_large_file': null
     }
 }
 
@@ -651,6 +664,24 @@ class EditEvent extends Component {
                 if(item.constructor === Array) return ([new Date(item[0]), new Date(item[1])]);
                 return new Date(item);
             })
+            let new_option = { ...this.state.option }
+            if(data.notes.length  > 0) {
+                new_option = {
+                    ...this.state.option,
+                    'recruitment': {
+                        ...this.state.option.recruitment,
+                        'firstmeet': {
+                            ...this.state.option.recruitment.firstmeet,
+                            'location': data.notes[0].content.location,
+                            'note': data.notes[0].note,
+                            'date': new Date(data.notes[0].content.dates[0]),
+                            'closeWhenFull': data.notes[0].content.closeWhenFull
+                        },
+                        'recruitmentDuration': [new Date(data.notes[1].content[0]), new Date(data.notes[1].content[data.notes[1].content.length - 1])]
+                    }
+                }
+            }
+
             this.setState({
                 ...this.state,
                 'old': {
@@ -673,7 +704,10 @@ class EditEvent extends Component {
                     'faculty_require': data.faculty_require,
                     'tags': data.tags,
                     'forms': data.forms,
-                }
+                },
+                'isLoading': false,
+                'enableRecruitment': (data.notes.length > 0),
+                'option': new_option
             })
             this.resizeTextArea("about");
         }, (error) => {
@@ -790,7 +824,9 @@ class EditEvent extends Component {
             'refs': refs,
             'optional_field': optional_field,
             'require_field': require_field,
-            'tags': tags
+            'tags': tags,
+            'picture': this.state.new.picture,
+            'picture_large': this.state.new.picture_large
         }
 
         console.log(responseBody);
@@ -801,8 +837,18 @@ class EditEvent extends Component {
 
         function overallPictureProcess(id) {
             let overall_process = [0, 0];
-            pictureProcess("poster", "small", 0);
-            pictureProcess("picture", "large", 1);
+            pictureProcess("picture_file", "small", 0);
+            pictureProcess("picture_large_file", "large", 1);
+
+            function praseId(str) {
+                "139.59.97.65:1111/picture/el595ef6c7822dbf0014cb821cglk87g1499414628860.png"
+                if(str.indexOf("139.59.97.65:1111/picture/") === 0) {
+                    return str.replace("139.59.97.65:1111/picture/", "");
+                } else if(str.indexOf("http://139.59.97.65:1111/picture/") === 0) {
+                    return str.replace("http://139.59.97.65:1111/picture/", "");
+                }
+                return str;
+            }
 
             function pictureProcess(refName, size, processIndex) {
                 size = size || "large";
@@ -817,16 +863,18 @@ class EditEvent extends Component {
                 }
 
                 let data = new FormData();
-                for(let i = 0; i < _this.refs[refName].files.length; i++) {
-                    data.append('pictures', _this.refs[refName].files[i]);
+                if(_this.state.option[refName]) {
+                    for(let i = 0; i < _this.state.option[refName].files.length; i++) {
+                        data.append('pictures', _this.state.option[refName].files[i]);
+                    }
+                    axios.post(`${hostname}picture?field=event&size=${size}&id=${id}`, data, configs).then((res) => {
+                        console.log(res);
+                    }).catch((err) => {
+                        console.error(err);
+                    })
                 }
-
-                axios.post(`${hostname}picture?field=event&size=${size}&id=${id}`, data, configs).then((res) => {
-                    console.log(res);
-                }).catch((err) => {
-                    console.error(err);
-                })
             }
+            return true;
         }
 
         if(this.state.event_id) {
@@ -938,11 +986,21 @@ class EditEvent extends Component {
                         </div>
                         <div ref="addPoster">
                             <h1>ADD MAIN POSTER</h1>
-                            <label className="fileContainer">
-                                <div>Upload</div>
-                                <input type="file" ref="poster" onChange={this.onSelectedPoster} id="poster" name="poster" className="fileInput" accept="image/*" />
-                            </label>
-                            <div data-alt="preview-image" ref="preview-image" />
+                            <PictureUpload text="Upload Poster" isInit={!this.state.isLoading} srcs={[replaceIncorrectLink(this.state.old.picture)]} showFilesNumber={false} persistentImg={false} onUpdate={(val, t) => {
+                                    if(val[0] !== replaceIncorrectLink(this.state.new.picture)) {
+                                        this.setState({
+                                            ...this.state,
+                                            'new': {
+                                                ...this.state.new,
+                                                'picture': val[0]
+                                            },
+                                            'option': {
+                                                ...this.state.option,
+                                                'picture_file': t
+                                            }
+                                        })
+                                    }
+                                }}/>
                         </div>
                     </div>
                     <div>
@@ -1004,25 +1062,35 @@ class EditEvent extends Component {
                                 })
                                 }}/>
                         </div>
-                        <label className="fileContainer">
-                            <div>Upload</div>
-                            <input type="file" ref="picture" id="picture" name="picture" className="fileInput" accept="image/*" multiple />
-                        </label>
+                        <PictureUpload text="Upload Pictures" isMultiple={true} isInit={!this.state.isLoading} srcs={this.state.old.picture_large.map((item) => replaceIncorrectLink(item))} showFilesNumber={true} persistentImg={true} onUpdate={(val, t) => {
+                                this.setState({
+                                    ...this.state,
+                                    'new': {
+                                        ...this.state.new,
+                                        'picture_large': val
+                                    },
+                                    'option': {
+                                        ...this.state.option,
+                                        'picture_large_file': t
+                                    }
+                                })
+                            }}/>
                     </div>
                     <p className="l1"></p>
                     <div>
                         <h1>TAG</h1>
                         {
                             TAG_1.map((key, index) => {
-                                if(key.length > 7) return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag long" classNameOff="Btn tag long" callback={(isActive) => {this.onTagChange(1, isActive, index);}} />);
-                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag" callback={(isActive) => {this.onTagChange(1, isActive, index);}} />);
+                                //Fuck you bitch
+                                if(key.length > 7) return (<Btn key={index} text={`${key}`} isInit={!this.state.isLoading} initialState={this.state.old.tags.indexOf(key) !== -1} classNameOn="Btn-active tag long" classNameOff="Btn tag long" callback={(isActive) => {this.onTagChange(1, isActive, index);}} />);
+                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" isInit={!this.state.isLoading} initialState={this.state.old.tags.indexOf(key) !== -1} classNameOff="Btn tag" callback={(isActive) => {this.onTagChange(1, isActive, index);}} />);
                             })
                         }
                         <p className="l2 ltag"></p>
                             {
                                 TAG_2.map((key, index) => {
-                                    if(key.length > 7) return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag long" classNameOff="Btn tag long" callback={(isActive) => {this.onTagChange(2, isActive, index);}} />);
-                                    return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag" callback={(isActive) => {this.onTagChange(2, isActive, index);}} />);
+                                    if(key.length > 7) return (<Btn key={index} text={`${key}`} isInit={!this.state.isLoading} initialState={this.state.old.tags.indexOf(key) !== -1} classNameOn="Btn-active tag long" classNameOff="Btn tag long" callback={(isActive) => {this.onTagChange(2, isActive, index);}} />);
+                                    return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" isInit={!this.state.isLoading} initialState={this.state.old.tags.indexOf(key) !== -1} classNameOff="Btn tag" callback={(isActive) => {this.onTagChange(2, isActive, index);}} />);
                                 })
                             }
                     </div>
@@ -1033,8 +1101,8 @@ class EditEvent extends Component {
                             <div className="add">
                                 <h1>ADD FIRSTMEET</h1>
                                 <div className="firstmeet">
-                                    <input type="text" placeholder="LOCATION" style={{'margin': '5px 0px'}} onChange={(event) => {this.onChangeText(event, "option.recruitment.firstmeet.location")}} />
-                                    <input type="text" placeholder="NOTE" onChange={(event) => {this.onChangeText(event, "option.recruitment.firstmeet.note")}} />
+                                    <input type="text" placeholder="LOCATION" style={{'margin': '5px 0px'}} value={this.state.option.recruitment.firstmeet.location} onChange={(event) => {this.onChangeText(event, "option.recruitment.firstmeet.location")}} />
+                                    <input type="text" placeholder="NOTE" value={this.state.option.recruitment.firstmeet.note} onChange={(event) => {this.onChangeText(event, "option.recruitment.firstmeet.note")}} />
                                     <div className="button">
                                         <div className="DateClick">
                                             <button onClick={() => {
@@ -1042,7 +1110,7 @@ class EditEvent extends Component {
                                                     else this.refs["firstmeetDate"].classList.add("on");
                                                 }} className="Btn" style={{'whiteSpace': 'nowrap', 'width': '100px'}}>{firstMeetDateStr}</button>
                                                 <div className="DatePickerItem basic-card-no-glow" ref="firstmeetDate">
-                                                    <DatePicker controlEnable={false} initialMode={0} onSetDates={(date) => {
+                                                    <DatePicker initialDates={[new Date(this.state.old.notes[0].content.dates[0])]} controlEnable={false} initialMode={0} onSetDates={(date) => {
                                                         this.setState({
                                                             ...this.state,
                                                             'new': {
@@ -1084,7 +1152,7 @@ class EditEvent extends Component {
                                 </div>
                                 <h1>RECRUITMENT DURATION</h1>
                                 <div className="basic-card-no-glow" style={{'width': '340px', 'margin': 'auto', 'padding': '30px 0px', 'display': 'flex', 'alignsItem': 'center', 'justifyContent': 'center'}}>
-                                    <DatePicker controlEnable={false} initialMode={2} onSetDates={(dates) => {
+                                    <DatePicker initialDates={[[new Date(this.state.old.notes[1].content[0]), new Date(this.state.old.notes[1].content[this.state.old.notes[1].content.length - 1])]]} controlEnable={false} initialMode={2} onSetDates={(dates) => {
                                             let date_start = dates[0];
                                             if(date_start.constructor === Array) date_start = new Date(date_start[0]);
                                             else date_start = new Date(date_start)

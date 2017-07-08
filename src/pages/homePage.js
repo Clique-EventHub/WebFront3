@@ -14,12 +14,19 @@ import EditProfile from '../container/editProfile';
 import DatePicker from '../components/datePicker';
 import EventDetailFix from '../container/eventDetail2';
 
+import axios from 'axios';
+import { hostname } from '../actions/index';
+
 class homePage extends Component {
 
     constructor(props) {
         super(props);
         this.onClickMe = this.onClickMe.bind(this);
         this.onItemPopUpClick = this.onItemPopUpClick.bind(this);
+        this.state = {
+            'eventHot': [],
+            'eventNew': []
+        }
     }
 
     onClickMe() {
@@ -33,13 +40,34 @@ class homePage extends Component {
 
     componentWillMount() {
         document.title = "Event Hub | Home";
+        axios.get(`${hostname}event/hot`).then((data) => data.data).then((res) => {
+            let eventHotId = [];
+            if(res.first) eventHotId.push(res.first._id);
+            if(res.second) eventHotId.push(res.second._id);
+            if(res.third) eventHotId/push(res.third._id);
+
+            this.setState({
+                ...this.state,
+                'eventHot': eventHotId
+            })
+        })
+
+        axios.get(`${hostname}event/new`).then((data) => data.data.events).then((res) => {
+            this.setState({
+                ...this.state,
+                'eventNew': res.map((item) => item._id)
+            })
+        })
     }
 
     componentDidMount() {
         if(!(typeof(this.props.location.query.eid) === "undefined" || this.props.location.query.eid === null)) {
-            console.log("Hello")
             this.onItemPopUpClick(<EventDetailFix onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         }
+    }
+
+    componentDidUpdate() {
+        console.log(this.state);
     }
 
     render() {
@@ -70,10 +98,11 @@ class homePage extends Component {
                         </section>
                         <section content="new">
                             <h2>New</h2>
-                            <EventItem posterSrc={posterTest[0]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} isJoined={true} />
-                            <EventItem posterSrc={posterTest[1]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            <EventItem posterSrc={posterTest[2]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            <EventItem posterSrc={posterTest[3]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            {
+                                this.state.eventNew.map((id) => {
+                                    return (<EventItem eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} isJoined={true} />)
+                                })
+                            }
                         </section>
                     </section>
                     <section content="bottom-half">
