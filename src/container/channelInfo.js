@@ -106,49 +106,52 @@ class channelInfo extends Component {
         });
 
         this.onKeyPressed = this.onKeyPressed.bind(this);
+        this.save = this.save.bind(this);
     }
 
     onKeyPressed() {
         const newState = {
             ...this.state,
             'new_name': this.refs.name.value,
-            'new_picture': this.refs.picture.value,
-            'new_detail': this.refs.detail.value,
-            'new_picture_large': this.refs.picture_large.value,
-            'new_tags': this.refs.tags.value,
+            //'new_picture': this.refs.picture.value,
+            'new_detail': this.refs.about.value,
+            //'new_picture_large': this.refs.picture_large.value,
+            //'new_tags': this.refs.tags.value,
         };
         this.setState(newState);
     }
 
     save() {
         console.log("kuyyyyy");
-        const newState = {
+        this.setState({
             ...this.state,
-            'name': this.state.name.value,
-            'picture': this.state.picture.value,
-            'detail': this.state.detail.value,
-            'picture_large': this.state.picture_large.value,
-            'tags': this.state.tags.value,
-        };
-        this.setState(newState);
+            'name': this.state.new_name,
+            'picture': this.state.new_picture,
+            'detail': this.refs.about.value,
+            'picture_large': this.state.new_picture_large,
+            'tags': this.state.new_tags
+        });
+
+        console.log(this.refs.about.value);
+        console.log(this.state.detail);
 
         let config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true,
             }
         }
-
         let responseBody = {
-            'name': this.state.name.value,
-            'picture': this.state.picture.value,
-            'detail': this.state.detail.value,
-            'picture_large': this.state.picture_large.value,
-            'tags': this.state.tags.value,
-        }
-
-        let _this = this;
-
-        axios.put('http://139.59.97.65:1111/event?id='+ _this.state.event_id, responseBody, config).then((response) => {
+            'name': this.refs.about.name,
+            //'picture': this.state.picture.value,
+            //'detail': [this.refs.about.value],
+            //'picture_large': this.state.picture_large.value,
+            //'tags': this.state.tags
+        };
+        console.log("dddd");
+        console.log(responseBody.detail);
+        console.log(this.state.channel_id);
+        axios.put('http://139.59.97.65:1111/channel?id='+ this.state.channel_id, responseBody, config).then((response) => {
             console.log("saved!!!");
             return true;
         }, (error) => {
