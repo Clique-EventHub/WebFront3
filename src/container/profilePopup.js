@@ -14,6 +14,19 @@ class profilePopup extends Component {
         super(props);
 
         this.state = {
+          'firstName': '',
+          'lastName': '',
+          'picture': '',
+          'faculty': '',
+          'join_events': '',
+          'notification': '',
+          'n_noti': '',
+          'event1_title': '',
+          'event1_date_start': '',
+          'event2_title': '',
+          'event2_date_start': '',
+          'event3_title': '',
+          'event3_date_start': '',
           'isLoading': true,
           'login': false
         };
@@ -43,6 +56,7 @@ class profilePopup extends Component {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({
+                ...this.state,
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
@@ -87,16 +101,19 @@ class profilePopup extends Component {
                 console.log(JSON.stringify(data.data.title))
                 if(i === 0){
                     _this.setState({
+                        ...this.state,
                         'event1_title': data.data.title,
                         'event1_date_start': data.data.date_start,
                     })
                 } else if (i === 1) {
                     _this.setState({
+                        ...this.state,
                         'event2_title': data.data.title,
                         'event2_date_start': data.data.date_start,
                     })
                 } else if (i === 2) {
                     _this.setState({
+                        ...this.state,
                         'event3_title': data.data.title,
                         'event3_date_start': data.data.date_start,
                     })
@@ -111,7 +128,10 @@ class profilePopup extends Component {
     onLogin() {
         this.props.fbLogin(this.props.fbGetSeverToken);
         this.props.fbGetBasicInfo();
-        this.setState({'login': true});
+        this.setState({
+            ...this.state,
+            'login': true
+        });
         // if(getCookie('fb_sever_token') != ""){
         //     this.setState({'login': true})
         //     console.log("cookie : " + getCookie('fb_sever_token') );
@@ -129,6 +149,7 @@ class profilePopup extends Component {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({
+                ...this.state,
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
@@ -149,7 +170,10 @@ class profilePopup extends Component {
 
     onLogout() {
         this.props.fbLogout();
-        this.setState({'login': false})
+        this.setState({
+            ...this.state,
+            'login': false
+        })
     }
 
     // logout() {

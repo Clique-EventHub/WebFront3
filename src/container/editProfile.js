@@ -13,6 +13,36 @@ class editProfile extends Component {
         super(props);
 
         this.state = {
+          'firstName': '',
+          'lastName': '',
+          'picture': '',
+          'regId': '',
+          'faculty': '99',
+          'birth_day': '',
+          'nick_name': '',
+          'lineId': '',
+          'email': '',
+          'phone': '',
+          'shirt_size': '',
+          'disease': '',
+          'allergy': '',
+          'dorm_building': '',
+          'dorm_room': '',
+          'dorm_bed': '',
+          'tag_like': '',
+
+          'new_birth_day': '',
+          'new_nick_name': '',
+          'new_lineId': '',
+          'new_email': '',
+          'new_phone': '',
+          'new_shirt_size': '',
+          'new_disease': '',
+          'new_allergy': '',
+          'new_dorm_building': '',
+          'new_dorm_room': '',
+          'new_dorm_bed': '',
+          'new_tag_like': '',
           'isLoading': true
         };
 
