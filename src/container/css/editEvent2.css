@@ -1,16 +1,16 @@
 article.edit-event {
-  top: 30px;
-  width: 50%;
-  padding: 20px 30px;
-  margin: auto;
+  /*top: 30px;*/
+  /*width: 50%;*/
+  /*padding: 20px 30px;*/
+  /*margin: auto;*/
   font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
   color: #555555;
   margin-bottom: 40px;
 }
 
 article.edit-event p.l1 {
-  width: 100% + 80px;
-  height: 1px;
+  width: calc(100% + 80px);
+  height: 1.1px;
   background-color: rgba(128, 128, 128, 0.7);
   display: block;
   padding: 0px;
@@ -19,7 +19,7 @@ article.edit-event p.l1 {
 
 article.edit-event p.l2 {
   width: 100%;
-  height: 1px;
+  height: 1.1px;
   background-color: rgba(128, 128, 128, 0.7);
   display: block;
   padding: 0px;
@@ -43,6 +43,11 @@ article.edit-event div.w30 {
   margin-left: 15px;
 }
 
+article.edit-event div.w30 > * {
+    display: block;
+    margin: 10px 0px;
+}
+
 article.edit-event h1 {
   font-size: 1em;
   margin-bottom: 10px;
@@ -56,6 +61,19 @@ article.edit-event div.admin button {
   margin-bottom: 100px;
 }
 
+article.edit-event .add {
+    flex-wrap: wrap;
+    position: relative;
+}
+
+article.edit-event .add > div {
+    /*margin: 0px 20px;*/
+    width: 50%;
+    box-sizing: border-box;
+    padding: 0px 20px;
+    /*text-align: center;*/
+}
+
 article.edit-event button.tag {
   border: 1.8px solid;
   border-radius: 5px;
@@ -63,14 +81,14 @@ article.edit-event button.tag {
   font-weight: normal;
   margin-right: 20px;
   margin-bottom: 10px;
-  width: 90px;
+  width: 95px;
   height: 35px;
   border-color: #CCCCCC;
   color: #999999;
   background-color: #FFFFFF;
 }
 
-article.edit-event button.fill {
+article.edit-event .fill {
   border: 1.8px solid;
   border-radius: 5px;
   font-size: 0.9em;
@@ -80,8 +98,8 @@ article.edit-event button.fill {
   width: 180px;
   height: 30px;
   border-color: #CCCCCC;
-  color: #999999;
-  background-color: #FFFFFF;
+  color: inherit;
+  background-color: inherit;
 }
 
 article.edit-event button.long {
@@ -130,6 +148,50 @@ article.edit-event button.blue {
   background-color: #00BFF0;
 }
 
+article.edit-event .position-relative {
+    position: relative;
+}
+
+article.edit-event .date {
+    margin: 0px auto 30px auto;
+    display: flex;
+
+}
+
+@media all and (max-width: 478px) {
+    article.edit-event .date {
+        display: block;
+    }
+
+    article.edit-event .date .DatePicker {
+        margin: auto;
+    }
+}
+
+article.edit-event .TimeInput {
+    margin-left: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+article.edit-event .TimeInput h3 {
+    font-weight: normal;
+    margin: 5px;
+}
+
+article.edit-event .TimeInput input {
+    text-align: center;
+    border: 1.8px solid #ccc;
+    border-radius: 5px;
+    height: 26px;
+    font-family: inherit;
+    font-size: 1em;
+    margin-bottom: 5px;
+    width: 100px;
+}
+
 article.edit-event textarea.detail {
   width: 65%;
   height: 100px;
@@ -159,10 +221,15 @@ article.edit-event input[type="text"] {
   font-family: inherit;
   font-size: 1em;
   margin-bottom: 5px;
+  padding: 3px 10px;
 }
 
 article.edit-event div.w55 input[type="text"] {
   width: 80%
+}
+
+article.edit-event div.admin {
+    margin-bottom: 80px;
 }
 
 article.edit-event div.admin input[type="text"] {
@@ -192,6 +259,15 @@ article.edit-event div.add option {
   color: #555555;
 }
 
+article.edit-event .tag-container-parent {
+    flex-wrap: wrap;
+}
+
+article.edit-event .tag-container {
+    width: 100%;
+    flex: 1;
+}
+
 article.edit-event ::-webkit-input-placeholder {
    text-align:center;
    font-size: 0.8em;
@@ -210,4 +286,302 @@ article.edit-event ::-moz-placeholder {  /* Firefox 19+ */
 article.edit-event :-ms-input-placeholder {
    text-align:center;
    font-size: 0.8em;
+}
+
+
+/* Three state Start */
+.ThreeStateRadio-Container {
+    position: relative;
+}
+
+input.ThreeStateRadio {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: 6px;
+
+    color: #008bdb;
+    border-color: #008bdb;
+}
+
+input.ThreeStateRadio + label:before {
+    content: "";
+    display: inline-block;
+
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    background-color: #FFF;
+    border: 1px solid rgba(160,160,160,0.5);
+    /*box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);*/
+}
+
+input.ThreeStateRadio:checked {
+    display: none;
+}
+
+input.ThreeStateRadio:checked.state-0 + label:before {
+    content: "";
+    font-size: 30px;
+    color: #000;
+
+    text-align: center;
+    line-height: 24px;
+}
+
+input.ThreeStateRadio:checked.state-1 + label:before {
+    content: "\2022";
+    font-size: 30px;
+    color: #AAA;
+    position: relative;
+    /*left: -10px;*/
+
+    text-align: center;
+    line-height: 24px;
+}
+
+input.ThreeStateRadio:checked.state-2 + label:before {
+    content: "\2022";
+    font-size: 30px;
+    color: #000;
+
+    text-align: center;
+    line-height: 24px;
+}
+
+/* Three state end */
+
+article.edit-event div.CustomRadio {
+    color: #888888 !important;
+    border-color: #888888 !important;
+}
+article.edit-event div.CustomRadio:hover {
+    color: #5080FC !important;
+    border-color: #5080FC !important;
+}
+article.edit-event div.CustomRadio:active {
+    color: #376AFC !important;
+    border-color: #376AFC !important;
+}
+article.edit-event div.CustomRadio input[type="radio"].state-circle ~ label:before {
+  content: "\2022";
+  font-size: calc(17px);
+  text-align: center;
+  line-height: calc(17px - 3px);
+}
+article.edit-event div.CustomRadio input[type="radio"].state-square ~ label:before {
+  background-color: #888888;
+}
+
+article.edit-event div.CustomRadio:hover input[type="radio"].state-square ~ label:before {
+  background-color: #5080FC;
+}
+article.edit-event div.CustomRadio:active input[type="radio"].state-square ~ label:before {
+  background-color: #376AFC;
+}
+
+article.edit-event button.Btn.wBorder {
+    border: 1px solid #878787;
+}
+
+article.edit-event button.Btn {
+    border-color: #CCCCCC !important;
+    color: #999999 !important;
+    background-color: #FFFFFF !important;
+}
+
+article.edit-event button.Btn-active {
+    border-color: #EEE !important;
+    color: #FFF !important;
+    background-color: #729afd !important;
+}
+
+article.edit-event button.Btn:hover,
+article.edit-event button.Btn-active:hover {
+   border-color: #EEE !important;
+   color: #FFF !important;
+}
+
+article.edit-event button.Btn:hover {
+    background-color: #4caf50 !important;
+}
+
+article.edit-event button.Btn-active:hover {
+    background-color: #ff636d !important;
+}
+
+.AddList.Border {
+    border: 1px solid #CCC;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.AddList ul {
+    list-style-type: none;
+    padding: 0px;
+}
+
+.AddList ul li {
+    display: flex;
+    align-items: center;
+    margin: 3px 0px;
+}
+
+.AddList ul > li input {
+    width: 100%;
+    font-size: 1em;
+    padding: 3px 5px;
+    height: 1.2em;
+    flex: 1 1 100%;
+}
+.AddList ul > li button {
+    width: 45px !important;
+    height: auto;
+}
+
+.AddList button > img {
+    height: 1em;
+    width: 1em;
+}
+
+.AddList .ChildBox {
+    flex-wrap: wrap;
+    border: 1px solid #CCC;
+    border-radius: 5px;
+    padding: 15px;
+    position: relative;
+    padding-top: 40px;
+}
+.AddList .ChildBox input {
+    margin-bottom: 7px;
+    outline: none;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+.AddList .ChildBox > * {
+    display: block;
+}
+
+.AddList .ChildBox .right {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: auto !important;
+}
+.AddList .ChildBox .right img {
+    height: 1.5em;
+    width: 1.5em;
+}
+
+.AddList div[data-role="bottom-button"] button {
+    border-color: #CCCCCC !important;
+    color: #999999 !important;
+    background-color: #FFFFFF !important;
+    border: 1.8px solid;
+    padding: 10px 20px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.AddList div[data-role="bottom-button"] button:hover,
+.AddList div[data-role="bottom-button"] button:active {
+    background-color: #729afd !important;
+    border-color: #EEE !important;
+    color: #FFF !important;
+}
+
+.fileContainer {
+    overflow: hidden;
+    display: block;
+    position: relative;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.fileContainer:hover {
+    background-color: #4caf50;
+    color: #FFF;
+}
+.fileContainer:active {
+    background-color: #ff636d ;
+    color: #FFF;
+}
+
+.fileContainer [type=file] {
+    cursor: inherit;
+    display: none;
+    font-size: 1em;
+    filter: alpha(opacity=0);
+    height: 0px;
+    width: 0px;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    top: 0;
+}
+
+article.edit-event div[data-alt="preview-image"] {
+    height: 50px;
+    width: 50px;
+    background-size: cover;
+    background-position: center;
+}
+
+.DateClick {
+    position: relative;
+
+}
+
+.DateClick .Btn {
+    border: 1.8px solid;
+    border-radius: 5px;
+    font-size: 1em;
+    height: 35px;
+    font-weight: normal;
+    margin-right: 5px;
+    border-color: #CCCCCC;
+    color: inherit;
+    background-color: inherit;
+    margin-bottom: 5px;
+}
+
+.DateClick > div.DatePickerItem {
+    position: absolute;
+    display: none;
+    z-index: 320;
+    padding: 20px;
+}
+
+.DateClick > div.DatePickerItem.on {
+    display: block;
+}
+
+.firstmeet {
+    width: 100%;
+    margin: auto;
+    position: relative;
+}
+
+.firstmeet div.button {
+    display: flex;
+}
+
+.firstmeet input {
+    width: 100% !important;
+    margin-bottom: 10px !important;
+}
+
+.BtnCustom {
+    white-space: nowrap;
+    width: auto !important;
+    padding: 7px 30px;
+    height: 35px !important;
+    box-sizing: border-box;
 }

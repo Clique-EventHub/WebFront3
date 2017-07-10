@@ -185,11 +185,11 @@ article.event-detail-fix div .warning-pop-up[data-role="invite-popup"] div.searc
   margin: auto;
 }
 
-article.event-detail-fix div .warning-pop-up[data-role="invite-popup"] div.search-zone .result-list .result img {
+article.event-detail-fix div .warning-pop-up[data-role="invite-popup"] div.search-zone .result-list .result img,
+article.event-detail-fix div .warning-pop-up[data-role="invite-popup"] div.search-zone .result-list .result div.profile {
   margin-right: 15px;
   width: 2.5em;
   height: 2.5em;
-  background: #000;
   border-radius: 50%;
 }
 
@@ -351,13 +351,18 @@ article.event-detail-fix div .event-img-slide {
   white-space: nowrap;
 }
 
-article.event-detail-fix div .event-img-slide img {
+article.event-detail-fix div .event-img-slide img,
+article.event-detail-fix div .event-img-slide div.img {
   height: 400px;
   display: inline-block;
   margin-left: 10px;
   margin-right: 10px;
   margin-top: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+article.event-detail-fix div .event-img-slide div.img {
+  width: 300px;
 }
 
 article.event-detail-fix div button[role="event-exit"] {
@@ -387,6 +392,11 @@ article.event-detail-fix div .top-moving .image > img {
 article.event-detail-fix div p.hr {
   border-color: #E2E2E2;
   background-color: #E2E2E2;
+}
+
+article.event-detail-fix div .event-poster-fix {
+  display: flex;
+  flex-direction: column;
 }
 
 article.event-detail-fix div .event-poster-fix div.tags-container {
@@ -430,7 +440,7 @@ article.event-detail-fix div .event-name h2 {
   margin: 0px;
 }
 
-article.event-detail-fix div .event-name div {
+article.event-detail-fix div .event-name > div {
   display: -webkit-box;
   /* OLD - iOS 6-, Safari 3.1-6 */
   display: -moz-box;
@@ -603,97 +613,11 @@ article.event-detail-fix div .event-bio p {
   text-indent: 30px;
 }
 
-div.Error-Warning-Container {
-  position: relative;
-}
-
-div.Error-Warning-Container div.Error-Warning::before {
-  content: "";
-  width: 5px;
-  height: 100%;
-  background-color: #FC0010;
-  position: absolute;
-  left: 10px;
-  top: 0px;
-}
-
-div.Error-Warning-Container div.Error-Warning {
-  padding-left: 25px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  background-image: url("https://i.stack.imgur.com/hgsp8.png");
-  background-size: cover;
-  filter: brightness(120%);
-  box-sizing: border-box;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-top: 20px;
-  color: #FC0010;
-}
-
-div.Error-Warning-Container div.Error-Warning span {
-  display: block;
-  position: relative;
-  z-index: 401;
-}
-
-div.Error-Warning-Container div.Error-Warning::after {
-  content: "";
-  width: calc(100% - 20px - 5px);
-  height: 100%;
-  background-color: rgba(252, 0, 16, 0.15);
-  position: absolute;
-  left: 15px;
-  top: 0px;
-  z-index: 400;
-}
-
-.Warning-Container button {
-  background-color: transparent;
-  border: 1px solid rgba(160, 160, 160, 0.5);
-  outline: none;
-  cursor: pointer;
-  padding: 10px 20px;
-  border-radius: 10px;
-  color: #3f88fe;
-  border-color: #3f88fe;
-  margin-top: 15px;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.Warning-Container button:hover {
-  background-color: rgba(63, 136, 254, 0.85);
-  color: #FFF;
-  border-color: #EEE;
-}
-
-.Warning-Container button:active {
-  background-color: #3f88fe;
-  color: #FFF;
-  border-color: #EEE;
-}
-
-div.background-overlay-fix {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 65px;
-  left: 0;
-  background: #000;
-  opacity: 0.5;
-  z-index: 550;
-  filter: alpha(opacity=50);
-  /* required for opacity to work in IE */
-}
-
-img[data-icon="channel-icon"] {
+[data-icon="channel-icon"] {
   margin-top: 10px;
   border-radius: 50%;
   height: 1.5em;
   width: 1.5em;
-  background: #000;
   margin-right: 5px;
   display: inline-block;
   margin: auto;
@@ -701,7 +625,7 @@ img[data-icon="channel-icon"] {
   margin-right: 0px;
 }
 
-img[data-icon="channel-icon"] + span {
+[data-icon="channel-icon"] + span {
   line-height: 1.5em;
   display: inline-block;
   margin: auto;

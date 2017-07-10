@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../actions';
 import { filterKeyOut, mergeObjectWithKeys } from '../actions/common';
 
-export default function(ComposedComponent, isBindWithRequests, actionsAdded, stateAdded) {
+export default function(ComposedComponent, option) {
 
     class binding extends Component {
 
@@ -24,32 +24,27 @@ export default function(ComposedComponent, isBindWithRequests, actionsAdded, sta
     };
 
     function mapStateToProps(state) {
-        if(isBindWithRequests) {
-            return {...state};
-        }
-        if(typeof(stateAdded) !== "undefined" && stateAdded.length > 0) {
+        if(option && option.state && option.state.constructor === Array && option.state.length > 0) {
             let rObj = {
                 pages: state.pages
             }
-            stateAdded.map((item) => {
+            option.state.map((item) => {
                 rObj[item] = state[item];
                 return null;
             });
             return (rObj);
         }
-        return {
-            pages: state.pages
-        };
+        return {...state};;
     }
 
     function mapDispatchToProps(dispatch) {
-        if(isBindWithRequests) {
-            return bindActionCreators({...actions}, dispatch);
+        if(option && option.action && option.action.constructor === Array && option.action.length > 0) {
+            return bindActionCreators(mergeObjectWithKeys(filterKeyOut(actions, actions.requestActionList), actions, option.action), dispatch);
         }
-        if(typeof(actionsAdded) !== "undefined" && actionsAdded.length > 0) {
-            return bindActionCreators(mergeObjectWithKeys(filterKeyOut(actions, actions.requestActionList), actions, actionsAdded), dispatch);
+        else if(option && option.actionNes) {
+            return bindActionCreators(filterKeyOut(actions, actions.requestActionList), dispatch);
         }
-        return bindActionCreators(filterKeyOut(actions, actions.requestActionList), dispatch);
+        return bindActionCreators({...actions}, dispatch);
     }
 
     return connect(mapStateToProps, mapDispatchToProps)(binding);

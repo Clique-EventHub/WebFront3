@@ -1,7 +1,198 @@
-section[data-role="profile"] {
+section[role="main-content"] {
+  font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+  color: #555555;
+  padding: 10px 80px;
+}
+
+section.my-event h1 {
+  font-size: 2em;
+  margin: 15px 0px;
+}
+
+section.profile {
+  color: #555555;
   background-color: #FFF;
-  width: 100%;
-  padding: 20px;
+  width: 100vw;
+  padding: 40px;
   position: relative;
-  left: -20px;
+  left: -80px;
+  display: flex;
+}
+
+div.profile-left {
+  width: 25vw;
+  padding: 0px 60px;
+}
+
+section.profile img[alt="profile-pic"] {
+  height: 200px;
+  width: 200px;
+  /*max-height: calc(400px);
+  min-height: calc(180px);*/
+  margin-left: 50px;
+  border-radius: 50%;
+  /*border: 1px solid #000;*/
+  display: inline-block;
+}
+
+div.profile-left h2[alt="profile-name"] {
+  padding-top: 10px;
+  margin-top: 10px;
+  margin-bottom: 12px;
+  font-weight: normal;
+  font-size: 1.8em;
+}
+
+div.profile-left div[alt="faculty-icon"] {
+  border-radius: 50%;
+  height: 18px;
+  width: 18px;
+  margin-top: 3px;
+  margin-right: 5px;
+  position: absolute;
+}
+
+div.profile-left p {
+  margin-left: 35px;
+  margin-top: 5px;
+  font-size: 1.2em;
+}
+
+div.profile-left button {
+  border: 1.8px solid;
+  border-radius: 20px;
+  width: 125px;
+  height: 35px;
+  font-size: 1.1em;
+  border-color: #AAAAAA;
+  color: #888888;
+  background-color: #FFFFFF;
+  margin-top: 10px;
+}
+
+div.profile-left button:hover {
+  border: 1.8px solid;
+  border-radius: 20px;
+  width: 125px;
+  height: 35px;
+  font-size: 1.1em;
+  border-color: #CCCCCC;
+  color: #AAAAAA;
+  background-color: #FFFFFF;
+  margin-top: 10px;
+}
+
+div.profile-center {
+  width: 23vw;
+  padding: 0px 20px;
+}
+
+div.profile-center img {
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  margin-top: -5px;
+}
+
+div.profile-center p {
+  margin: 0px 0px 20px 40px;
+  font-size: 1.1em;
+}
+
+@media screen and (max-width: 950px) {
+  section.profile {
+    height: 450px;
+  }
+  div.profile-left {
+    min-width: 350px;
+  }
+  div.profile-center {
+    position: absolute;
+    width: 40vw;
+    top: 300px;
+    left: 70px;
+  }
+  div.profile-right {
+    position: absolute;
+    top: 300px;
+    left: 420px;
+  }
+  p.line {
+    width: 90vw;
+    height: 1px;
+    background-color: rgba(128, 128, 128, 0.7);
+    display: block;
+    padding: 0px;
+    position: relative;
+    top: -270px;
+  }
+}
+
+div.profile-right {
+  width: 20vw;
+  padding: 0px 20px;
+}
+
+div.profile-right p {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 10px 0px;
+}
+
+div.profile-right h1 {
+  font-size: 7em;
+  font-weight: bold;
+  margin: 10px 25px;
+}
+
+section.my-event-center h2 {
+  display: inline-block;
+  margin: 20px 20px 5px 20px;
+}
+
+section.my-event-center h2.join-true {
+  color: #1493FF;
+}
+
+section.my-event-center h2.join-false:hover {
+  color: #888888;
+}
+
+/*section.my-event-center h2.join-false:hover ~ p.join-false {
+  width: 190px;
+  height: 2px;
+  background-color: #888888;
+  z-index: 610px;
+  margin: 0px;
+  position: relative;
+  top: 0.5em;
+}*/
+
+section.my-event-center p.join-true {
+  width: 190px;
+  height: 2px;
+  background-color: #1493FF;
+  z-index: 600px;
+  margin: 0px;
+  position: relative;
+  top: 0.5em;
+}
+
+section.my-event p.warn {
+  margin: 25px 0px 45px 20px;
+}
+
+section.my-event-center p.join-false {
+  background-color: inherit;
+  position: absolute;
+}
+
+section.my-event-center p.l160 {
+  left: 190px;
+  width: 215px;
+}
+
+section.my-event-buttom h2 {
+  display: inline-block;
+  margin: 20px 20px 5px 20px;
 }

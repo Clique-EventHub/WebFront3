@@ -10,7 +10,7 @@ article.edit-event input.chan-name {
   border: 1.8px solid #ccc;
   border-radius: 5px;
   height: auto;
-  width: 200px;
+  width: auto;
   font-family: inherit;
   word-wrap: break-word;
   display: inline;
@@ -23,16 +23,54 @@ article.edit-event input.chan-name {
   font-weight: bold;
 }
 
-
 .chan-img {
-  height: 100%;
+  height: 135px;
   width: 135px;
   margin: 15px 0px 15px 15px;
   border-radius: 100%;
   background-color: pink;
-  border: 1px solid pink;
   display: inline;
 } 
+
+article.edit-event button.fill {
+  border: 1.8px solid;
+  border-radius: 5px;
+  font-size: 0.9em;
+  font-weight: normal;
+  margin-right: 50px;
+  margin-bottom: 10px;
+  width: 120px;
+  height: 40px;
+  border-color: #CCCCCC;
+  color: #999999;
+  background-color: #FFFFFF;
+  display: inline;
+  margin-right: 15px;
+}
+
+article.edit-event div.photo-upload {
+  position: relative;
+  border: 1.8px solid #CCCCCC;
+  border-radius: 20px;
+  font-size: 0.7em;
+  color: #999999;
+  background-color: #FFFFFF;
+  padding: 3px 18px 3px 10px;
+  display: inline;
+  margin-right: 5px;
+  margin-bottom: 5px; 
+}
+
+article.edit-event div.photo-upload button img {
+  display: inline;
+  height: 6px;
+  padding-left: 2px;
+  margin: 0px;
+  float: right;
+  position: absolute;
+  top: -2px;
+  right: -12px;
+}
 
 div.chan-tag button.tag {
   border: 1.8px solid;
@@ -48,24 +86,6 @@ div.chan-tag button.tag {
   background-color: #FFFFFF;
   padding: 0px;
 
-}
-
-div.chan-tag button.long {
-  font-size: 0.7em;
-}
-
-article.edit-event button.fill {
-  border: 1.8px solid;
-  border-radius: 5px;
-  font-size: 0.9em;
-  font-weight: normal;
-  margin-right: 50px;
-  margin-bottom: 10px;
-  width: 120px;
-  height: 40px;
-  border-color: #CCCCCC;
-  color: #999999;
-  background-color: #FFFFFF;
 }
 
 article.edit-event div.full-input input[type="text"] {

@@ -1,0 +1,55 @@
+h2.chan-name {
+  height: auto;
+  width: auto;
+  font-family: inherit;
+  word-wrap: break-word;
+  display: inline;
+  position: absolute;
+  top: 4.3vw;
+  left: 15.4vw;
+  font-size: 30px;
+  color: black;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+div .chan-img-slide {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  height: 430px;
+  white-space: nowrap;
+}
+
+div .chan-img-slide img {
+  height: 400px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.box {
+  border: 1px solid #878787;
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 5px 10px;
+  margin: 20px 10px 20px 0px;
+  color: #878787;
+  display: inline-block;
+
+}
+
+button.bt-fol {
+  position: relative;
+  top: -3.5vw;
+  left: 2.4vw;
+  border: 1.8px solid;
+  border-radius: 20px;
+  width: 90px;
+  height: 20px;
+  font-size: 0.7em;
+  border-color: #AAAAAA;
+  color: #888888;
+  background-color: #FFFFFF;
+}
