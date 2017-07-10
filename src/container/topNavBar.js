@@ -205,7 +205,7 @@ class topNavBar extends Component {
                 </button>
                 <section className="flex-left toggle-not" content="left-group" aria-hidden="true">
                     <Link to="/calendar">
-                        <button className="invisible" onClick={this.onToggleTags}>
+                        <button className="invisible">
                             <img aria-hidden="false" src="../resource/images/bubble.svg" role="tags-icon" alt="bubble-icon"/>
                         </button>
                     </Link>
