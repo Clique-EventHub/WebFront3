@@ -841,7 +841,6 @@ class EditEvent extends Component {
             pictureProcess("picture_large_file", "large", 1);
 
             function praseId(str) {
-                "139.59.97.65:1111/picture/el595ef6c7822dbf0014cb821cglk87g1499414628860.png"
                 if(str.indexOf("139.59.97.65:1111/picture/") === 0) {
                     return str.replace("139.59.97.65:1111/picture/", "");
                 } else if(str.indexOf("http://139.59.97.65:1111/picture/") === 0) {
@@ -858,14 +857,17 @@ class EditEvent extends Component {
                     onUploadProgress: (progressEvent) => {
                         process_inner = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
                         overall_process[processIndex] = process_inner;
+                        console.log(progressEvent.target.requestURL)
                         console.log([...overall_process]);
                     }
                 }
 
+                const files = _this.state.option[refName];
+
                 let data = new FormData();
-                if(_this.state.option[refName]) {
-                    for(let i = 0; i < _this.state.option[refName].files.length; i++) {
-                        data.append('pictures', _this.state.option[refName].files[i]);
+                if(files) {
+                    for(let i = 0; i < files.length; i++) {
+                        data.append('pictures', files[i]);
                     }
                     axios.post(`${hostname}picture?field=event&size=${size}&id=${id}`, data, configs).then((res) => {
                         console.log(res);

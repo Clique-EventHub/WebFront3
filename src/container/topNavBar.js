@@ -194,9 +194,11 @@ class topNavBar extends Component {
                     <i className="fa fa-bars" aria-hidden="true"></i>
                 </button>
                 <section className="flex-left toggle-not" content="left-group" aria-hidden="true">
-                    <button className="invisible" onClick={this.onToggleTags}>
-                        <img aria-hidden="false" src="../resource/images/bubble.svg" role="tags-icon" alt="bubble-icon"/>
-                    </button>
+                    <Link to="/calendar">
+                        <button className="invisible" onClick={this.onToggleTags}>
+                            <img aria-hidden="false" src="../resource/images/bubble.svg" role="tags-icon" alt="bubble-icon"/>
+                        </button>
+                    </Link>
                     <div aria-hidden="true" className="vr"></div>
                     <form onSubmit={this.onSubmit}>
                         <i className="fa fa-search" aria-hidden="true"></i>
@@ -208,7 +210,9 @@ class topNavBar extends Component {
                 </Link>
                 <button aria-hidden="false" className="flex-right toggle-not invisible" role="profile-button" onClick={this.onToggleProfile}>
                     <div>
-                        Mitsuha
+                        {
+                            this.props.fb.basic_info.name
+                        }
                     </div>
                     <img src="../../resource/images/dummyProfile.png" alt="profile"/>
                 </button>
@@ -223,10 +227,10 @@ class topNavBar extends Component {
                     <SearchResult className={(this.state.searchTerm.length > 0 && this.state.isSearchActive) ? '' : 'display-none'} keyword={this.state.searchTerm} onToggle={() => {this.onToggle();}} onSetItem={this.props.set_pop_up_item} />
                 </div>
                 <div className="profile-menu-inactive">
-                    <ProfilePopUp user={this.props.user} />
+                    <ProfilePopUp user={this.props.user} onLogout={this.props.fbLogout} />
                 </div>
                 <div className="tags-menu-inactive">
-                    <Bubble />
+
                 </div>
             </nav>
         );

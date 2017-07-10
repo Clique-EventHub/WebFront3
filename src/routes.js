@@ -17,6 +17,7 @@ import FormPage from './pages/formPage';
 import EditChannelPage from './pages/editChannel';
 import ChannelDetail from './container/channelDetail';
 import MyEventPage from './pages/myEventPage';
+import FeedbackPage from './pages/FeedbackPage';
 
 class FallbackPage extends Component {
 
@@ -74,6 +75,7 @@ export default (
         <Route path="focuskuy" component={ChannelInfo} />
         <Route path="form" component={FormPage} />
         <Route path="fmkuy" component={ChannelDetail} />
+        <Route path="feedback" component={FeedbackPage} />
         <Route path="*" component={FallbackPageNorm} />
     </Route>
 );

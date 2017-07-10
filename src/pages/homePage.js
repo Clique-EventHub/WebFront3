@@ -16,21 +16,20 @@ import EventDetailFix from '../container/eventDetail2';
 
 import axios from 'axios';
 import { hostname } from '../actions/index';
+import { getCookie } from '../actions/common';
 
 class homePage extends Component {
 
     constructor(props) {
         super(props);
-        this.onClickMe = this.onClickMe.bind(this);
         this.onItemPopUpClick = this.onItemPopUpClick.bind(this);
+        const nonsenseId = Array(3).fill(1).map((x, y) => String(x+y) );
         this.state = {
-            'eventHot': [],
-            'eventNew': []
+            'eventHot': nonsenseId,
+            'eventNew': nonsenseId,
+            'eventUpcomming': nonsenseId,
+            'eventForYou': nonsenseId
         }
-    }
-
-    onClickMe() {
-        // this.props.searched_item_handler(true);
     }
 
     onItemPopUpClick(item) {
@@ -40,24 +39,65 @@ class homePage extends Component {
 
     componentWillMount() {
         document.title = "Event Hub | Home";
-        axios.get(`${hostname}event/hot`).then((data) => data.data).then((res) => {
+
+        const authConfig = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
+            }
+        }
+
+        const config = {
+            'headers': {
+                'crossDomain': true
+            },
+            onDownloadProgress: function (progressEvent) {
+                // console.log(progressEvent.target.responseURL);
+                // console.log(progressEvent.loaded/progressEvent.total*100);
+            },
+            onUploadProgress: function (progressEvent) {
+                // console.log(progressEvent.target.responseURL);
+                // console.log(progressEvent.loaded/progressEvent.total*100);
+            }
+        }
+
+        axios.get(`${hostname}event/hot`, config).then((data) => data.data).then((res) => {
             let eventHotId = [];
             if(res.first) eventHotId.push(res.first._id);
             if(res.second) eventHotId.push(res.second._id);
-            if(res.third) eventHotId/push(res.third._id);
+            if(res.third) eventHotId.push(res.third._id);
 
-            this.setState({
-                ...this.state,
-                'eventHot': eventHotId
+            this.setState((prevState, props) => {
+                return ({
+                    ...this.state,
+                    'eventHot': eventHotId
+                })
             })
         })
 
-        axios.get(`${hostname}event/new`).then((data) => data.data.events).then((res) => {
+        axios.get(`${hostname}event/new`, config).then((data) => data.data.events).then((res) => {
             this.setState({
                 ...this.state,
                 'eventNew': res.map((item) => item._id)
             })
         })
+
+        axios.get(`${hostname}event/upcoming`, config).then((data) => data.data.events).then(
+        (res) => {
+            this.setState({
+                ...this.state,
+                'eventUpcomming': res.map((item) => item._id)
+            })
+        });
+
+        axios.get(`${hostname}event/foryou`, { ...config, ...authConfig }).then((data) => data.data.events).then(
+        (res) => {
+            this.setState({
+                ...this.state,
+                'eventForYou': res
+            })
+        })
+
     }
 
     componentDidMount() {
@@ -66,21 +106,12 @@ class homePage extends Component {
         }
     }
 
-    componentDidUpdate() {
-        console.log(this.state);
-    }
-
     render() {
 
         //Note: if EventDetail is shown, side-menu should not be pressed -> drastic layout change
 
-        let posterTest = [];
-        for(var i = 1; i < 32; i++) {
-            posterTest.push(`../../resource/images/poster_dummy/${i}.jpg`);
-        }
-
         return (
-            <section role="main-content" onClick={this.onClickMe}>
+            <section role="main-content">
                 <h1 className="display-none">Main body</h1>
                 <section role="carousel">
                     <h2 className="display-none">Carousel</h2>
@@ -89,7 +120,7 @@ class homePage extends Component {
                 <div className="below-carousel">
                     <section content="upcomming">
                         <h2>Upcomming</h2>
-                        <CardList onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        <CardList eventIds={this.state.eventUpcomming} onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                     </section>
                     <section content="bottom-half">
                         <section content="tag">
@@ -98,11 +129,13 @@ class homePage extends Component {
                         </section>
                         <section content="new">
                             <h2>New</h2>
-                            {
-                                this.state.eventNew.map((id) => {
-                                    return (<EventItem eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} isJoined={true} />)
-                                })
-                            }
+                            <div style={{'display': 'flex', 'flexWrap': 'wrap'}}>
+                                {
+                                    this.state.eventNew.map((id, index) => {
+                                        return (<EventItem key={index} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
+                                    })
+                                }
+                            </div>
                         </section>
                     </section>
                     <section content="bottom-half">
@@ -112,10 +145,13 @@ class homePage extends Component {
                         </section>
                         <section content="for-you">
                             <h2>For you</h2>
-                            <EventItem posterSrc={posterTest[4]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            <EventItem posterSrc={posterTest[5]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            <EventItem posterSrc={posterTest[6]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                            <EventItem posterSrc={posterTest[7]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            <div style={{'display': 'flex', 'flexWrap': 'wrap'}}>
+                                {
+                                    this.state.eventForYou.map((id, index) => {
+                                        return (<EventItem key={index} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
+                                    })
+                                }
+                            </div>
                         </section>
                     </section>
                 </div>

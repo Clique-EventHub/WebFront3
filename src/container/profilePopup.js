@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
 import { hostname } from '../actions/index';
+import { Link } from 'react-router';
 
 class profilePopup extends Component {
 
@@ -132,8 +133,10 @@ class profilePopup extends Component {
               )}
                 <p className="hr"></p>
                 <div className="btn-profile">
-                    <button alt="btn-myevent">MY EVENT</button>
-                    <button alt="btn-logout">LOG OUT</button>
+                    <Link to="/profile">
+                        <button alt="btn-myevent">MY EVENT</button>
+                    </Link>
+                    <button onClick={this.props.onLogout} alt="btn-logout">LOG OUT</button>
                 </div>
             </div>
         );

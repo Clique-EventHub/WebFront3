@@ -74,17 +74,30 @@ class eventDetailFix extends Component {
         }
     }
 
-    onGetInfo() {
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.eventId !== this.props.eventId) {
+            this.setState((prevState, props) => {
+                this.onGetInfo(nextProps.eventId);
+                return defaultState;
+            });
+        }
+    }
+
+    onGetInfo(overrideId) {
         this.setState({
             ...this.state,
             'isLoading': true
         });
-        axios.get(`${hostname}event?id=${this.props.eventId}`, { headers: { 'crossDomain': true }}).then((data) => {
+
+        const id = overrideId || this.props.eventId;
+
+        axios.get(`${hostname}event?id=${id}`, { headers: { 'crossDomain': true }}).then((data) => {
             let rObj = {
                 ...defaultState,
                 ...data.data,
                 isLoading: false
             }
+            console.log(data.data);
             this.setState(rObj);
             this.onResetPopup();
             return data.data;
