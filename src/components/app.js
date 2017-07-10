@@ -9,6 +9,8 @@ import LoginPage from '../pages/loginPage';
 import $ from 'jquery';
 import autoBind from '../hoc/autoBind';
 
+import { DEBUG } from '../index';
+
 class App extends Component {
 
     constructor(props) {
@@ -21,14 +23,16 @@ class App extends Component {
     componentWillMount() {
 
         let _this = this;
+        const appId = (DEBUG) ? '1815229955284405' : '453705451670013';
+        const version = (DEBUG) ? 'v2.8' : 'v2.9';
 
         window.fbAsyncInit = function() {
             FB.init({
-                appId      : '1815229955284405',
+                appId      : appId,
                 xfbml      : true,
                 status     : true,
                 cookie     : true,
-                version    : 'v2.8'
+                version    : version
             });
             _this.setState({
                 ...(_this.state),

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 // import App from './components/app.js'
 // import App from './container/profilePopup.js';
 
-import { Router, browserHistory } from 'react-router';
+import { Router, hashHistory } from 'react-router';
 import routes from './routes';
 
 import './index.css';
@@ -17,7 +17,7 @@ import thunk from 'redux-thunk';
 
 import rootReducer from './reducers/index';
 
-let DEBUG = true;
+export const DEBUG = false;
 let middlewares = [DEBUG && logger, thunk].filter(Boolean);
 
 //Currently there is a problem with redux-promise
@@ -27,7 +27,7 @@ export const myStore = createStoreWithMiddleware(rootReducer);
 
 ReactDOM.render(
     <Provider store={myStore}>
-        <Router history={browserHistory} routes={routes} />
+        <Router history={hashHistory} routes={routes} />
     </Provider>,
   document.getElementById('root')
 );
