@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './css/searchResult.css'
 import EventItem from '../container/eventItem';
 import Axios from 'axios';
+import { hostname } from '../actions/index';
 
 class SearchResult extends Component {
 
@@ -18,7 +19,7 @@ class SearchResult extends Component {
 
     componentWillReceiveProps(nextProps) {
         let list_tmp = [], list_unpic = [];
-        Axios.get('http://139.59.97.65:1111/event/search?keyword=' + this.props.keyword).then((data) => {
+        Axios.get(`${hostname}event/search?keyword=${this.props.keyword}`).then((data) => {
             console.log("get!!!");
             // console.log(JSON.stringify(data.data.events));
             data.data.events.map((event) => {

@@ -7,6 +7,7 @@ import * as facultyMap from '../actions/facultyMap';
 import './css/profilePopup.css';
 // import loginPage from '../pages/loginPage.js'
 import { Link } from 'react-router';
+import { hostname } from '../actions/index';
 
 class profilePopup extends Component {
 
@@ -55,7 +56,7 @@ class profilePopup extends Component {
 
         let _this = this;
 
-        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
+        axios.get(`${hostname}user`, config).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({
@@ -97,9 +98,8 @@ class profilePopup extends Component {
         let _this = this;
 
         console.log("get event : " + this.state.join_events[i]);
-
         if(this.state.join_events.length >= i+1){
-            axios.get('http://139.59.97.65:1111/event?id=' + this.state.join_events[i]).then((data) => {
+            axios.get(`${hostname}event?id=${this.state.join_events[i]}`).then((data) => {
                 console.log("get!!!");
                 console.log(JSON.stringify(data.data.title))
                 if(i === 0){
@@ -148,7 +148,7 @@ class profilePopup extends Component {
 
         let _this = this;
 
-        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
+        axios.get(`${hostname}user`, config).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({

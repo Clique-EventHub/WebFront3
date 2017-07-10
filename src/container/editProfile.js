@@ -6,6 +6,7 @@ import { getCookie } from '../actions/common';
 import './css/editProfile.css';
 import * as facultyMap from '../actions/facultyMap';
 let useCls = " toggle-vis";
+import { hostname } from '../actions/index';
 
 class editProfile extends Component {
 
@@ -63,7 +64,7 @@ class editProfile extends Component {
 
         let _this = this;
 
-        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
+        axios.get(`${hostname}user`, config).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({
@@ -163,7 +164,7 @@ class editProfile extends Component {
             'tag_like': 'new_tag_like',
         }
 
-        axios.put('http://139.59.97.65:1111/user', responseBody, config).then((response) => {
+        axios.put(`${hostname}user`, responseBody, config).then((response) => {
             var msg = response.msg;
             var code = response.code;
             console.log(msg);

@@ -7,6 +7,7 @@ import SearchResult from './searchResult';
 import autoBind from '../hoc/autoBind';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
+import { hostname } from '../actions/index';
 import $ from 'jquery';
 
 class topNavBar extends Component {
@@ -54,7 +55,7 @@ class topNavBar extends Component {
 
         let _this = this;
 
-        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
+        axios.get(`${hostname}user`, config).then((data) => {
             console.log("get top nav bar!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({

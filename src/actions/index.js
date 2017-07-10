@@ -7,7 +7,7 @@ import * as facultyMap from './facultyMap';
 //myStore.getState()
 
 // const hostname = "https://api.cueventhub.com/";
-export const hostname = "http://139.59.97.65:1111/";
+export const hostname = "https://api.cueventhub.com/";
 const expireDefaultInterval = 1000*60*60*3;
 
 export const requestActionList = [
