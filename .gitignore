@@ -5,6 +5,7 @@
 bundle.js
 npm-debug.log
 /etc
+/build
 
 # IntelliJ
 *.iml
