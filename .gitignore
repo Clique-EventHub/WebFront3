@@ -4,7 +4,6 @@
 /slow-loris
 bundle.js
 npm-debug.log
-/etc
 
 # IntelliJ
 *.iml

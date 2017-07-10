@@ -4,12 +4,14 @@ import Calendar from '../components/calendar';
 import pages from '../hoc/pages';
 import normalPage from '../hoc/normPage';
 
-const calendarPage = (props) => {
-    return (
-        <section role="main-content">
-            <Calendar {...props} />
-        </section>
-    );
+class calendarPage extends Component {
+    render() {
+        return (
+            <section role="main-content">
+                <Calendar />
+            </section>
+        );
+    }
 }
 
 export default normalPage(pages(calendarPage, true));

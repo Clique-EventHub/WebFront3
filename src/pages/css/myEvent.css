@@ -1,17 +1,6 @@
-section[role="main-content"] {
-  font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
-  color: #555555;
-  padding: 10px 80px;
-}
-
-section.my-event h1 {
-  font-size: 2em;
-  margin: 15px 0px;
-}
-
-section.profile {
-  color: #555555;
+section[data-role="profile"] {
   background-color: #FFF;
+<<<<<<< HEAD
   width: 100vw;
   padding: 40px;
   position: relative;
@@ -176,25 +165,10 @@ section.my-event-center p.join-true {
   background-color: #1493FF;
   z-index: 600px;
   margin: 0px;
+=======
+  width: 100%;
+  padding: 20px;
+>>>>>>> 9c49bcfa2dbad34a172369ac808e9c80cf9b6836
   position: relative;
-  top: 0.5em;
-}
-
-section.my-event p.warn {
-  margin: 25px 0px 45px 20px;
-}
-
-section.my-event-center p.join-false {
-  background-color: inherit;
-  position: absolute;
-}
-
-section.my-event-center p.l160 {
-  left: 190px;
-  width: 215px;
-}
-
-section.my-event-buttom h2 {
-  display: inline-block;
-  margin: 20px 20px 5px 20px;
+  left: -20px;
 }

@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../actions';
 import { filterKeyOut, mergeObjectWithKeys } from '../actions/common';
 
-export default function(ComposedComponent, option) {
+export default function(ComposedComponent, isBindWithRequests, actionsAdded, stateAdded) {
 
     class binding extends Component {
 
@@ -24,27 +24,32 @@ export default function(ComposedComponent, option) {
     };
 
     function mapStateToProps(state) {
-        if(option && option.state && option.state.constructor === Array && option.state.length > 0) {
+        if(isBindWithRequests) {
+            return {...state};
+        }
+        if(typeof(stateAdded) !== "undefined" && stateAdded.length > 0) {
             let rObj = {
                 pages: state.pages
             }
-            option.state.map((item) => {
+            stateAdded.map((item) => {
                 rObj[item] = state[item];
                 return null;
             });
             return (rObj);
         }
-        return {...state};;
+        return {
+            pages: state.pages
+        };
     }
 
     function mapDispatchToProps(dispatch) {
-        if(option && option.action && option.action.constructor === Array && option.action.length > 0) {
-            return bindActionCreators(mergeObjectWithKeys(filterKeyOut(actions, actions.requestActionList), actions, option.action), dispatch);
+        if(isBindWithRequests) {
+            return bindActionCreators({...actions}, dispatch);
         }
-        else if(option && option.actionNes) {
-            return bindActionCreators(filterKeyOut(actions, actions.requestActionList), dispatch);
+        if(typeof(actionsAdded) !== "undefined" && actionsAdded.length > 0) {
+            return bindActionCreators(mergeObjectWithKeys(filterKeyOut(actions, actions.requestActionList), actions, actionsAdded), dispatch);
         }
-        return bindActionCreators({...actions}, dispatch);
+        return bindActionCreators(filterKeyOut(actions, actions.requestActionList), dispatch);
     }
 
     return connect(mapStateToProps, mapDispatchToProps)(binding);

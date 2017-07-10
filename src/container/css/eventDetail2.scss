@@ -189,12 +189,11 @@ article.event-detail-fix {
                         padding: 10px;
                         margin: auto;
                         // border: 1px solid #000;
-                        img,
-                        div.profile {
+                        img {
                             margin-right: 15px;
                             width: 2.5em;
                             height: 2.5em;
-                            // background: #000;
+                            background: #000;
                             border-radius: 50%;
                         }
                         .info {
@@ -349,18 +348,13 @@ article.event-detail-fix {
             height: 430px;
             white-space: nowrap;
 
-            img,
-            div.img {
+            img {
                 height: 400px;
                 display: inline-block;
                 margin-left: 10px;
                 margin-right: 10px;
                 margin-top: 10px;
                 box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2)
-            }
-
-            div.img {
-                width: 300px;
             }
         }
 
@@ -395,8 +389,6 @@ article.event-detail-fix {
 
         .event-poster-fix {
             // background: blue;
-            display: flex;
-            flex-direction: column;
 
             div.tags-container {
                 width: calc(100% - 0.02695167286245353 * #{$event-detail-width});
@@ -439,7 +431,7 @@ article.event-detail-fix {
                 margin: 0px;
             }
 
-            > div {
+            div {
                 display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
                 display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
                 display: -ms-flexbox;      /* TWEENER - IE 10 */
@@ -609,12 +601,99 @@ article.event-detail-fix {
     }
 }
 
-[data-icon="channel-icon"] {
+div.Error-Warning-Container {
+    position: relative;
+    div.Error-Warning::before {
+        content: "";
+        width: 5px;
+        height: 100%;
+        background-color: #FC0010;
+        position: absolute;
+        left: 10px;
+        top: 0px;
+    }
+    div.Error-Warning {
+        padding-left: 25px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        background-image: url('https://i.stack.imgur.com/hgsp8.png');
+        background-size: cover;
+        filter: brightness(120%);
+        box-sizing: border-box;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 20px;
+        color: #FC0010;
+
+        span {
+            display: block;
+            position: relative;
+            z-index: 401;
+        }
+    }
+    div.Error-Warning::after {
+        content: "";
+        width: calc(100% - 20px - 5px);
+        height: 100%;
+        background-color: rgba(252,0,16,0.15);
+        position: absolute;
+        left: 15px;
+        top: 0px;
+        z-index: 400;
+    }
+}
+
+.Warning-Container {
+    button {
+        background-color: rgba(0,0,0,0);
+        border: 1px solid rgba(160, 160, 160, 0.5);
+        outline: none;
+        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 10px;
+        color: rgba(63, 136, 254, 1);
+        border-color: rgba(63, 136, 254, 1);
+
+        margin-top: 15px;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    button:hover {
+        // box-shadow: 0px 0px 7px rgba(93, 189, 240, 0.9);
+        background-color: rgba(63, 136, 254, 0.85);
+        color: #FFF;
+        border-color: #EEE;
+    }
+
+    button:active {
+        // background-color: #FAFAFA;
+        // box-shadow: 0px 0px 10px rgba(93, 189, 240, 1);
+        background-color: rgba(63, 136, 254, 1);
+        color: #FFF;
+        border-color: #EEE;
+    }
+}
+
+div.background-overlay-fix {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 65px;
+    left: 0;
+    background: #000;
+    opacity: 0.5;
+    z-index: 550;
+    filter: alpha(opacity = 50); /* required for opacity to work in IE */
+}
+
+img[data-icon="channel-icon"] {
     margin-top: 10px;
     border-radius: 50%;
     height: 1.5em;
     width: 1.5em;
-    // background: #000;
+    background: #000;
     margin-right: 5px;
     display: inline-block;
     margin: auto;
@@ -622,7 +701,7 @@ article.event-detail-fix {
     margin-right: 0px;
 }
 
-[data-icon="channel-icon"] + span {
+img[data-icon="channel-icon"] + span {
     line-height: 1.5em;
     display: inline-block;
     margin: auto;

@@ -6,16 +6,22 @@ import './css/signup.css';
 
 class loginPage extends Component {
 
+    onFetch() {
+        this.props.fbGetBasicInfo();
+        this.props.fbGetFriendsList();
+    }
+
+    onFetchToken() {
+        this.props.fbGetSeverToken();
+    }
+
     onLogin() {
         this.props.fbLogin(this.props.fbGetSeverToken);
+        this.props.fbGetBasicInfo();
     }
 
     onLogout() {
         this.props.fbLogout();
-    }
-
-    componentWillMount() {
-        document.title = "Event Hub | Login";
     }
 
     render() {
@@ -40,6 +46,8 @@ class loginPage extends Component {
                 This is for testing purpose<br />
                 <button onClick={this.onLogin.bind(this)}>Login</button><br />
                 <button onClick={this.onLogout.bind(this)}>Logout</button><br />
+                <button onClick={this.onFetch.bind(this)}>Fetch</button><br />
+                <button onClick={this.onFetchToken.bind(this)}>Token Fetch</button><br />
                 {basicInfo}
             </section>
         ) : (

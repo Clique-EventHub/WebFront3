@@ -25,15 +25,6 @@ export default function(ComposedComponent, isBindWithRequests, actionsAdded, sta
             //this.props.getAllChannel();
         }
 
-        componentWillMount() {
-            if(this.props.pages.is_blur) {
-                this.props.unblur_bg();
-            }
-            if(this.props.pages.is_item_shown) {
-                this.props.hide_pop_item();
-            }
-        }
-
         componentWillReceiveProps(nextProps) {
             if(nextProps.pages.is_item_shown) {
                 $("body").addClass("modal-open");

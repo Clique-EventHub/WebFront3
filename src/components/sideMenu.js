@@ -22,9 +22,14 @@ class sideMenu extends Component {
                     <div content="name">MyName isDummy</div>
                 </section>
                 <ul>
-                    <li>My Profile</li>
-                    <li>Calendar</li>
-                    <li>Log Out</li>
+                    <li>Test</li>
+                    <li>Test 2</li>
+                    <li>Test</li>
+                    <li>Test 2</li>
+                    <li>Test</li>
+                    <li>Test 2</li>
+                    <li>Test</li>
+                    <li>Test 2</li>
                 </ul>
             </aside>
         );

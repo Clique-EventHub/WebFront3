@@ -1,7 +1,3 @@
-.cursor-disabled {
-    cursor: not-allowed;
-}
-
 div.table-page {
     font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
     padding: 0 35px;
@@ -34,14 +30,11 @@ section.table-top div.table-search div {
 
 section.table-top input {
     height: 28px;
-    width: calc(100% - 50px);
+    width: 490px;
     border: 1.5px solid #AAAAAA;
     border-left: none;
     border-radius: 0 10px 10px 0;
-    /*border-radius: 10px;*/
-    padding-left: 5px;
     margin-left: 35px;
-    outline: none;
 }
 
 /*
@@ -53,202 +46,100 @@ section.table-center table {
     border-radius: 20px;
 }
 */
-
-.highlight-row,
-.selected-row {
-    height: 10px;
-    display: none;
-    position: absolute;
-    left: 0px;
-    pointer-events: none;
-    z-index: 302;
-}
-
-.highlight-col,
-.selected-col {
-    height: 10px;
-    position: absolute;
-    display: none;
-    top: 0px;
-    pointer-events: none;
-    z-index: 302;
-}
-
-.selected-row,
-.selected-col {
-    background: rgba(0,0,255,0.1);
-}
-
-.highlight-row,
-.highlight-col {
-    background: rgba(0,0,0,0.2);
-}
-
-.options {
-    height: 50px;
-    width: 200px;
-    background-color: #FFF;
-    border: 1px solid rgba(0,0,0,0.1);
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    display: none;
-    box-sizing: border-box;
-    z-index: 303;
-}
-
-.options ul {
-    list-style-type: none;
-    text-align: left;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    height: 100%;
-    box-sizing: border-box;
-    margin: 0px;
-    padding: 10px 0px;
-}
-
-.table-page .fa.fa-check {
-    color: lightgreen;
-    font-size: 1.25em;
-}
-
-.table-page .fa.fa-check.nope {
-    color: #AAA;
-}
-
-.options ul li {
-    flex: 1 1 100%;
-    padding: 5px 20px;
-    display: flex;
-    align-items: center;
-}
-
-.options ul li:hover {
-    background-color: rgba(0,0,0,0.1);
-}
-
-.options ul li:active {
-    background-color: rgba(0,0,0,0.15);
-}
-
-.table-main {
+section.table-center table {
+    display: block;
+    text-align: center;
+    border-collapse: collapse;
+    height: 400px;
     overflow-x: scroll;
     overflow-y: scroll;
-    max-height: 500px;
-    position: relative;
 }
 
-.table {
-    display: table;
-    text-align: center;
-    overflow-y: hidden;
-    border-collapse: collapse;
-    position: relative;
+section.table-center thead {
+    background-color: #FF0000;
 }
 
-.table .thead {
-    display: table-header-group;
+section.table-center td,th {
+    border: 1px solid #AAAAAA;
+    padding: 15px;
 }
 
-.table .thead .th {
-    padding: 15px 40px;
-    text-transform: uppercase;
-    white-space: nowrap;
-    justify-content: center;
-
+section.table-center th {
+    height: 30px;
     background-color: #555555;
-    color: #FFF;
+    color: #FFFFFF;
     font-weight: normal;
     border-bottom: 1.5px solid #AAAAAA;
-    position: sticky;
-    z-index: 300;
-    top: -1px;
 }
 
-.table .tbody {
-    display: table-row-group;
-}
-
-.table .tr {
-    display: table-row;
-}
-
-.table .tr:nth-child(odd) {
-    background-color: #f5f5f5;
-}
-
-.table .td,
-.table .th {
-    display: table-cell;
-    text-align: center;
-    border: 1px solid #AAAAAA;
+section.table-center td {
     border-bottom: 1px solid #F0F0F0;
 }
 
-.table .td {
-    padding: 20px 20px;
-    position: relative;
+section.table-center tr:nth-child(odd) {
+    background-color: #f5f5f5;
 }
 
-/*.table .tr:hover {
-    background-color: #DDD;
+section.table-center th:nth-child(4), td:nth-child(4), th:nth-child(5), td:nth-child(5), th:nth-child(9), td:nth-child(9) {
+    min-width: 100px;
 }
 
-.table .tr:hover .td:hover {
-    background-color: #AAA;
-}*/
+section.table-center th:nth-child(9), td:nth-child(9){
+    min-width: 130px;
+}
 
-/**/
+section.table-center th:nth-child(10), td:nth-child(10) {
+    min-width: 200px;
+}
 
-section.table-bottom div.add-name {
+section.table-center th:nth-child(11), td:nth-child(11) {
+    min-width: 230px;
+}
+
+section.table-center th:nth-child(12), td:nth-child(12) {
+    min-width: 175px;
+}
+
+section.table-bottom div.table-add {
     margin-bottom: 35px;
-    display: flex;
-    justify-content: center;
 }
 
-section.table-bottom div.add-name input {
-    height: 32px;
-    border: 1.5px solid #AAAAAA;
-    border-radius: 0 10px 10px 0;
-    box-sizing: border-box;
-    padding-left: 10px;
-    flex: 1;
+section.table-bottom div.table-add table {
+    position: absolute;
+    border-spacing: 0px;
 }
 
-section.table-bottom div.add-name button.add {
-    background-color: rgba(0,0,0,0);
-    height: 32px;
-    outline: none;
-    border: 1.5px solid #AAAAAA;
-    border-right: none;
-    padding: 0px 10px;
-    border-radius: 10px 0px 0px 10px;
-    box-sizing: border-box;
-}
-
-section.table-bottom div.add-name button:not(.add) {
-    border: 1.5px solid #AAAAAA;
-    border-radius: 10px;
-    height: 32px;
+section.table-bottom div.table-add td {
+    width: 50px;
+    text-align: center;
     font-size: 0.9em;
     font-weight: bold;
-    padding: 3px 10px;
+    color: #888888;
+    border: 1.5px solid #AAAAAA;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+}
+
+section.table-bottom div.table-add input {
+    height: 25.4px;
+    width: 480px;
+    border: 1.5px solid #AAAAAA;
+    border-radius: 0 10px 10px 0;
+}
+
+section.table-bottom div.table-add button:not(.invisible) {
+    border: 1.5px solid #AAAAAA;
+    border-radius: 10px;
+    width: 110px;
+    height: 30.2px;
+    font-size: 0.9em;
+    font-weight: bold;
     color: #888888;
     background-color: #FFFFFF;
-    outline: none;
-    margin-left: 15px;
+    margin-left: 545px;
 }
 
-section.table-bottom div.add-name button:hover {
-    background-color: #F1F1F1;
-}
-section.table-bottom div.add-name  button:active {
-    background-color: #DDD;
-}
-
-section.table-bottom div.add-name button.invisible {
+section.table-bottom div.table-add button.invisible {
     text-align: center;
     font-size: 0.9em;
     font-weight: bold;
@@ -266,110 +157,8 @@ section.table-bottom div.table-button button {
     color: #FFFFFF;
     background-color: #555555;
     margin-right: 20px;
-    outline: none;
-    margin-bottom: 20px;
 }
 
-section.table-bottom div.table-button button a {
-    text-decoration: none;
-    color: inherit;
-}
-
-section.table-bottom div.table-button button:hover {
-    filter: brightness(1.2);
-}
-section.table-bottom div.table-button button:active {
-    filter: brightness(0.9);
-}
-
-
-.Btn-group .Btn-red:hover,
-.Input-group .Btn-red:hover {
-    background-color: #FC4D11 !important;
-    border-color: #FC4D11 !important;
-}
-.Btn-group .Btn-red:active,
-.Input-group .Btn-red:active {
-    background-color: #FC4D11 !important;
-    border-color: #FC4D11 !important;
-    filter: brightness(0.9);
-}
-.Btn-group .Btn-green:hover,
-.Input-group .Btn-green:hover {
-    background-color: #52C00E !important;
-    border-color: #52C00E !important;
-}
-.Btn-group .Btn-green:active,
-.Input-group .Btn-green:active {
-    background-color: #52C00E !important;
-    border-color: #52C00E !important;
-    filter: brightness(0.9);
-}
-
-.Btn-group,
-.Input-group {
-    display: flex;
-    margin: 0px 5px 20px 5px;
-}
-
-.Btn-group button {
-    margin: 0px !important;
-    border-radius: 0px !important;
-    width: 100px !important;
-    font-size: 0.7em !important;
-    background-color: #F1F1F1 !important;
-    color: #878787 !important;
-    border: 1px solid #E7E7E7 !important;
-}
-
-.Input-group button:hover,
-.Btn-group button:hover {
-    background-color: #5080FC !important;
-    border-color: #5080FC !important;
-    color: #FFF !important;
-}
-
-.Input-group button:active,
-.Btn-group button:active {
-    background-color: #376AFC !important;
-    border-color: #376AFC !important;
-    color: #FFF !important;
-}
-
-.Btn-group button:nth-child(1),
-.Input-group button:nth-child(1) {
-    border-radius: 10px 0px 0px 10px !important;
-    border-right: none !important;
-}
-.Btn-group button:last-child,
-.Input-group button:last-child {
-    border-radius: 0px 10px 10px 0px !important;
-    border-left: none !important;
-}
-
-.Input-group input {
-    display: block;
-    margin-bottom: 20px;
-    max-width: 300px;
-    width: 100%;
-    padding: 15px 10px;
-    box-sizing: border-box;
-    outline: none;
-    font-size: 1em;
-    border: 1px solid rgba(0,0,0,0.1);
-    height: calc(1em + 29px);
-}
-
-.Input-group input:nth-child(1) {
-    border-radius: 10px 0px 0px 10px !important;
-}
-
-.Input-group button {
-    height: calc(1em + 30px) !important;
-    background-color: #F1F1F1 !important;
-    color: #878787 !important;
-    border: 1px solid #E7E7E7 !important;
-}
 
 /*
 thead:first-child tr:first-child th:first-child, tbody:first-child tr:first-child td:first-child {

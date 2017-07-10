@@ -1,14 +1,10 @@
+/* eslint-disable */
+
 import React, { Component } from 'react';
 import autoBind from '../hoc/autoBind';
-import axios from 'axios';
-import { getCookie } from '../actions/common';
-import * as facultyMap from '../actions/facultyMap';
-// import { clearAllCookie } from '../actions/common';
-import './css/profilePopup.css';
-// import loginPage from '../pages/loginPage.js'
-import { Link } from 'react-router';
 
 class profilePopup extends Component {
+<<<<<<< HEAD
 
     constructor(props) {
         super(props);
@@ -179,6 +175,10 @@ class profilePopup extends Component {
     // logout() {
     //     clearAllCookie();
     //     this.setState({'login': false})
+=======
+    // constructor(props) {
+    //     super(props);
+>>>>>>> 9c49bcfa2dbad34a172369ac808e9c80cf9b6836
     // }
 
     onExit() {
@@ -186,87 +186,46 @@ class profilePopup extends Component {
     }
 
     render() {
-        var noti_list = [];
-        var noti = this.state.notification;
-
-        for(var i = 0; i < this.state.n_noti ; i++){
-            noti_list.push(<div className="noti"><img src={noti[i].photo} alt="noti-icon" /><p><strong>{noti[i].source} : </strong>{noti[i].title}</p></div>);
-        }
-
         return (
-          <div>
-          {(this.state.login === false) ?
-            <section className="signup-page">
-                <atricle className="login-card">
-                    <button alt="fb-login" onClick={this.onLogin.bind(this)}>
-                        <div alt="fb-icon-container">
-                            <img src="../../resource/images/fb_icon.svg" alt="fb-icon" />
-                        </div>
-                        <div>
-                            <span>
-                                Sign up with Facebook
-                            </span>
-                        </div>
-                    </button>
-                    <Link to='/'>
-                        Continue as guest
-                    </Link>
-                </atricle>
-                <footer alt="login-footer">
-                    <div aria-hidden="true" alt="icon-zone">
-                        <img src="../../resource/images/obj_clique_logo.png" alt="spn-icon" />
-                    </div>
-                </footer>
-            </section>
-            :
             <div>
-              {(this.state.isLoading) ? (<div>Loading...</div>) : (
                 <div className="profile-popup">
                     <div>
                         <div>
-                            <img src={this.state.picture} alt="profile-pic" />
+                            <img src="../resource/images/dummyProfile.png" alt="profile-pic" />
                         </div>
                         <div className="profile-head" aria-hidden="true">
-                            <h2 alt="profile-name">{this.state.firstName+" "+this.state.lastName}</h2>
-                            <div><div alt="faculty-icon" className={`bg-${facultyMap.findInfoById(this.state.faculty).ClassNameKeyWord}`} /><p>{facultyMap.findInfoById(this.state.faculty).FullName}</p></div>
+                            <h2 alt="profile-name">Mitsuha Atchula</h2>
+                            <div><div alt="faculty-icon" /> <p>Faculty of Engineering</p></div>
                         </div>
                     </div>
 
                     <div className="profile-section">
                         <h4>YOUR UPCOMING EVENT</h4>
                         <div className="my-event1">
-                            {(this.state.join_events.length < 1) ? (<div></div>) : (
-                                <div><div alt="event-icon"/> <p><strong>{this.state.event1_title} : </strong> {this.state.event1_date_start}</p></div>
-                            )}
+                            <div alt="event-icon" /> <p><strong>Event Name</strong> Tomorrow </p>
                         </div>
                         <div className="my-event2">
-                            {(this.state.join_events.length < 2) ? (<div></div>) : (
-                                <div><div alt="event-icon"/> <p><strong>{this.state.event2_title} : </strong> {this.state.event2_date_start}</p></div>
-                            )}
+                            <div alt="event-icon" /> <p><strong>Event Name</strong> 1 Feb 2016 </p>
                         </div>
                         <div className="my-event3">
-                            {(this.state.join_events.length < 3) ? (<div></div>) : (
-                                <div><div alt="event-icon"/> <p><strong>{this.state.event3_title} : </strong> {this.state.event3_date_start}</p></div>
-                            )}
+                            <div alt="event-icon" /> <p><strong>Event Name</strong> 5 May 2017 </p>
                         </div>
                     </div>
 
                     <div className="profile-section">
                         <h4>NOTIFICATION</h4>
-                        <div className="my-noti profile-scroll">
-                            {noti_list}
+                        <div className="my-noti">
+                            <img src="../resource/images/dummyProfile.png" alt="noti-icon" />
+                            <p><strong>Taki</strong> invite you to join <strong>"Event Name"</strong></p>
                         </div>
                     </div>
                 </div>
-              )}
                 <p className="hr"></p>
                 <div className="btn-profile">
                     <button alt="btn-myevent">MY EVENT</button>
-                    <button alt="btn-logout" onClick={this.onLogout.bind(this)}>LOG OUT</button>
+                    <button alt="btn-logout">LOG OUT</button>
                 </div>
             </div>
-          }
-        </div>
         );
     }
 }

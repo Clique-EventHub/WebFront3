@@ -1,4 +1,3 @@
-export const fullId = ['01','02','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','51','52','55','58','99'];
 const FullNameToCode = {
     "THE SIRINDHORN THAI LAUNGUAGE INSTITUTE" : "01",
     "OFFICE OF ACADEMIC AFFAIRS" : "02",
@@ -269,11 +268,6 @@ export function findIdByNameTH(substring) {
 export function findInfoById(id) {
     return codeToInfo[id];
 }
-
-/**
- * @param  {string}
- * @return {object}
- */
 
 export function findInfoByName(substring) {
     if(/^[a-zA-Z\s()]+$/.test(substring)) {

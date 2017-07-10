@@ -3,7 +3,7 @@
 import './css/tagstyle.css';
 
 import React , { Component } from 'react';
-import Axios from 'axios';
+
 import CardList from '../components/cardList';
 import ChannelList from '../components/channelList';
 import CircleList from '../components/circleList';
@@ -16,69 +16,47 @@ class homePage extends Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            listOfEvent: [],
-            listOfUnDe: []
-        };
-        let list_event = [], list_event_unde = [];
-
-        Axios.get('http://139.59.97.65:1111/tags/search?keywords=camp').then((data) => {
-            console.log("get!!!");
-             console.log(JSON.stringify(data.data.events));
-
-            data.data.events.map((event) => {
-              if(list_event.length < 6) {
-                list_event.push(event._id);
-              } else {
-                list_event_unde.push(event._id);
-              }
-            });
-            this.setState({
-              listOfEvent: list_event,
-              listOfUnDe: list_event_unde
-            });
-
-        }, (error) => {
-            console.log("get event search error");
-        });
+        this.onClickMe = this.onClickMe.bind(this);
+        this.onItemPopUpClick = this.onItemPopUpClick.bind(this);
     }
-
 
     onClickMe() {
         // this.props.searched_item_handler(true);
     }
 
-
-    componentWillMount() {
-        document.title = "Event Hub | Tag";
+    onItemPopUpClick(item) {
+        if(this.props.pages.pop_up_item === null) this.props.set_pop_up_item(item);
+        this.props.toggle_pop_item();
     }
 
     render() {
-        // console.log(this.state.listOfEvent);
+
         //Note: if EventDetail is shown, side-menu should not be pressed -> drastic layout change
+
+        let posterTest = [];
+        for(var i = 1; i < 32; i++) {
+            posterTest.push(`../../resource/images/poster_dummy/${i}.jpg`);
+        }
+
         return (
             <section role="tag-content" onClick={this.onClickMe}>
+
 
                 <div className="below-carousel">
                         <article className="tag-proflie basic-card">
                             <img className="photo"  />
-                            <div className="tag-name"><h2>keyword</h2></div>
+                            <div className=" "><h2>TAG NAME</h2></div>
                             <div className="like-button">LIKE</div>
                         </article>
-
-                        <section content="event-list">
-                            {this.state.listOfEvent.map((ID) => {
-                              return <EventItem eventId={ID} detail-shown="true" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
-                            })}
-                            <br />
-                            {this.state.listOfUnDe.map((ID) => {
-                              return <EventItem eventId={ID} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
-                            })}
-                        </section>
+                            <section content="event-list">
+                            <EventItem posterSrc={posterTest[4]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            <EventItem posterSrc={posterTest[5]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            <EventItem posterSrc={posterTest[6]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            <EventItem posterSrc={posterTest[7]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            <EventItem posterSrc={posterTest[6]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            <EventItem posterSrc={posterTest[7]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            </section>
                 </div>
-
-
             </section>
         );
     }

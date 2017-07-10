@@ -14,8 +14,6 @@ article.event-search {
 	z-index: 551;
 	margin-left: 10%;
 	margin-right: 10%;
-	max-width: 100vw;
-	overflow-y: scroll;
 }
 
 div.keyword {
@@ -23,16 +21,15 @@ div.keyword {
 	font-size: 60px;
 	font-weight: bold;
 	color: #FFF;
-	display: block;
-	width: 100%;
-	white-space: normal;
+	display: inline;
 }
 
 div.found {
 	font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
 	font-size: 30px;
 	color: #FFF;
-	display: block;
+	display: inline;
+	margin-left: 70px;
 }
 
 div.event-found {
