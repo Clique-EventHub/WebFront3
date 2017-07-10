@@ -6,6 +6,66 @@ import './css/channelInfostyle.css';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
 
+const TAG_1 = [
+    "CAMP",
+    "THEATHRE",
+    "TALK",
+    "FIRSTMEET",
+    "RECRUITMENT",
+    "MARKET",
+    "VOLUNTEER",
+    "CONCERT",
+    "FESTIVAL",
+    "OPENING",
+    "CONTEST",
+    "EXHIBITION",
+    "WORKSHOP",
+    "RELIGION"
+];
+
+const TAG_2 = [
+    "CHARITY",
+    "ACADEMIC",
+    "BUSINESS",
+    "CAREER",
+    "SPORT",
+    "ARTS",
+    "FOOD&DRINK",
+    "EDUCATION",
+    "MUSIC",
+    "TECHNOLOGY",
+    "NATURAL",
+    "HEALTH"
+]
+
+class Btn extends Component {
+    //BtnToggleState
+    constructor(props) {
+        super(props);
+        this.state = {
+            'isActive': false
+        }
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick() {
+        let tmp = !this.state.isActive;
+        this.setState({
+            ...this.state,
+            'isActive': tmp
+        });
+        if(typeof(this.props.callback) === "function") this.props.callback(tmp);
+    }
+
+    render() {
+        return (
+            <button onClick={this.onClick} className={(this.state.isActive) ? this.props.classNameOn : this.props.classNameOff}>
+                {this.props.text}
+            </button>
+        );
+    }
+}
+
 class channelInfo extends Component {
     constructor(props) {
         super(props);
@@ -15,70 +75,83 @@ class channelInfo extends Component {
         // about, video, location, date_start, date_end, picture, picture_large, year_require, faculty_require, tags, agreement, contact_information,
         // joinable_start_time, joinable_end_time, joinable_amount, time_start, time_end, optional_field, require_field, show, outsider_accessible
 
-        let _this = this;
 
         this.state = {
-            'channel_id': "5946205a4b908f001403aba5"
+            'channel_id': "595e86832ff0cf001402ab99"
         }
 
-        axios.get('http://139.59.97.65:1111/channel?id=' + _this.state.channel_id).then((data) => {
+           axios.get('http://139.59.97.65:1111/channel?id=' + this.state.channel_id).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.name))
-            _this.state = {
+            console.log(JSON.stringify(data.data.picture))
+            console.log(JSON.stringify(data.data.picture_large))
+            console.log(JSON.stringify(data.data.picture_large))
+
+            this.setState({
+                ...this.state,
                 'name': data.data.name,
                 'picture': data.data.picture,
                 'detail': data.data.detail,
                 'picture_large': data.data.picture_large,
+                'tags': data.data.tags,
 
                 'new_name': data.data.name,
                 'new_picture': data.data.picture,
                 'new_detail': data.data.detail,
                 'new_picture_large': data.data.picture_large,
-            }
+                'new_tags': data.data.tags,
+            });
         }, (error) => {
             console.log("get channel error");
         });
 
         this.onKeyPressed = this.onKeyPressed.bind(this);
+        this.save = this.save.bind(this);
     }
 
     onKeyPressed() {
         const newState = {
             ...this.state,
             'new_name': this.refs.name.value,
-            'new_picture': this.refs.picture.value,
-            'new_detail': this.refs.detail.value,
-            'new_picture_large': this.refs.picture_large.value,
+            //'new_picture': this.refs.picture.value,
+            'new_detail': this.refs.about.value,
+            //'new_picture_large': this.refs.picture_large.value,
+            //'new_tags': this.refs.tags.value,
         };
         this.setState(newState);
     }
 
     save() {
-        const newState = {
+        console.log("kuyyyyy");
+        this.setState({
             ...this.state,
-            'name': this.refs.name.value,
-            'picture': this.refs.picture.value,
-            'detail': this.refs.detail.value,
-            'picture_large': this.refs.picture_large.value,
-        };
-        this.setState(newState);
+            'name': this.state.new_name,
+            'picture': this.state.new_picture,
+            'detail': this.refs.about.value,
+            'picture_large': this.state.new_picture_large,
+            'tags': this.state.new_tags
+        });
+
+        console.log(this.refs.about.value);
+        console.log(this.state.detail);
 
         let config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true,
             }
         }
-
         let responseBody = {
-            'name': this.refs.name.value,
-            'picture': this.refs.picture.value,
-            'detail': this.refs.detail.value,
-            'picture_large': this.refs.picture_large.value,
-        }
-
-        let _this = this;
-
-        axios.put('http://139.59.97.65:1111/event?id='+ _this.state.event_id, responseBody, config).then((response) => {
+            'name': this.refs.about.name,
+            //'picture': this.state.picture.value,
+            //'detail': [this.refs.about.value],
+            //'picture_large': this.state.picture_large.value,
+            //'tags': this.state.tags
+        };
+        console.log("dddd");
+        console.log(responseBody.detail);
+        console.log(this.state.channel_id);
+        axios.put('http://139.59.97.65:1111/channel?id='+ this.state.channel_id, responseBody, config).then((response) => {
             console.log("saved!!!");
             return true;
         }, (error) => {
@@ -96,9 +169,41 @@ class channelInfo extends Component {
             'new_picture': this.state.picture,
             'new_detail': this.state.detail,
             'new_picture_large': this.state.picture_large,
+            'new_tags': this.state.tags,
         };
         this.setState(newState);
         this.props.toggle_pop_item();
+    }
+
+    onSelectedPicture() {
+
+    }
+
+
+    onSelectedPoster() {
+        const input = this.refs["picture_large"];
+        const div = this.refs["preview-image"];
+        const _this = this;
+
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+
+            reader.onload = function (e) {
+                div.style.backgroundImage = `url('${e.target.result}')`;
+
+                _this.setState({
+                    ..._this.state,
+                    'new': {
+                        ..._this.state.new,
+                        'picture_large': e.target.result
+                    }
+                })
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+
+
     }
 
     onExit() {
@@ -118,7 +223,13 @@ class channelInfo extends Component {
                         <img src="../../resource/images/X.svg" />
                     </button>
 
-                    <img src="../resource/images/dummyProfile.png" className="chan-img" alt="cn-profile-pic"/>
+
+                    <label className="changeprofile">
+                        <img src={this.state.new_picture} className="chan-img" alt="cn-profile-pic"/>
+                        <input type="file" ref="picture" onChange={this.onSelectedPicture} name="picture" className="fileInput" accept="image/*" />
+                     </label>
+
+
                     <input className="chan-name" ref="name" type="text" placeholder="" value={this.state.new_name} onChange={this.onKeyPressed} />
 
                     <p className="l1"></p>
@@ -128,7 +239,12 @@ class channelInfo extends Component {
                         <textarea className="detail" ref="about" type="text" placeholder="" value={this.state.new_detail} onChange={this.onKeyPressed}/>
 
                         <div>
-                            <h1>PHOTO</h1> <button className="fill">UPLOAD</button>
+                            <h1>PHOTO</h1>
+
+                            <label className="fileContainer">
+                                <div>UPLOAD</div>
+                                <input type="file" ref="poster" onChange={this.onSelectedPoster} id="poster" name="poster" className="fileInput" accept="image/*" />
+                            </label>
 
                             <div className="photo-upload">
                                 pic1.png
@@ -137,57 +253,27 @@ class channelInfo extends Component {
                                 </button>
                             </div>
 
-                            <div className="photo-upload">
-                                pic1.png
-                                <button role="event-exit" onClick={this.onDelect.bind(this)}>
-                                    <img src="../../resource/images/X.svg" />
-                                </button>
-                            </div>
-
-                            <div className="photo-upload">
-                                pic1.png
-                                <button role="event-exit" onClick={this.onDelect.bind(this)}>
-                                    <img src="../../resource/images/X.svg" />
-                                </button>
-                            </div>
+                            <div data-alt="preview-image" ref="preview-image" />
                         </div>
 
                         <h1>URL</h1> <input ref="url" type="text" placeholder="" />
                         <h1>YOUTUBE</h1> <input ref="youtube" type="text" placeholder=""/>
                     </div>
 
-
-
                     <div className="chan-tag">
                         <h1>TAG</h1>
-                        <button className="tag">CAMP</button>
-                        <button className="tag">THEATRE</button>
-                        <button className="tag">TALK</button>
-                        <button className="tag">FIRSTMEET</button>
-                        <button className="tag">STAFF RECRUITMENT</button>
-                        <button className="tag">MARKET</button>
-                        <button className="tag">VOLUNTEER</button>
-                        <button className="tag">CONCERT</button>
-                        <button className="tag">FESTIVAL</button>
-                        <button className="tag">OPENING</button>
-                        <button className="tag">CONTEST</button>
-                        <button className="tag">EXHIBITION</button>
-                        <button className="tag">WORKSHOP</button>
-                        <button className="tag">RELIGION</button>
+                        {
+                            TAG_1.map((key, index) => {
+                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag"/>);
+                            })
+                        }
                         <br />
                         <br />
-                        <button className="tag">CHARILY</button>
-                        <button className="tag">ACADEMIC</button>
-                        <button className="tag">BUSSINESS</button>
-                        <button className="tag">CAREER</button>
-                        <button className="tag">SPORT</button>
-                        <button className="tag">ARTS</button>
-                        <button className="tag">FOOD&DRINK</button>
-                        <button className="tag">EDUCATION</button>
-                        <button className="tag">MUSIC</button>
-                        <button className="tag">TECHNOLOGY</button>
-                        <button className="tag">NATURAL</button>
-                        <button className="tag">HEALTH</button>
+                        {
+                            TAG_2.map((key, index) => {
+                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag"/>);
+                            })
+                        }
                     </div>
 
                     <br />
