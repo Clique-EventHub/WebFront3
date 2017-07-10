@@ -8,13 +8,6 @@ import axios from 'axios';
 import { getCookie } from '../actions/common';
 import * as facultyMap from '../actions/facultyMap';
 // import CardList from '../components/cardList';
-=======
-import normalPage from '../hoc/normPage';
-import pages from '../hoc/pages';
-import { Link } from 'react-router';
-
-import CardList from '../components/cardList';
->>>>>>> 9c49bcfa2dbad34a172369ac808e9c80cf9b6836
 import EventItem from '../container/eventItem';
 import EditProfile from '../container/editProfile';
 
@@ -28,7 +21,6 @@ class myEventPage extends Component {
     }
 
     render() {
-<<<<<<< HEAD
         var i;
         var join_events = [];
         var index_join = 0;
@@ -57,8 +49,6 @@ class myEventPage extends Component {
             completed_events.push(<EventItem key={index_cp++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         }
 
-=======
->>>>>>> 9c49bcfa2dbad34a172369ac808e9c80cf9b6836
         return (
             <section role="main-content" >
                 <h1>MY EVENT</h1>
