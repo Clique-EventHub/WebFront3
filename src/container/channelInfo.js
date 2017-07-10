@@ -21,7 +21,7 @@ class channelInfo extends Component {
             'channel_id': "5946205a4b908f001403aba5"
         }
 
-        axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id, { headers: { 'crossDomain': true }}).then((data) => {
+        axios.get('http://139.59.97.65:1111/channel?id=' + _this.state.channel_id).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.name))
             _this.state = {
@@ -65,8 +65,7 @@ class channelInfo extends Component {
 
         let config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
-                'crossDomain': true
+                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
             }
         }
 
@@ -79,7 +78,7 @@ class channelInfo extends Component {
 
         let _this = this;
 
-        axios.put('http://128.199.208.0:1111/event?id='+ _this.state.event_id, responseBody, config).then((response) => {
+        axios.put('http://139.59.97.65:1111/event?id='+ _this.state.event_id, responseBody, config).then((response) => {
             console.log("saved!!!");
             return true;
         }, (error) => {

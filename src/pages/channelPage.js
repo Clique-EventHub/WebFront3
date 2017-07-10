@@ -6,6 +6,7 @@ import pages from '../hoc/pages';
 import normalPage from '../hoc/normPage';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
+import './css/channelPage.css';
 
 class channelPage extends Component {
 
@@ -28,12 +29,11 @@ class channelPage extends Component {
         if(!this.state.isFollow) {
             let config = {
                 'headers': {
-                    'Authorization': ('JWT ' + getCookie('fb_sever_token')),
-                    'crossDomain': true
+                    'Authorization': ('JWT ' + getCookie('fb_sever_token'))
                 }
             }
 
-            axios.put('http://128.199.208.0:1111/user/subscribe?id=' + _this.state.channel_id, config).then((response) => {
+            axios.put('http://139.59.97.65:1111/user/subscribe?id=' + _this.state.channel_id, config).then((response) => {
                 console.log("followed!!!");
                 this.setState({
                     ...this.state,
@@ -59,15 +59,13 @@ class channelPage extends Component {
     componentWillMount() {
         let _this = this;
 
-        document.title = "Event Hub | Channel";
-
         let config = {
             'headers': {
                 'Authorization': ('JWT ' + getCookie('fb_sever_token'))
             }
         }
 
-        axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id, { headers: { 'crossDomain': true }}).then((data) => {
+        axios.get('http://139.59.97.65:1111/channel?id=' + _this.state.channel_id).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.name));
             _this.setState({
@@ -80,7 +78,7 @@ class channelPage extends Component {
             console.log("get channel error");
         });
 
-        axios.get('http://128.199.208.0:1111/user/subscribe', config).then((data) => {
+        axios.get('http://139.59.97.65:1111/user/subscribe', config).then((data) => {
             console.log("get subscribe!!!");
 
             if(data.data.hasOwnProperty(_this.state.name)){
@@ -112,7 +110,7 @@ class channelPage extends Component {
                         <Circle parent="tag" />
                         <Circle parent="tag" />
                     </div>
-                    <img src={this.state.picture_large} alt="cn-cover-pic"/>
+                    <img src={this.state.cover_picture} alt="cn-cover-pic"/>
                     <img src={this.state.picture} alt="cn-profile-pic"/>
                     <div className="cn-detail">
                         <button>MORE DETAIL</button>

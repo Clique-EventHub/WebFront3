@@ -3,6 +3,9 @@ import autoBind from '../hoc/autoBind';
 import Circle from '../components/circle';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
+import './css/editProfile.css';
+import * as facultyMap from '../actions/facultyMap';
+let useCls = " toggle-vis";
 
 class editProfile extends Component {
 
@@ -30,16 +33,16 @@ class editProfile extends Component {
 
         let _this = this;
 
-        axios.get('http://128.199.208.0:1111/user', config).then((data) => {
+        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
-                'regId': (data.data.regId == null) ? 'undefined' : data.data.regId,
-                'faculty': (data.data.faculty == null)? 'Faculty of Engineering': data.data.faculty,
-                'birth_day': data.data.birth_day,
+                'regId': (data.data.regId == null) ? 'Not Found' : data.data.regId,
+                'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
+                'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
                 'nick_name': data.data.nick_name,
                 'lineId': data.data.lineId,
                 'email': data.data.email,
@@ -50,8 +53,9 @@ class editProfile extends Component {
                 'dorm_building': data.data.dorm_building,
                 'dorm_room': data.data.dorm_room,
                 'dorm_bed': data.data.dorm_bed,
+                'tag_like': data.data.tag_like,
 
-                'new_birth_day': data.data.birth_day,
+                'new_birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
                 'new_nick_name': data.data.nick_name,
                 'new_lineId': data.data.lineId,
                 'new_email': data.data.email,
@@ -62,6 +66,7 @@ class editProfile extends Component {
                 'new_dorm_building': data.data.dorm_building,
                 'new_dorm_room': data.data.dorm_room,
                 'new_dorm_bed': data.data.dorm_bed,
+                'new_tag_like': data.data.tag_like,
                 'isLoading': false
             })
         }, (error) => {
@@ -83,6 +88,7 @@ class editProfile extends Component {
             'new_dorm_building': this.refs.dorm_building.value,
             'new_dorm_room': this.refs.dorm_room.value,
             'new_dorm_bed': this.refs.dorm_bed.value,
+            // 'new_tag_like': data.data.tag_like,
         };
         this.setState(newState);
     }
@@ -101,6 +107,7 @@ class editProfile extends Component {
             'dorm_building': this.refs.dorm_building.value,
             'dorm_room': this.refs.dorm_room.value,
             'dorm_bed': this.refs.dorm_bed.value,
+            'tag_like': 'new_tag_like',
         };
         this.setState(newState);
 
@@ -122,9 +129,10 @@ class editProfile extends Component {
             'dorm_building': this.refs.dorm_building.value,
             'dorm_room': this.refs.dorm_room.value,
             'dorm_bed': this.refs.dorm_bed.value,
+            'tag_like': 'new_tag_like',
         }
 
-        axios.put('http://128.199.208.0:1111/user', responseBody, config).then((response) => {
+        axios.put('http://139.59.97.65:1111/user', responseBody, config).then((response) => {
             var msg = response.msg;
             var code = response.code;
             console.log(msg);
@@ -134,6 +142,10 @@ class editProfile extends Component {
             console.log("save error");
             return false;
         })
+
+        if(typeof(this.props.onSaveItem) === "function") {
+            this.props.onSaveItem(responseBody);
+        }
 
         this.props.toggle_pop_item();
     }
@@ -152,9 +164,14 @@ class editProfile extends Component {
             'new_dorm_building': this.state.dorm_building,
             'new_dorm_room': this.state.dorm_room,
             'new_dorm_bed': this.state.dorm_bed,
+            'new_tag_like': this.state.tags_like,
         };
         this.setState(newState);
         this.props.toggle_pop_item();
+    }
+
+    onSaveTag() {
+
     }
 
     onExit() {
@@ -174,7 +191,8 @@ class editProfile extends Component {
                             <img src={this.state.picture} alt="profile-pic" />
                             <div className="profile-head">
                                 <h1 alt="profile-name">{this.state.firstName+" "+this.state.lastName}</h1>
-                                <div alt="faculty-icon" /> <p>Faculty of Engineering</p>
+                                <div alt="faculty-icon" className={`bg-${facultyMap.findInfoById(this.state.faculty).ClassNameKeyWord}`} />
+                                <p>{facultyMap.findInfoById(this.state.faculty).FullName}</p>
                             </div>
                         </section>
                         <p className="hr"></p>
@@ -191,9 +209,9 @@ class editProfile extends Component {
                                 <img src="../../resource/icon/icon13.svg" alt="food"/> <input ref="food" type="text" placeholder="Food Allergy" value={this.state.new_allergy} onChange={this.onKeyPressed}/>
                                 <img src="../../resource/icon/icon14.svg" alt="dorm"/>
                                 <div className="flex">
-                                    <input className="w100" ref="dorm_building" type="text" placeholder="Building" value={this.state.new_dorm_building} onChange={this.onKeyPressed}/>
-                                    <input className="w50" ref="dorm_room" type="text" placeholder="Room" value={this.state.new_dorm_room} onChange={this.onKeyPressed}/>
-                                    <input className="w50" ref="dorm_bed" type="text" placeholder="Bed" value={this.state.new_dorm_bed} onChange={this.onKeyPressed}/>
+                                    <input className="w110" ref="dorm_building" type="text" placeholder="Dorm Building" value={this.state.new_dorm_building} onChange={this.onKeyPressed}/>
+                                    <input className="w45" ref="dorm_room" type="text" placeholder="Room" value={this.state.new_dorm_room} onChange={this.onKeyPressed}/>
+                                    <input className="w45" ref="dorm_bed" type="text" placeholder="Bed" value={this.state.new_dorm_bed} onChange={this.onKeyPressed}/>
                                 </div>
                             </section>
                             <p className="sec-line"></p>

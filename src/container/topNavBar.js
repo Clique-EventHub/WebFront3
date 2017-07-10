@@ -1,15 +1,12 @@
-/* eslint-disable */
-
 import React, { Component } from 'react';
 import SearchBox from '../components/searchBox';
 import Bubble from '../components/Bubble';
 import ProfilePopUp from './profilePopup';
 import { Link } from 'react-router';
 import SearchResult from './searchResult';
-import { myStore } from '../index';
-
 import autoBind from '../hoc/autoBind';
-
+import axios from 'axios';
+import { getCookie } from '../actions/common';
 import $ from 'jquery';
 
 class topNavBar extends Component {
@@ -18,9 +15,9 @@ class topNavBar extends Component {
         super(props);
         this.state = {
             'searchTerm': '',
-            'isSearchActive': false,
-            'user': null,
-            'facebook': null
+            'name': "Sign in / Sign up",
+            'picture': "../../resource/images/dummyProfile.png",
+            'isSearchActive': false
         }
 
         this.onUpdateSearch = this.onUpdateSearch.bind(this);
@@ -48,22 +45,33 @@ class topNavBar extends Component {
     componentDidMount() {
         window.addEventListener("resize", this.onWindowResize);
         this.onWindowResize();
+
+        let config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            }
+        }
+
+        let _this = this;
+
+        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
+            console.log("get top nav bar!!!");
+            console.log(JSON.stringify(data.data.firstName));
+            _this.setState({
+                'name': data.data.firstName,
+                'picture': data.data.picture
+            })
+        }, (error) => {
+            console.log("get tnb error");
+        });
     }
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.onWindowResize);
     }
 
-    componentWillMount() {
-        // myStore.subscribe(() => {
-        //     if(myStore.getState().user !== this.state.user || myStore.getState().fb !== this.state.facebook) {
-        //         this.setState({
-        //             ...this.state,
-        //             'user': myStore.getState().user,
-        //             'facebook': myStore.getState().fb
-        //         })
-        //     }
-        // })
+    componentDidUpdate() {
+        console.log(this.state);
     }
 
     // componentDidUpdate() {
@@ -165,7 +173,8 @@ class topNavBar extends Component {
             // if(!this.props.pages.is_blur) this.props.blur_bg();
             this.setState({
                 ...this.state,
-                'isSearchActive': false
+                'isSearchActive': false,
+                searchTerm: ''
             })
         } else {
             this.props.toggle_pop_item();
@@ -194,11 +203,9 @@ class topNavBar extends Component {
                     <i className="fa fa-bars" aria-hidden="true"></i>
                 </button>
                 <section className="flex-left toggle-not" content="left-group" aria-hidden="true">
-                    <Link to="/calendar">
-                        <button className="invisible" onClick={this.onToggleTags}>
-                            <img aria-hidden="false" src="../resource/images/bubble.svg" role="tags-icon" alt="bubble-icon"/>
-                        </button>
-                    </Link>
+                    <button className="invisible" onClick={this.onToggleTags}>
+                        <img aria-hidden="false" src="../resource/images/bubble.svg" role="tags-icon" alt="bubble-icon"/>
+                    </button>
                     <div aria-hidden="true" className="vr"></div>
                     <form onSubmit={this.onSubmit}>
                         <i className="fa fa-search" aria-hidden="true"></i>
@@ -210,16 +217,14 @@ class topNavBar extends Component {
                 </Link>
                 <button aria-hidden="false" className="flex-right toggle-not invisible" role="profile-button" onClick={this.onToggleProfile}>
                     <div>
-                        {
-                            this.props.fb.basic_info.name
-                        }
+                        {this.state.name}
                     </div>
-                    <img src="../../resource/images/dummyProfile.png" alt="profile"/>
+                    <img src={this.state.picture} alt="profile"/>
                 </button>
                 <button className="flex-right toggle outline square-round" onClick={() => { this.onSearchToggleState()}}>
                     <i className="fa fa-search" aria-hidden="true"></i>
                 </button>
-                <div className={`toggle no-pos ${( this.state.isSearchActive) ? '' : 'display-none'}`}>
+                <div className={`toggle no-pos ${(this.state.searchTerm.length > 0 && this.state.isSearchActive) ? '' : 'display-none'}`}>
                     <SearchBox onUpdateSearch={this.onUpdateSearch} searchTerm={this.state.searchTerm} onSubmit={this.onSubmit} />
                     <SearchResult noBg={true} className={(this.state.searchTerm.length > 0 && this.state.isSearchActive) ? '' : 'display-none'} keyword={this.state.searchTerm} onToggle={() => {this.onToggle();}} onSetItem={this.props.set_pop_up_item} />
                 </div>
@@ -227,14 +232,14 @@ class topNavBar extends Component {
                     <SearchResult className={(this.state.searchTerm.length > 0 && this.state.isSearchActive) ? '' : 'display-none'} keyword={this.state.searchTerm} onToggle={() => {this.onToggle();}} onSetItem={this.props.set_pop_up_item} />
                 </div>
                 <div className="profile-menu-inactive">
-                    <ProfilePopUp user={this.props.user} onLogout={this.props.fbLogout} />
+                    <ProfilePopUp />
                 </div>
                 <div className="tags-menu-inactive">
-
+                    <Bubble />
                 </div>
             </nav>
         );
     }
 }
 
-export default autoBind(topNavBar);
+export default autoBind(topNavBar, false);
