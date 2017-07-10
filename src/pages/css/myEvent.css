@@ -1,4 +1,4 @@
-section[role="main-content"] {
+section[role="main-content"].my-event {
   font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
   color: #555555;
   padding: 10px 80px;
