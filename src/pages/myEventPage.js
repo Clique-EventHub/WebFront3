@@ -62,7 +62,7 @@ class myEventPage extends Component {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({
-                ...this.state,
+                ..._this.state,
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
