@@ -124,7 +124,7 @@ class PictureUpload extends Component {
 
     render() {
         return (
-            <div className="PictureUpload">
+            <div className="PictureUpload" style={this.props.style}>
                 <label className="fileContainer">
                     <div>{(this.props.showFilesNumber && this.state.pictures.length > 0) ? `${this.state.pictures.length} files` : this.state.text }</div>
                     <input type="file" ref="files" onChange={this.onSelectedPoster} className="fileInput" accept="image/*" multiple={this.props.isMultiple} />

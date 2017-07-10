@@ -1002,7 +1002,7 @@ class EditEvent extends Component {
                                             }
                                         })
                                     }
-                                }}/>
+                                }} style={{'width': '100%'}}/>
                         </div>
                     </div>
                     <div>
