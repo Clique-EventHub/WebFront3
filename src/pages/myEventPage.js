@@ -18,14 +18,36 @@ class myEventPage extends Component {
         super(props);
 
         this.state = {
-          'isLoading': true,
+          'firstName': '',
+          'lastName': '',
+          'picture': '',
+          'regId': '',
           'faculty': '99',
+          'birth_day': '',
+          'nick_name': '',
+          'lineId': '',
+          'email': '',
+          'phone': '',
+          'shirt_size': '',
+          'disease': '',
+          'allergy': '',
+          'dorm_building': '',
+          'dorm_room': '',
+          'dorm_bed': '',
+          'join_events': '',
+          'interest_events': '',
+          'already_joined_events': '',
+          'n_join': '',
+          'n_intr': '',
+          'n_completed': '',
+          'showJoin': true,
+          'isLoading': true,
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({updated: nextProps.updated});
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     this.setState({updated: nextProps.updated});
+    // }
 
     componentWillMount() {
         let config = {
@@ -36,16 +58,17 @@ class myEventPage extends Component {
 
         let _this = this;
 
-        axios.get('http://128.199.208.0:1111/user', config).then((data) => {
+        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({
+                ...this.state,
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
-                'regId': (data.data.regId === null) ? 'undefined' : data.data.regId,
+                'regId': (data.data.regId === null) ? 'Not Found' : data.data.regId,
                 'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                'birth_day': data.data.birth_day,
+                'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
                 'nick_name': data.data.nick_name,
                 'lineId': data.data.lineId,
                 'email': data.data.email,
@@ -60,7 +83,7 @@ class myEventPage extends Component {
                 'interest_events': data.data.interest_events,
                 'already_joined_events': data.data.already_joined_events,
                 'n_join': data.data.join_events.length,
-                'n_intr': data.data.interest_events.length,
+                'n_intr': 2,
                 'n_completed': data.data.already_joined_events.length,
                 'showJoin': true
             })
@@ -74,7 +97,10 @@ class myEventPage extends Component {
         // for(var i = 0; i < this.state.n_join; i++){
         //     this.state.events_item.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         // }
-        this.setState({'showJoin': true});
+        this.setState({
+          ...this.state,
+          'showJoin': true
+        });
     }
 
     onShowIntr() {
@@ -82,11 +108,28 @@ class myEventPage extends Component {
         // for(var i = 0; i < this.state.n_intr; i++){
         //     this.state.events_item.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         // }
-        this.setState({'showJoin': false});
+        this.setState({
+          ...this.state,
+          'showJoin': false
+        });
+    }
+
+    onChildSave(val) {
+        console.log("val : " + val);
+
+        this.setState({
+          ...this.state,
+          'nick_name': val.nick_name,
+          'birth_day': val.birth_day,
+          'shirt_size': val.shirt_size,
+          'disease': val.disease,
+        });
     }
 
     onEditProfile() {
-        this.props.set_pop_up_item(<EditProfile />);
+        this.props.set_pop_up_item(<EditProfile onSaveItem={(val) => {
+                      this.onChildSave.bind(this)(val);
+                    }} />);
         this.props.toggle_pop_item();
     }
 
@@ -138,7 +181,7 @@ class myEventPage extends Component {
                   </div>
                   <div className="profile-right">
                       <p>MY point</p>
-                      <h1>54</h1>
+                      <h1>{this.state.n_completed}</h1>
                   </div>
                 </section>
                 <p className="line"></p>

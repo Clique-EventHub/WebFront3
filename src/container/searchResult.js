@@ -18,7 +18,7 @@ class SearchResult extends Component {
 
     componentWillReceiveProps(nextProps) {
         let list_tmp = [], list_unpic = [];
-        Axios.get('http://128.199.208.0:1111/event/search?keyword=' + this.props.keyword).then((data) => {
+        Axios.get('http://139.59.97.65:1111/event/search?keyword=' + this.props.keyword).then((data) => {
             console.log("get!!!");
             // console.log(JSON.stringify(data.data.events));
             data.data.events.map((event) => {

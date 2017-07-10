@@ -39,7 +39,7 @@ class profilePopup extends Component {
 
         let _this = this;
 
-        axios.get('http://128.199.208.0:1111/user', config).then((data) => {
+        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({
@@ -62,7 +62,7 @@ class profilePopup extends Component {
 
         // for (var i = 0; i < this.state.join_events.length; i++) {
         //     if(i < 3){
-        //         axios.get('http://128.199.208.0:1111/event?id=' + this.state.join_events[i]).then((data) => {
+        //         axios.get('http://139.59.97.65:1111/event?id=' + this.state.join_events[i]).then((data) => {
         //             console.log("get!!!");
         //             console.log(JSON.stringify(data.data.title))
         //             _this.setState({
@@ -82,7 +82,7 @@ class profilePopup extends Component {
         console.log("get event : " + this.state.join_events[i]);
 
         if(this.state.join_events.length >= i+1){
-            axios.get('http://128.199.208.0:1111/event?id=' + this.state.join_events[i]).then((data) => {
+            axios.get('http://139.59.97.65:1111/event?id=' + this.state.join_events[i]).then((data) => {
                 console.log("get!!!");
                 console.log(JSON.stringify(data.data.title))
                 if(i === 0){
@@ -125,7 +125,7 @@ class profilePopup extends Component {
 
         let _this = this;
 
-        axios.get('http://128.199.208.0:1111/user', config).then((data) => {
+        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({

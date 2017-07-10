@@ -54,7 +54,7 @@ class topNavBar extends Component {
 
         let _this = this;
 
-        axios.get('http://128.199.208.0:1111/user', config).then((data) => {
+        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
             console.log("get top nav bar!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({

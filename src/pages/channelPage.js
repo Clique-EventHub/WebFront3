@@ -33,7 +33,7 @@ class channelPage extends Component {
                 }
             }
 
-            axios.put('http://128.199.208.0:1111/user/subscribe?id=' + _this.state.channel_id, config).then((response) => {
+            axios.put('http://139.59.97.65:1111/user/subscribe?id=' + _this.state.channel_id, config).then((response) => {
                 console.log("followed!!!");
                 this.setState({
                     ...this.state,
@@ -65,7 +65,7 @@ class channelPage extends Component {
             }
         }
 
-        axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id).then((data) => {
+        axios.get('http://139.59.97.65:1111/channel?id=' + _this.state.channel_id).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.name));
             _this.setState({
@@ -78,7 +78,7 @@ class channelPage extends Component {
             console.log("get channel error");
         });
 
-        axios.get('http://128.199.208.0:1111/user/subscribe', config).then((data) => {
+        axios.get('http://139.59.97.65:1111/user/subscribe', config).then((data) => {
             console.log("get subscribe!!!");
 
             if(data.data.hasOwnProperty(_this.state.name)){

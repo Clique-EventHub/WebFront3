@@ -21,7 +21,7 @@ class channelInfo extends Component {
             'channel_id': "5946205a4b908f001403aba5"
         }
 
-        axios.get('http://128.199.208.0:1111/channel?id=' + _this.state.channel_id).then((data) => {
+        axios.get('http://139.59.97.65:1111/channel?id=' + _this.state.channel_id).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.name))
             _this.state = {
@@ -78,7 +78,7 @@ class channelInfo extends Component {
 
         let _this = this;
 
-        axios.put('http://128.199.208.0:1111/event?id='+ _this.state.event_id, responseBody, config).then((response) => {
+        axios.put('http://139.59.97.65:1111/event?id='+ _this.state.event_id, responseBody, config).then((response) => {
             console.log("saved!!!");
             return true;
         }, (error) => {
@@ -122,11 +122,11 @@ class channelInfo extends Component {
                     <input className="chan-name" ref="name" type="text" placeholder="" value={this.state.new_name} onChange={this.onKeyPressed} />
 
                     <p className="l1"></p>
-                     
+
                     <div className="full-input">
-                        <h1>DETAIL</h1> 
+                        <h1>DETAIL</h1>
                         <textarea className="detail" ref="about" type="text" placeholder="" value={this.state.new_detail} onChange={this.onKeyPressed}/>
-                        
+
                         <div>
                             <h1>PHOTO</h1> <button className="fill">UPLOAD</button>
 
@@ -143,7 +143,7 @@ class channelInfo extends Component {
                                     <img src="../../resource/images/X.svg" />
                                 </button>
                             </div>
-                            
+
                             <div className="photo-upload">
                                 pic1.png
                                 <button role="event-exit" onClick={this.onDelect.bind(this)}>
@@ -155,9 +155,9 @@ class channelInfo extends Component {
                         <h1>URL</h1> <input ref="url" type="text" placeholder="" />
                         <h1>YOUTUBE</h1> <input ref="youtube" type="text" placeholder=""/>
                     </div>
-                        
-                        
-                    
+
+
+
                     <div className="chan-tag">
                         <h1>TAG</h1>
                         <button className="tag">CAMP</button>
@@ -189,7 +189,7 @@ class channelInfo extends Component {
                         <button className="tag">NATURAL</button>
                         <button className="tag">HEALTH</button>
                     </div>
-                    
+
                     <br />
                     <br />
                     <br />

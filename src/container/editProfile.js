@@ -5,6 +5,7 @@ import axios from 'axios';
 import { getCookie } from '../actions/common';
 import './css/editProfile.css';
 import * as facultyMap from '../actions/facultyMap';
+let useCls = " toggle-vis";
 
 class editProfile extends Component {
 
@@ -31,16 +32,16 @@ class editProfile extends Component {
 
         let _this = this;
 
-        axios.get('http://128.199.208.0:1111/user', config).then((data) => {
+        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
-                'regId': (data.data.regId == null) ? 'undefined' : data.data.regId,
+                'regId': (data.data.regId == null) ? 'Not Found' : data.data.regId,
                 'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                'birth_day': data.data.birth_day,
+                'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
                 'nick_name': data.data.nick_name,
                 'lineId': data.data.lineId,
                 'email': data.data.email,
@@ -53,7 +54,7 @@ class editProfile extends Component {
                 'dorm_bed': data.data.dorm_bed,
                 'tag_like': data.data.tag_like,
 
-                'new_birth_day': data.data.birth_day,
+                'new_birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
                 'new_nick_name': data.data.nick_name,
                 'new_lineId': data.data.lineId,
                 'new_email': data.data.email,
@@ -130,7 +131,7 @@ class editProfile extends Component {
             'tag_like': 'new_tag_like',
         }
 
-        axios.put('http://128.199.208.0:1111/user', responseBody, config).then((response) => {
+        axios.put('http://139.59.97.65:1111/user', responseBody, config).then((response) => {
             var msg = response.msg;
             var code = response.code;
             console.log(msg);
@@ -140,6 +141,10 @@ class editProfile extends Component {
             console.log("save error");
             return false;
         })
+
+        if(typeof(this.props.onSaveItem) === "function") {
+            this.props.onSaveItem(responseBody);
+        }
 
         this.props.toggle_pop_item();
     }
@@ -158,10 +163,14 @@ class editProfile extends Component {
             'new_dorm_building': this.state.dorm_building,
             'new_dorm_room': this.state.dorm_room,
             'new_dorm_bed': this.state.dorm_bed,
-            'new_tag_like': this.state.tag_like,
+            'new_tag_like': this.state.tags_like,
         };
         this.setState(newState);
         this.props.toggle_pop_item();
+    }
+
+    onSaveTag() {
+
     }
 
     onExit() {

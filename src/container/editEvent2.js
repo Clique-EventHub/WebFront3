@@ -103,7 +103,7 @@ class EditEvent extends Component {
     componentWillMount() {
         let _this = this;
 
-        axios.get('http://128.199.208.0:1111/event?id=' + _this.state.event_id).then((data) => {
+        axios.get('http://139.59.97.65:1111/event?id=' + _this.state.event_id).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.title))
             _this.setState({
@@ -204,7 +204,7 @@ class EditEvent extends Component {
 
         let _this = this;
 
-        axios.put('http://128.199.208.0:1111/event?id='+ _this.state.event_id, responseBody, config).then((response) => {
+        axios.put('http://139.59.97.65:1111/event?id='+ _this.state.event_id, responseBody, config).then((response) => {
             console.log("saved!!!");
             return true;
         }, (error) => {

@@ -33,7 +33,7 @@ const defaultState = {
 
 function replaceIncorrectLink(str) {
     if(typeof(str) === "string") {
-        if(str.indexOf("128.199.208.0/") === 0) str = str.replace("128.199.208.0/", hostname);
+        if(str.indexOf("139.59.97.65/") === 0) str = str.replace("139.59.97.65/", hostname);
         else if(str.indexOf("cueventhub.com/") === 0) str = str.replace("cueventhub.com/", hostname)
         return str;
     }

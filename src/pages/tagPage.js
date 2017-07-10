@@ -23,7 +23,7 @@ class homePage extends Component {
         };
         let list_event = [], list_event_unde = [];
 
-        Axios.get('http://128.199.208.0:1111/tags/search?keywords=camp').then((data) => {
+        Axios.get('http://139.59.97.65:1111/tags/search?keywords=camp').then((data) => {
             console.log("get!!!");
              console.log(JSON.stringify(data.data.events));
 
