@@ -203,9 +203,11 @@ class topNavBar extends Component {
                     <i className="fa fa-bars" aria-hidden="true"></i>
                 </button>
                 <section className="flex-left toggle-not" content="left-group" aria-hidden="true">
-                    <button className="invisible" onClick={this.onToggleTags}>
-                        <img aria-hidden="false" src="../resource/images/bubble.svg" role="tags-icon" alt="bubble-icon"/>
-                    </button>
+                    <Link to="/calendar">
+                        <button className="invisible" onClick={this.onToggleTags}>
+                            <img aria-hidden="false" src="../resource/images/bubble.svg" role="tags-icon" alt="bubble-icon"/>
+                        </button>
+                    </Link>
                     <div aria-hidden="true" className="vr"></div>
                     <form onSubmit={this.onSubmit}>
                         <i className="fa fa-search" aria-hidden="true"></i>

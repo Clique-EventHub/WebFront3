@@ -264,7 +264,9 @@ class profilePopup extends Component {
               )}
                 <p className="hr"></p>
                 <div className="btn-profile">
-                    <button alt="btn-myevent">MY EVENT</button>
+                    <Link to="profile">
+                        <button alt="btn-myevent">MY EVENT</button>
+                    </Link>
                     <button alt="btn-logout" onClick={this.onLogout.bind(this)}>LOG OUT</button>
                 </div>
             </div>

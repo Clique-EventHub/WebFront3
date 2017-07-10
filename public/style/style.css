@@ -379,16 +379,16 @@ button[role="event-exit"] img {
   text-align: right !important;
 }
 
-.basic-card:hover,
-.basic-card:active {
-  box-shadow: 0px 0px 20px #5dbdf0;
-}
-
 .basic-card,
 .basic-card-no-glow {
   border-radius: 5px !important;
   background: #FFF;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+.basic-card:hover,
+.basic-card:active {
+  box-shadow: 0px 0px 20px #5dbdf0 !important;
 }
 
 .content-move-inactive {
@@ -490,7 +490,7 @@ button[role="event-exit"] img {
   border-bottom: 30px solid #FCFCFC;
   position: relative;
   top: -34px;
-  left: 305px;
+  left: 370px;
   animation: dissoveIn 0.1s ease-in-out;
 }
 
@@ -2015,4 +2015,9 @@ div.background-overlay-fix {
 
 .display-none {
   display: none !important;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
