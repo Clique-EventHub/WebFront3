@@ -32,6 +32,18 @@ channelList.defaultProps = {
     channelList: [{
         'name': 'Channel Name Test',
         'id': 'Nonesensical',
+    }, {
+        'name': 'Channel Name Test 2',
+        'id': 'Nonesensical',
+    }, {
+        'name': 'Channel Name Test 3',
+        'id': 'Nonesensical',
+    }, {
+        'name': 'Channel Name Test 4',
+        'id': 'Nonesensical',
+    }, {
+        'name': 'Channel Name Test 5',
+        'id': 'Nonesensical',
     }]
 }
 

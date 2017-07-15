@@ -888,7 +888,7 @@ section[content="bottom-half"] {
   /* NEW - Chrome */
   display: flex;
   flex-wrap: wrap;
-  border: 1px solid #000;
+  border: 1px solid #D1D1D1;
   border-right: 0px;
   border-left: 0px;
 }
@@ -905,7 +905,7 @@ section[content="bottom-half"]:last-of-type {
 }
 
 section[content="bottom-half"] > *:first-child {
-  border-right: 1px solid #000;
+  border-right: 1px solid #D1D1D1;
 }
 
 section[role="carousel"] .myContainer {
@@ -1032,6 +1032,8 @@ section[content="channel"] {
   flex: 1;
   display: inline-block;
   max-width: 27%;
+  padding-top: 20px;
+  padding-left: 20px;
 }
 
 section[content="new"],
@@ -1039,6 +1041,8 @@ section[content="for-you"] {
   flex: 2;
   display: inline-block;
   text-align: left;
+  padding-top: 20px;
+  padding-left: 20px;
 }
 
 article[role="event-item"]:hover {

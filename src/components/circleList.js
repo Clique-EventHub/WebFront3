@@ -68,7 +68,7 @@ class circleList extends Component {
             <section className={wrapperClass}>
                 {
                     this.props.tags.map((tagName, index) => {
-                        return <Circle key={index} parent={this.props.parent} />
+                        return <Circle key={index} parent={this.props.parent} tagName={tagName} />
                     })
                 }
             </section>
@@ -77,7 +77,7 @@ class circleList extends Component {
 }
 
 circleList.defaultProps = {
-    'tags': ["CAMP"]
+    'tags': ["CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP"]
 }
 
 export default circleList;

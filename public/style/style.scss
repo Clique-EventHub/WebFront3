@@ -13,7 +13,7 @@ $color-dark-green: #568d0c;
 $color-dark-red: #fe2000;
 
 $min-width: 320px;
-
+$border-color: #D1D1D1;
 /*test*/
 
 body {
@@ -677,7 +677,7 @@ section[content="bottom-half"] {
     display: -webkit-flex;     /* NEW - Chrome */
     display:flex;
     flex-wrap: wrap;
-    border: 1px solid #000;
+    border: 1px solid $border-color;
     border-right: 0px;
     border-left: 0px;
     h2 {
@@ -691,7 +691,7 @@ section[content="bottom-half"]:last-of-type {
     border-top: 0px;
 }
 section[content="bottom-half"] > *:first-child {
-    border-right: 1px solid #000;
+    border-right: 1px solid $border-color;
 }
 
 $carousel-max-width: 800px;
@@ -823,12 +823,16 @@ section[content="channel"] {
     flex: 1;
     display: inline-block;
     max-width: 27%;
+    padding-top: 20px;
+    padding-left: 20px;
 }
 section[content="new"],
 section[content="for-you"] {
     flex: 2;
     display: inline-block;
     text-align: left;
+    padding-top: 20px;
+    padding-left: 20px;
 }
 
 $event-item-height: 300px;
