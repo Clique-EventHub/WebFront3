@@ -38,7 +38,7 @@ div.edit-profile section.edit-pro-head div.profile-head p {
 }
 
 div.edit-profile section.edit-pro-head img[alt="profile-pic"] {
-  height: calc(95px);
+  height: 95px;
   margin-left: 30px;
   border-radius: 50%;
   border: 1px solid #000;

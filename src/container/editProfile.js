@@ -67,6 +67,7 @@ class editProfile extends Component {
         axios.get(`${hostname}user`, config).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
+            console.log(data.data);
             _this.setState({
                 ..._this.state,
                 'firstName': data.data.firstName,
@@ -149,22 +150,7 @@ class editProfile extends Component {
             }
         }
 
-        let responseBody = {
-            'birth_day': this.refs.birth.value,
-            'nick_name': this.refs.nick_name.value,
-            'lineId': this.refs.line.value,
-            'email': this.refs.email.value,
-            'phone': this.refs.mobile.value,
-            'shirt_size': this.refs.size.value,
-            'disease': this.refs.med.value,
-            'allergy': this.refs.food.value,
-            'dorm_building': this.refs.dorm_building.value,
-            'dorm_room': this.refs.dorm_room.value,
-            'dorm_bed': this.refs.dorm_bed.value,
-            'tag_like': 'new_tag_like',
-        }
-
-        axios.put(`${hostname}user`, responseBody, config).then((response) => {
+        axios.put(`${hostname}user`, newState, config).then((response) => {
             var msg = response.msg;
             var code = response.code;
             console.log(msg);
@@ -176,7 +162,7 @@ class editProfile extends Component {
         })
 
         if(typeof(this.props.onSaveItem) === "function") {
-            this.props.onSaveItem(responseBody);
+            this.props.onSaveItem(newState);
         }
 
         this.props.toggle_pop_item();

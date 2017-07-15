@@ -16,6 +16,8 @@ article.event-search {
 	margin-right: 10%;
 	max-width: 100vw;
 	overflow-y: scroll;
+	width: 100vw;
+	box-sizing: border-box;
 }
 
 div.keyword {
@@ -37,4 +39,6 @@ div.found {
 
 div.event-found {
 	margin-top: 50px;
+	display: flex;
+	flex-wrap: wrap;
 }

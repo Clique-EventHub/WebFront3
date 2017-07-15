@@ -187,7 +187,7 @@ class myEventPage extends Component {
                       <h1>{this.state.n_completed}</h1>
                   </div>
                 </section>
-                <p className="line"></p>
+                <p className="line" />
                 <section className="my-event-center">
                 <h2 className={`join-${this.state.showJoin}`} onClick={this.onShowJoin.bind(this)}>Joined Event</h2>
                 <h2 className={`join-${!this.state.showJoin}`} onClick={this.onShowIntr.bind(this)}>Interested Event</h2>

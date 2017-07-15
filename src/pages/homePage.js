@@ -131,7 +131,7 @@ class homePage extends Component {
                         </section>
                         <section content="new">
                             <h2>New</h2>
-                            <div style={{'display': 'flex', 'flexWrap': 'wrap'}}>
+                            <div style={{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
                                 {
                                     this.state.eventNew.map((id, index) => {
                                         return (<EventItem key={index} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
@@ -147,7 +147,7 @@ class homePage extends Component {
                         </section>
                         <section content="for-you">
                             <h2>For you</h2>
-                            <div style={{'display': 'flex', 'flexWrap': 'wrap'}}>
+                            <div style={{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
                                 {
                                     this.state.eventForYou.map((id, index) => {
                                         return (<EventItem key={index} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
