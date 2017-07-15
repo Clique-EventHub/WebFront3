@@ -1,37 +1,38 @@
 import React, { Component } from 'react';
 import autoBind from '../hoc/autoBind';
 import axios from 'axios';
-import { getCookie } from '../actions/common';
+import { getCookie, clearAllCookie } from '../actions/common';
 import * as facultyMap from '../actions/facultyMap';
 // import { clearAllCookie } from '../actions/common';
 import './css/profilePopup.css';
 // import loginPage from '../pages/loginPage.js'
 import { Link } from 'react-router';
 import { hostname } from '../actions/index';
+import ReactLoading from 'react-loading';
+
+const defaultState = {
+  'firstName': '',
+  'lastName': '',
+  'picture': '',
+  'faculty': '',
+  'join_events': '',
+  'notification': '',
+  'n_noti': '',
+  'event1_title': '',
+  'event1_date_start': '',
+  'event2_title': '',
+  'event2_date_start': '',
+  'event3_title': '',
+  'event3_date_start': '',
+  'isLoading': true,
+  'login': false
+};
 
 class profilePopup extends Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-          'firstName': '',
-          'lastName': '',
-          'picture': '',
-          'faculty': '',
-          'join_events': '',
-          'notification': '',
-          'n_noti': '',
-          'event1_title': '',
-          'event1_date_start': '',
-          'event2_title': '',
-          'event2_date_start': '',
-          'event3_title': '',
-          'event3_date_start': '',
-          'isLoading': true,
-          'login': false
-        };
-
+        this.state = defaultState;
     }
 
     componentWillReceiveProps(nextProps) {
@@ -39,59 +40,41 @@ class profilePopup extends Component {
     }
 
     componentWillMount() {
-
-        if(getCookie('fb_sever_token') !== ""){
+        if(getCookie('fb_sever_token') !== "") {
             this.setState({
                 ...this.state,
                 'login': true
             })
-            console.log("cookie : " + getCookie('fb_sever_token') );
-        }
-
-        let config = {
-            'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            let config = {
+                'headers': {
+                    'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                }
             }
+
+            let _this = this;
+
+            axios.get(`${hostname}user`, config).then((data) => {
+                console.log("get!!!");
+                console.log(JSON.stringify(data.data.firstName));
+                _this.setState({
+                    ..._this.state,
+                    'firstName': data.data.firstName,
+                    'lastName': data.data.lastName,
+                    'picture': data.data.picture_200px,
+                    'faculty': (data.data.regId === null)? '99': JSON.stringify(data.data.regId).substring(9, 11),
+                    'join_events': data.data.join_events,
+                    'notification': data.data.notification,
+                    'n_noti': data.data.notification.length,
+                    'isLoading': false
+                })
+                console.log("number of event : " + data.data.join_events.length);
+                _this.getEvent(0);
+                _this.getEvent(1);
+                _this.getEvent(2);
+            }, (error) => {
+                console.log("get user error");
+            });
         }
-
-        let _this = this;
-
-        axios.get(`${hostname}user`, config).then((data) => {
-            console.log("get!!!");
-            console.log(JSON.stringify(data.data.firstName));
-            _this.setState({
-                ..._this.state,
-                'firstName': data.data.firstName,
-                'lastName': data.data.lastName,
-                'picture': data.data.picture_200px,
-                'faculty': (data.data.regId === null)? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                'join_events': data.data.join_events,
-                'notification': data.data.notification,
-                'n_noti': data.data.notification.length,
-                'isLoading': false
-            })
-            console.log("number of event : " + data.data.join_events.length);
-            _this.getEvent(0);
-            _this.getEvent(1);
-            _this.getEvent(2);
-        }, (error) => {
-            console.log("get user error");
-        });
-
-        // for (var i = 0; i < this.state.join_events.length; i++) {
-        //     if(i < 3){
-        //         axios.get('http://139.59.97.65:1111/event?id=' + this.state.join_events[i]).then((data) => {
-        //             console.log("get!!!");
-        //             console.log(JSON.stringify(data.data.title))
-        //             _this.setState({
-        //                 'event{i}_title': data.data.title,
-        //                 'event{i}_date_start': data.data.date_start,
-        //             })
-        //         }, (error) => {
-        //             console.log("get event error");
-        //         });
-        //     }
-        // }
     }
 
     getEvent(i) {
@@ -100,8 +83,6 @@ class profilePopup extends Component {
         console.log("get event : " + this.state.join_events[i]);
         if(this.state.join_events.length >= i+1){
             axios.get(`${hostname}event?id=${this.state.join_events[i]}`).then((data) => {
-                console.log("get!!!");
-                console.log(JSON.stringify(data.data.title))
                 if(i === 0){
                     _this.setState({
                         ..._this.state,
@@ -123,66 +104,59 @@ class profilePopup extends Component {
                 }
 
             }, (error) => {
-                console.log("get event error");
+                console.log("get event error", error);
             });
         }
     }
 
     onLogin() {
         this.props.fbLogin(this.props.fbGetSeverToken);
-        this.props.fbGetBasicInfo();
-        this.setState({
-            ...this.state,
-            'login': true
-        });
-        // if(getCookie('fb_sever_token') != ""){
-        //     this.setState({'login': true})
-        //     console.log("cookie : " + getCookie('fb_sever_token') );
-        // }
 
-        let config = {
-            'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+        setTimeout(() => {
+            if(this.props.pages.FB !== null) {
+                this.setState({
+                    ...this.state,
+                    'login': true
+                });
+                let config = {
+                    'headers': {
+                        'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+                    }
+                }
+
+                let _this = this;
+
+                axios.get(`${hostname}user`, config).then((data) => {
+                    _this.setState({
+                        ..._this.state,
+                        'firstName': data.data.firstName,
+                        'lastName': data.data.lastName,
+                        'picture': data.data.picture_200px,
+                        'faculty': (data.data.regId === null)? '99': JSON.stringify(data.data.regId).substring(9, 11),
+                        'join_events': data.data.join_events,
+                        'notification': data.data.notification,
+                        'n_noti': data.data.notification.length,
+                        'isLoading': false
+                    })
+                    console.log("number of event : " + data.data.join_events.length);
+                    _this.getEvent(0);
+                    _this.getEvent(1);
+                    _this.getEvent(2);
+                }, (error) => {
+                    console.log("get user error", error);
+                });
+
+                if(typeof(this.props.onLogin) === "function") this.props.onLogin(true);
             }
-        }
-
-        let _this = this;
-
-        axios.get(`${hostname}user`, config).then((data) => {
-            console.log("get!!!");
-            console.log(JSON.stringify(data.data.firstName));
-            _this.setState({
-                ..._this.state,
-                'firstName': data.data.firstName,
-                'lastName': data.data.lastName,
-                'picture': data.data.picture_200px,
-                'faculty': (data.data.regId === null)? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                'join_events': data.data.join_events,
-                'notification': data.data.notification,
-                'n_noti': data.data.notification.length,
-                'isLoading': false
-            })
-            console.log("number of event : " + data.data.join_events.length);
-            _this.getEvent(0);
-            _this.getEvent(1);
-            _this.getEvent(2);
-        }, (error) => {
-            console.log("get user error");
-        });
+        }, 2000);
     }
 
     onLogout() {
         this.props.fbLogout();
-        this.setState({
-            ...this.state,
-            'login': false
-        })
+        this.setState(defaultState)
+        if(typeof(this.props.onLogin) === "function") this.props.onLogin(false);
+        clearAllCookie();
     }
-
-    // logout() {
-    //     clearAllCookie();
-    //     this.setState({'login': false})
-    // }
 
     onExit() {
         this.props.toggle_pop_item();
@@ -211,11 +185,8 @@ class profilePopup extends Component {
                             </span>
                         </div>
                     </button>
-                    <Link to='/'>
-                        Continue as guest
-                    </Link>
                 </atricle>
-                <footer alt="login-footer">
+                <footer alt="login-footer" style={{'borderRadius': '0px 0px 10px 10px'}}>
                     <div aria-hidden="true" alt="icon-zone">
                         <img src="../../resource/images/obj_clique_logo.png" alt="spn-icon" />
                     </div>
@@ -223,7 +194,11 @@ class profilePopup extends Component {
             </section>
             :
             <div>
-              {(this.state.isLoading) ? (<div>Loading...</div>) : (
+              {(this.state.isLoading) ? (
+                  <div className="flex flex-center">
+                      <ReactLoading type={'bars'} color={'#878787'} height='40px' width='40px' />...Loading...<ReactLoading type={'bars'} color={'#878787'} height='40px' width='40px' />
+                  </div>
+              ) : (
                 <div className="profile-popup">
                     <div>
                         <div>

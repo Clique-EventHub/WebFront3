@@ -206,6 +206,15 @@ $i: 10;
     align-items: center;
 }
 
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-center {
+    justify-content: center;
+    align-items: center;
+}
+
 .text-right {
     text-align: right !important;
 }

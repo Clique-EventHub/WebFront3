@@ -14,12 +14,14 @@ export default ( state = initialState, action ) => {
         case types.UNBLUR_BG:
             return({
                 ...state,
-                is_blur: action.payload
+                is_blur: action.payload,
+                forced_fixed_body: action.payload
             });
         case types.TOGGLE_BLUR_BG:
             return ({
                 ...state,
-                is_blur: !(state.is_blur)
+                is_blur: !(state.is_blur),
+                forced_fixed_body: !state.forced_fixed_body
             });
         case types.SET_ITEM:
         case types.RESET_ITEM:
@@ -39,7 +41,8 @@ export default ( state = initialState, action ) => {
             return ({
                 ...state,
                 is_blur: !state.is_blur,
-                is_item_shown: !state.is_item_shown
+                is_item_shown: !state.is_item_shown,
+                forced_fixed_body: !state.forced_fixed_body
             });
         case types.FORCED_FIX_BG:
         case types.CANCEL_FIX_BG:

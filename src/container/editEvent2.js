@@ -971,7 +971,7 @@ class EditEvent extends Component {
                     <p className="l1"></p>
                     <div className="flex">
                         <div className="margin-auto">
-                            <EventItem onToggle={() => {}} onSetItem={() => {}} noGlow="true" overrideState={{
+                            <EventItem noGlow="true" overrideState={{
                                     'title': this.state.new.title,
                                     'location': this.state.new.location,
                                     'date_time': this.state.new.date_time.dates,
@@ -1081,20 +1081,22 @@ class EditEvent extends Component {
                     <p className="l1"></p>
                     <div>
                         <h1>TAG</h1>
-                        {
-                            TAG_1.map((key, index) => {
-                                //Fuck you bitch
-                                if(key.length > 7) return (<Btn key={index} text={`${key}`} isInit={!this.state.isLoading} initialState={this.state.old.tags.indexOf(key) !== -1} classNameOn="Btn-active tag long" classNameOff="Btn tag long" callback={(isActive) => {this.onTagChange(1, isActive, index);}} />);
-                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" isInit={!this.state.isLoading} initialState={this.state.old.tags.indexOf(key) !== -1} classNameOff="Btn tag" callback={(isActive) => {this.onTagChange(1, isActive, index);}} />);
-                            })
-                        }
-                        <p className="l2 ltag"></p>
+                        <div className="flex flex-justify-center flex-wrap">
+                            {
+                                TAG_1.map((key, index) => {
+                                    //Fuck you bitch
+                                    if(key.length > 7) return (<Btn key={index} text={`${key}`} isInit={!this.state.isLoading} initialState={this.state.old.tags.indexOf(key) !== -1} classNameOn="Btn-active tag long" classNameOff="Btn tag long" callback={(isActive) => {this.onTagChange(1, isActive, index);}} />);
+                                    return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" isInit={!this.state.isLoading} initialState={this.state.old.tags.indexOf(key) !== -1} classNameOff="Btn tag" callback={(isActive) => {this.onTagChange(1, isActive, index);}} />);
+                                })
+                            }
+                            <p className="l2 ltag"></p>
                             {
                                 TAG_2.map((key, index) => {
                                     if(key.length > 7) return (<Btn key={index} text={`${key}`} isInit={!this.state.isLoading} initialState={this.state.old.tags.indexOf(key) !== -1} classNameOn="Btn-active tag long" classNameOff="Btn tag long" callback={(isActive) => {this.onTagChange(2, isActive, index);}} />);
                                     return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" isInit={!this.state.isLoading} initialState={this.state.old.tags.indexOf(key) !== -1} classNameOff="Btn tag" callback={(isActive) => {this.onTagChange(2, isActive, index);}} />);
                                 })
                             }
+                        </div>
                     </div>
                     <p className="l1"></p>
                     <button onClick={this.toggleRecruitment} >{(this.state.enableRecruitment) ? 'Disable' : 'Enable'} Recruitment</button>

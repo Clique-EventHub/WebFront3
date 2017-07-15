@@ -23,17 +23,19 @@ class homePage extends Component {
     constructor(props) {
         super(props);
         this.onItemPopUpClick = this.onItemPopUpClick.bind(this);
-        const nonsenseId = Array(3).fill(1).map((x, y) => String(x+y) );
+        // const nonsenseId = Array(3).fill(1).map((x, y) => String(x+y) );
         this.state = {
-            'eventHot': nonsenseId,
-            'eventNew': nonsenseId,
-            'eventUpcomming': nonsenseId,
-            'eventForYou': nonsenseId
+            'eventHot': [],
+            'eventNew': [],
+            'eventUpcomming': [],
+            'eventForYou': [],
+            'channelSubscribe': [],
+            'tagsLike': []
         }
     }
 
     onItemPopUpClick(item) {
-        if(this.props.pages.pop_up_item === null) this.props.set_pop_up_item(item);
+        this.props.set_pop_up_item(item);
         this.props.toggle_pop_item();
     }
 

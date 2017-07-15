@@ -208,6 +208,10 @@ function updateActivities(dispatch) {
 
 }
 
+window.getCookie = getCookie;
+window.setCookie = setCookie;
+window.clearCookie = clearAllCookie;
+
 /*
 // let tmp = [
 //     requestWithAuthorization(`${hostname}user/join`, {
@@ -255,8 +259,6 @@ function init_user_info(dispatch) {
     updateActivities(dispatch);
 }
 
-//
-
 export function setFBVariable(_FB) {
     // console.log(facultyMap.findInfoByName("นิเทด"));
     return (dispatch) => {
@@ -287,10 +289,6 @@ export function setFBVariable(_FB) {
                     type: types.FB_LOGIN,
                     payload: rObj_2
                 });
-
-                window.getCookie = getCookie;
-                window.setCookie = setCookie;
-                window.clearCookie = clearAllCookie;
 
                 fbUpdateStatus(dispatch).then(() => {
                     fbGetBasicInfo(dispatch);
@@ -423,9 +421,11 @@ export function fbLogin(callback) {
                     });
 
                     if(getCookie("fb_sever_token") === "") {
-                        fbGetSeverToken(dispatch)
+                        fbGetSeverToken(dispatch).then(() => {
+                            init_user_info(dispatch);
+                            fbGetFriendsList(dispatch);
+                        });
                     }
-
                 }
                 //if(typeof(callback) === "function") callback();
             }, {

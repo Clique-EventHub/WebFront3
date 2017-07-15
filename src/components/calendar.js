@@ -219,7 +219,7 @@ class Calendar extends Component {
     }
 
     onItemPopUpClick(item) {
-        if(this.props.pages.pop_up_item === null) this.props.set_pop_up_item(item);
+        this.props.set_pop_up_item(item);
         this.props.toggle_pop_item();
     }
 
@@ -227,7 +227,7 @@ class Calendar extends Component {
         this.onItemPopUpClick(<EventDetailFix onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
     }
 
-    setDateGrid(dateStart, dateEnd, color, nudgeNo, name, DateState) {
+    setDateGrid(dateStart, dateEnd, color, nudgeNo, name, DateState, index) {
         const startOfMonth = new Date(this.state.refDate).getStartOfMonth();
         const SOMDay = startOfMonth.getDay();
         const monthDay = startOfMonth.getMonthDays();
@@ -254,11 +254,11 @@ class Calendar extends Component {
                 }
                 content.push(<div key={`${i}-event`} className={`EventRange w-${wRange} pos-${row + i}-${1} color-${color} BuntStart ${nudge}`}>{name}</div>);
 
-                return (<div onClick={this.onClickEvent} className="EventRange-Container">{content}</div>);
+                return (<div key={index} onClick={this.onClickEvent} className="EventRange-Container">{content}</div>);
             }
 
 
-            return (<div onClick={this.onClickEvent} className="EventRange-Container"><div className={`EventRange w-${wRange} pos-${row}-${col} color-${color} ${nudge}`}>{name}</div></div>);
+            return (<div key={index} onClick={this.onClickEvent} className="EventRange-Container"><div className={`EventRange w-${wRange} pos-${row}-${col} color-${color} ${nudge}`}>{name}</div></div>);
         } else if(dateStart.getMonth() < thisMonth && thisMonth < dateEnd.getMonth() ) {
             let content =[];
             let i = 1;
@@ -273,14 +273,14 @@ class Calendar extends Component {
                 i++;
             }
             content.push(<div key={`${i}-event`} className={`EventRange w-${wRange} pos-${i+1}-${1} color-${color} BuntStart BuntEnd ${nudge}`}>{name}</div>);
-            return (<div onClick={this.onClickEvent} className="EventRange-Container">{content}</div>);
+            return (<div key={index} onClick={this.onClickEvent} className="EventRange-Container">{content}</div>);
         } else if(dateStart.getMonth() !== dateEnd.getMonth()) {
             if(dateStart.getMonth() === thisMonth) {
                 let nudgeNum = this.onSetNudge(dateStart, startOfMonth.addDays(monthDay-1), DateState);
                 let nudge = `Nudge-${nudgeNum}`;
                 if(nudgeNum >= 2) return null;
                 if(row === Math.ceil((SOMDay + monthDay)/7)) {
-                    return (<div onClick={this.onClickEvent} className="EventRange-Container"><div className={`EventRange w-${monthDay - dateStart.getDate() + 1} pos-${row}-${col} color-${color} BuntEnd ${nudge}`}>{name}</div></div>);
+                    return (<div key={index} onClick={this.onClickEvent} className="EventRange-Container"><div className={`EventRange w-${monthDay - dateStart.getDate() + 1} pos-${row}-${col} color-${color} BuntEnd ${nudge}`}>{name}</div></div>);
                 }
                 else {
                     let content = [];
@@ -298,7 +298,7 @@ class Calendar extends Component {
 
                     content.push(<div key={`${i}-event`} className={`EventRange w-${wRange} pos-${row + i}-${1} color-${color} BuntStart BuntEnd ${nudge}`}>{name}</div>);
 
-                    return (<div onClick={this.onClickEvent} className="EventRange-Container">{content}</div>);
+                    return (<div key={index} onClick={this.onClickEvent} className="EventRange-Container">{content}</div>);
                 }
             } else if(dateEnd.getMonth() === thisMonth) {
                 let content = [];
@@ -315,7 +315,7 @@ class Calendar extends Component {
                 if(row === 1) {
                     row = 1;
                     col = SOMDay + 1;
-                    return (<div onClick={this.onClickEvent} className="EventRange-Container"><div className={`EventRange w-${dateEnd.getDay() - SOMDay + 1} pos-${row}-${col} color-${color} BuntStart ${nudge}`}>{name}</div></div>);
+                    return (<div key={index} onClick={this.onClickEvent} className="EventRange-Container"><div className={`EventRange w-${dateEnd.getDay() - SOMDay + 1} pos-${row}-${col} color-${color} BuntStart ${nudge}`}>{name}</div></div>);
                 } else {
                     content.push(<div key={`${0}-event`} className={`EventRange w-${7 - SOMDay} pos-${1}-${SOMDay + 1} color-${color} BuntStart BuntEnd ${nudge}`}>{name}</div>);
                     wRange = dateEnd.getDate() - (7 - SOMDay);
@@ -327,7 +327,7 @@ class Calendar extends Component {
 
                     content.push(<div key={`${i}-event`} className={`EventRange w-${wRange} pos-${i+1}-${1} color-${color} BuntStart ${nudge}`}>{name}</div>)
 
-                    return (<div onClick={this.onClickEvent} className="EventRange-Container">{content}</div>);
+                    return (<div key={index} onClick={this.onClickEvent} className="EventRange-Container">{content}</div>);
                 }
             }
         }
@@ -434,8 +434,8 @@ class Calendar extends Component {
                 <div className={`Days d-${Math.ceil((SOMDay + monthDay)/7)}`}>
                     {Days}
                 </div>
-                {this.state.events.map((item) => {
-                    return (this.setDateGrid(item.from, item.to, item.color, item.nudge, item.name, DateAvalible))
+                {this.state.events.map((item, index) => {
+                    return (this.setDateGrid(item.from, item.to, item.color, item.nudge, item.name, DateAvalible, index))
                 })}
             </div>
         );

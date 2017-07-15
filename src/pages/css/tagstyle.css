@@ -50,9 +50,11 @@ div.like-button {
 
 
 img.photo {
-  height: 100%;
-  width: 135px;
-  margin-right: 50px;
+  min-height: 100%;
+  min-width: 135px;
+  max-height: 100%;
+  max-width: 135px;
+  margin-right: 20px;
   border-radius: 100%;
   background-color: pink;
 
@@ -65,6 +67,10 @@ section[role="tag-content"] {
   padding: 20px 20px 20px 20px;
   box-sizing: border-box;
   min-width: 280px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 section[content="event-list"] {
     flex: 2;
