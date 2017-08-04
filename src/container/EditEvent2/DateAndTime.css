@@ -1,0 +1,106 @@
+.DateAndTime {
+  box-sizing: border-box;
+  padding: 20px 20px 20px 20px;
+  width: 350px;
+}
+
+.DateAndTime .Btn-Group {
+  display: flex;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+}
+
+.DateAndTime .Btn-Group button {
+  flex: 1;
+  border-radius: 0px;
+  background-color: #FFF;
+  border: 1px solid #CCC;
+  box-sizing: border-box;
+  outline: none;
+  margin: 0px;
+}
+
+.DateAndTime .Btn-Group button:hover {
+  filter: brightness(1.05);
+}
+
+.DateAndTime .Btn-Group button:active {
+  color: #000;
+}
+
+.DateAndTime .Btn-Group button .fa {
+  font-size: 1rem;
+  padding: 3px 0px 5px 0px;
+}
+
+.DateAndTime .Btn-Group button.active {
+  background-color: #4893E2;
+  color: #FFF;
+}
+
+.DateAndTime .Btn-Group button:nth-child(1) {
+  border-radius: 0px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-right: 0px;
+}
+
+.DateAndTime .Btn-Group button:last-of-type {
+  border-radius: 0px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.DateAndTime div.item-list {
+  display: flex;
+  align-items: center;
+}
+
+.DateAndTime div.item-list > * {
+  margin: 10px;
+  max-width: 100px;
+}
+
+.DateAndTime div.item-list div.item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.DateAndTime div.item-list div.item input[type="tel"] {
+  font-size: 1.2em;
+  width: calc(100%);
+  box-sizing: border-box;
+  margin-top: 5px;
+  padding-bottom: 7px;
+  padding-left: 7px;
+  order: 2;
+}
+
+.DateAndTime div.item-list div.item input[type="tel"]:focus {
+  box-shadow: none;
+}
+
+.DateAndTime div.item-list div.item input[type="tel"]:focus + label,
+.DateAndTime div.item-list div.item input[type="tel"]:focus ~ .note {
+  opacity: 1;
+  transition: 0.1s;
+}
+
+.DateAndTime div.item-list div.item input[type="tel"] + label,
+.DateAndTime div.item-list div.item .note {
+  opacity: 0;
+  display: block;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #008bdb;
+}
+
+.DateAndTime div.item-list div.item input[type="tel"] + label {
+  order: 1;
+}
+
+.DateAndTime div.item-list div.item .note {
+  order: 3;
+  color: #fe2000;
+}

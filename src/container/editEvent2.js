@@ -12,6 +12,12 @@ import { hostname } from '../actions/index';
 import series from '../functions/PromiseSeries';
 import PictureUpload from '../components/PictureUpload';
 
+import Btn from './EditEvent2/Btn';
+import AddAdmin from './EditEvent2/AddAdmin';
+import AddList from './EditEvent2/AddList';
+
+import _ from 'lodash';
+
 const state = [{
         'type': 'none',
         'value': 'none'
@@ -164,46 +170,8 @@ function replaceIncorrectLink(str) {
     return null;
 }
 
-class Btn extends Component {
-    //BtnToggleState
-    constructor(props) {
-        super(props);
-        this.state = {
-            'isActive': false,
-            'isInit': false
-        }
-        this.onClick = this.onClick.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if(this.props.isInit !== nextProps.isInit && nextProps.isInit === true && !this.state.isInit) {
-            this.setState({
-                'isInit': true,
-                'isActive': this.props.initialState || false
-            })
-        }
-    }
-
-    onClick() {
-        let tmp = !this.state.isActive;
-        this.setState({
-            ...this.state,
-            'isActive': tmp
-        });
-        if(typeof(this.props.callback) === "function") this.props.callback(tmp, this.props.text);
-    }
-
-    render() {
-        return (
-            <button onClick={this.onClick} className={(this.state.isActive) ? this.props.classNameOn : this.props.classNameOff} style={this.props.style}>
-                {this.props.text}
-            </button>
-        );
-    }
-}
-
 const defaultState = {
-    'event_id': "595ef6c7822dbf0014cb821c",
+    'event_id': "596f5d624194e40014c07d99",
     'isLoading': true,
     'old': {
         'title': '',
@@ -265,302 +233,6 @@ const defaultState = {
         },
         'picture_file': null,
         'picture_large_file': null
-    }
-}
-
-class AddAdmin extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            'isOpen': false,
-            'selected': [],
-            'filter': [],
-            'keyword': '',
-            'btnStyle': {
-                    'marginLeft': '5px',
-                    'height': '35px',
-                    'border': '1.8px solid #CCC',
-                    'borderRadius': '5px',
-                    'fontSize': '1em',
-                    'minWidth': '90px',
-                    'whiteSpace': 'nowrap'
-                }
-        }
-        this.filterName = this.filterName.bind(this);
-        this.onToggle = this.onToggle.bind(this);
-        this.toggleShowReset = this.toggleShowReset.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.user.info.friends_list.length !== this.props.user.info.friends_list.length) {
-            this.setState({
-                ...this.state,
-                'selected': nextProps.user.info.friends_list.map(() => false),
-                'filter': nextProps.user.info.friends_list.map(() => false)
-            })
-        }
-    }
-
-    toggleShowReset() {
-        let tmp = true;
-        for(let i = 0; i < this.state.filter.length && tmp; i++) {
-            tmp = this.state.filter[i];
-        }
-
-        this.setState({
-            ...this.state,
-            'filter': this.props.user.info.friends_list.map(() => !tmp)
-        })
-    }
-
-    filterName() {
-        if(this.refs.me.value === '') {
-            this.setState({
-                ...this.state,
-                'filter': this.props.user.info.friends_list.map(() => false),
-                'keyword': ''
-            })
-        } else {
-            this.setState({
-                ...this.state,
-                'filter': this.props.user.info.friends_list.map((item) => {
-                    return (item.fb.name.split(" ")[0].toLowerCase().indexOf(this.refs.me.value.toLowerCase()) !== -1) || (item.fb.name.split(" ")[1].toLowerCase().indexOf(this.refs.me.value.toLowerCase()) !== -1)
-                }),
-                'keyword': this.refs.me.value
-            })
-        }
-    }
-
-    onToggle(index, defaultValue) {
-        if(index < 0 || index >= this.state.selected.length) return;
-        let new_selected = [...this.state.selected];
-        new_selected[index] = (typeof(defaultValue) === "boolean") ? defaultValue : !new_selected[index];
-
-        this.setState({
-            ...this.state,
-            'selected': new_selected
-        })
-
-        if(typeof(this.props.onSelected) === "function") {
-            this.props.onSelected(this.props.user.info.friends_list.filter((item, index) => new_selected[index]));
-        }
-    }
-
-    onMouseEnter() {
-        const defaultStyle = {
-                'marginLeft': '5px',
-                'height': '35px',
-                'border': '1.8px solid #CCC',
-                'borderRadius': '5px',
-                'fontSize': '1em',
-                'minWidth': '90px',
-                'whiteSpace': 'nowrap'
-            };
-
-        this.setState({
-            ...this.state,
-            btnStyle: {
-                ...defaultStyle,
-                'backgroundColor': '#4caf50'
-            }
-        })
-    }
-
-    onMouseLeave() {
-        const defaultStyle = {
-                'marginLeft': '5px',
-                'height': '35px',
-                'border': '1.8px solid #CCC',
-                'borderRadius': '5px',
-                'fontSize': '1em',
-                'minWidth': '90px',
-                'whiteSpace': 'nowrap'
-            };
-        this.setState({
-            ...this.state,
-            btnStyle: {
-                ...defaultStyle
-            }
-        })
-    }
-
-    onMouseClick() {
-        const defaultStyle = {
-                'marginLeft': '5px',
-                'height': '35px',
-                'border': '1.8px solid #CCC',
-                'borderRadius': '5px',
-                'fontSize': '1em',
-                'minWidth': '90px',
-                'whiteSpace': 'nowrap'
-            };
-        this.setState({
-            ...this.state,
-            btnStyle: {
-                ...defaultStyle,
-                'backgroundColor': '#729afd'
-            }
-        })
-    }
-
-    render() {
-        return (
-            <div className="basic-card-no-glow" style={{'width': '100%', 'minWidth': '150px', 'maxWidth': '250px', 'padding': '30px', 'margin': 'auto'}}>
-                <div style={{'display': 'flex', 'maxHeight': '50px'}}>
-                    <input type="text" placeholder="search" value={this.state.keyword} onChange={this.filterName} ref="me" style={{
-                            'border': '1.8px solid #ccc',
-                            'borderRadius': '5px',
-                            'height': '35px',
-                            'fontSize': '1em',
-                            'marginBottom': '5px',
-                            'width': '100%',
-                            'paddingLeft': '5px',
-                            'boxSizing': 'border-box',
-                            'flex': '1'
-                        }}/>
-                    <button onClick={this.toggleShowReset} style={this.state.btnStyle} onMouseOver={this.onMouseEnter.bind(this)} onMouseLeave={this.onMouseLeave.bind(this)} onMouseDown={this.onMouseClick.bind(this)} onMouseUp={this.onMouseEnter.bind(this)}>Show All</button>
-                </div>
-                <div style={{'padding': '5px', 'backgroundColor': '#F1F1F1', 'maxHeight': '200px', 'overflowY': 'scroll'}} >
-                    {
-                        (this.props.user.info.friends_list).map((item, index) => {
-                            return ((this.state.filter[index]) ? (
-                                <div key={index} onClick={() => {
-                                        this.onToggle(index);
-                                    }} style={(this.state.selected[index]) ? {'backgroundColor': 'lightgreen', 'display': 'flex', 'alignItems': 'center', 'border': '1px solid rgba(0,0,0,0.05)', 'padding': '10px 0px'} : {'display': 'flex', 'alignItems': 'center', 'border': '1px solid rgba(0,0,0,0.05)', 'padding': '10px 0px'}}>
-                                    <img src={replaceIncorrectLink(item.fb.picture.data.url)} height="50px" width="50px" style={{'borderRadius': '50%', 'marginRight': '20px'}} />
-                                    <span>{item.fb.name}</span>
-                                </div>
-                            ) : (null)
-                        )
-                    })
-                }
-                </div>
-                <div style={{'textAlign': 'center'}}>
-                    {
-                        (this.props.user.info.friends_list).map((item, index) => {
-                            return ((this.state.selected[index]) ? (
-                                <img key={index} src={replaceIncorrectLink(item.fb.picture.data.url)} height="50px" width="50px" style={{'borderRadius': '50%', 'margin': '5px 5px 0px 0px'}} />
-                            ) : (null)
-                        )})
-                    }
-                </div>
-            </div>
-        );
-    }
-}
-
-class AddList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            'children': (this.props.children && this.props.children.constructor === Array) ? this.props.children : [],
-            'mode': this.props.mode ? this.props.mode : 0
-        }
-        this.onClickAdd = this.onClickAdd.bind(this);
-        this.onEdit = this.onEdit.bind(this);
-        this.onRemove = this.onRemove.bind(this);
-    }
-
-    onClickAdd() {
-        switch (this.state.mode) {
-            case 0:
-                const new_children_1 = [...this.state.children].concat([""]);
-                if(typeof(this.props.onUpdate) === "function") {
-                    this.props.onUpdate(new_children_1);
-                }
-                this.setState({
-                    ...this.state,
-                    'children': new_children_1
-                })
-                break;
-            default:
-                const new_children_2 = [...this.state.children].concat([{
-                    "title": "",
-                    "content": [],
-                    "note": ""
-                }]);
-                if(typeof(this.props.onUpdate) === "function") {
-                    this.props.onUpdate(new_children_2);
-                }
-                this.setState({
-                    ...this.state,
-                    'children': new_children_2
-                })
-        }
-    }
-
-    onEdit(index) {
-        let new_children = [...this.state.children];
-
-        switch (this.state.mode) {
-            case 0:
-                new_children[index] = this.refs[`input-${index}`].value;
-                break;
-            default:
-                new_children[index] = {
-                    "title": this.refs[`child-${index}`].children[1].value,
-                    "content": this.refs[`child-${index}`].children[2].value,
-                    "note": (this.props.placeholder && this.props.placeholder.constructor === Array && this.props.placeholder.length === 3) ? this.refs[`child-${index}`].children[3].value : null
-                }
-        }
-
-        this.setState({
-            ...this.state,
-            'children': new_children
-        })
-
-        if(typeof(this.props.onUpdate) === "function") {
-            this.props.onUpdate(new_children);
-        }
-    }
-
-    onRemove(index) {
-        const new_children = this.state.children.slice(0, index).concat(this.state.children.slice(index+1, this.state.children.length));
-        this.setState({
-            ...this.state,
-            'children': new_children
-        })
-
-        if(typeof(this.props.onUpdate) === "function") {
-            this.props.onUpdate(new_children);
-        }
-    }
-
-    render() {
-        return (
-            <div className={`AddList ${this.props.className ? this.props.className : ''}`}>
-                <ul data-role="top-list">
-                    {
-                        this.state.children.map((info, index) => {
-                            return (this.state.mode === 0) ? (
-                                <li key={index}>
-                                    <input value={info} onChange={() => {this.onEdit(index);}} ref={`input-${index}`} placeholder={this.props.placeholder ? this.props.placeholder : ''} />
-                                    <button className="invisible square-round" onClick={() => {this.onRemove(index)}}>
-                                        <img src="../../resource/images/X.svg" />
-                                    </button>
-                                </li>
-                            ) : (
-                                <li key={index} ref={`child-${index}`} className="ChildBox">
-                                    <button className="invisible square-round right" onClick={() => {this.onRemove(index)}}>
-                                        <img src="../../resource/images/X.svg" />
-                                    </button>
-                                    <input value={info.title} onChange={() => {this.onEdit(index);}} placeholder={(this.props.placeholder && this.props.placeholder.constructor === Array) ? this.props.placeholder[0] : "Title"} />
-                                    <input value={info.content} onChange={() => {this.onEdit(index);}} placeholder={(this.props.placeholder && this.props.placeholder.constructor === Array) ? this.props.placeholder[1] : "Content"} />
-                                    {
-                                        (this.props.placeholder && this.props.placeholder.constructor === Array && this.props.placeholder.length === 3) ? (
-                                            <input value={info.note} onChange={() => {this.onEdit(index);}} placeholder={(this.props.placeholder && this.props.placeholder.constructor === Array) ? this.props.placeholder[2] : "Note"} />
-                                        ) : (null)
-                                    }
-                                </li>
-                            )
-                        })
-                    }
-                </ul>
-                <div data-role="bottom-button">
-                    <button onClick={this.onClickAdd}>{this.props.text ? this.props.text : "Add"}</button>
-                </div>
-            </div>
-        );
     }
 }
 
@@ -664,6 +336,7 @@ class EditEvent extends Component {
                 if(item.constructor === Array) return ([new Date(item[0]), new Date(item[1])]);
                 return new Date(item);
             })
+            console.log(data);
             let new_option = { ...this.state.option }
             if(data.notes.length  > 0) {
                 new_option = {
@@ -961,6 +634,9 @@ class EditEvent extends Component {
     render () {
         const firstMeetDate = (this.state.new.firstmeet.date) ? new Date(this.state.new.firstmeet.date).toString() : null;
         let firstMeetDateStr = (firstMeetDate !== null) ? (`${firstMeetDate.slice(8,10)} ${firstMeetDate.slice(4,7)} ${firstMeetDate.slice(13,15)}`) : 'Date';
+        const tmpppp = _.get(this.state.old, 'notes[0].content.dates[0]', false);
+        const firstMeetDateArray = (tmpppp) ? [new Date(tmpppp)] : [];
+
         return (
             <div className="modal-container">
                 <article className="edit-event basic-card-no-glow modal-main card-width">
@@ -1114,7 +790,7 @@ class EditEvent extends Component {
                                                     else this.refs["firstmeetDate"].classList.add("on");
                                                 }} className="Btn" style={{'whiteSpace': 'nowrap', 'width': '100px'}}>{firstMeetDateStr}</button>
                                                 <div className="DatePickerItem basic-card-no-glow" ref="firstmeetDate">
-                                                    <DatePicker initialDates={[new Date(this.state.old.notes[0].content.dates[0])]} controlEnable={false} initialMode={0} onSetDates={(date) => {
+                                                    <DatePicker initialDates={firstMeetDateArray} controlEnable={false} initialMode={0} onSetDates={(date) => {
                                                         this.setState({
                                                             ...this.state,
                                                             'new': {

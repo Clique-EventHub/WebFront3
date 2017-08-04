@@ -44,13 +44,32 @@ class topNavBar extends Component {
         }
     }
 
+    componentWillMount() {
+        if(getCookie("fb_is_login")) {
+            this.setState((prevState, props) => {
+                if(!prevState.isLogin) return {
+                    ...prevState,
+                    isLogin: true,
+                    name: props.user.meta.firstName,
+                    picture: props.user.meta.picture_200px
+                };
+                return prevState;
+            })
+        }
+    }
+
     componentDidMount() {
         window.addEventListener("resize", this.onWindowResize);
         this.onWindowResize();
 
         if(getCookie("fb_is_login")) {
             this.setState((prevState, props) => {
-                if(!prevState.isLogin) return { ...prevState, isLogin: true };
+                if(!prevState.isLogin) return {
+                    ...prevState,
+                    isLogin: true,
+                    name: props.user.meta.firstName,
+                    picture: props.user.meta.picture_200px
+                };
                 return prevState;
             })
         }
@@ -69,14 +88,6 @@ class topNavBar extends Component {
             })
         }
     }
-
-    componentDidUpdate() {
-
-    }
-
-    // componentDidUpdate() {
-    //     console.log(this.state);
-    // }
 
     onSearchToggleState(value) {
         let tmp = (typeof(value) === "boolean") ? value : !this.state.isSearchActive;
@@ -243,7 +254,16 @@ class topNavBar extends Component {
                     <div aria-hidden="true" className="vr"></div>
                     <form onSubmit={this.onSubmit}>
                         <i className="fa fa-search" aria-hidden="true"></i>
-                        <input className="invisible" type="text" placeholder="Search" ref="first" onChange={this.onUpdateSearchFirst.bind(this)} onClick={this.onSearchToggleStateTrue.bind(this)} value={this.state.searchTerm} onClick={this.onSearchToggleState} onKeyDown={this.onKeyPress}></input>
+                        <input
+                            className="invisible"
+                            type="text"
+                            placeholder="Search"
+                            ref="first"
+                            onChange={this.onUpdateSearchFirst.bind(this)}
+                            onClick={this.onSearchToggleStateTrue.bind(this)}
+                            value={this.state.searchTerm}
+                            onClick={this.onSearchToggleState}
+                            onKeyDown={this.onKeyPress}></input>
                     </form>
                 </section>
                 <Link to="/" className="flex-center" onClick={this.onLogoClick.bind(this)}>

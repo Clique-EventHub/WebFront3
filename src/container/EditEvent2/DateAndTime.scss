@@ -1,0 +1,101 @@
+.DateAndTime {
+    box-sizing: border-box;
+    padding: 20px 20px 20px 20px;
+    width: 350px;
+
+    .Btn-Group {
+        display: flex;
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+        button {
+            flex: 1;
+            border-radius: 0px;
+            background-color: #FFF;
+            border: 1px solid #CCC;
+            box-sizing: border-box;
+            outline: none;
+            margin: 0px;
+        }
+        button:hover {
+            filter: brightness(1.05);
+        }
+        button:active {
+            color: #000;
+        }
+        button .fa {
+            font-size: 1rem;
+            padding: 3px 0px 5px 0px;
+        }
+        button.active {
+            background-color: #4893E2;
+
+            color: #FFF;
+        }
+        button:nth-child(1) {
+            border-radius: 0px;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            border-right: 0px;
+        }
+        button:last-of-type {
+            border-radius: 0px;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+    }
+
+    div.item-list {
+        display: flex;
+        align-items: center;
+        > * {
+            margin: 10px;
+            max-width: 100px;
+        }
+        div.item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        div.item {
+            input[type="tel"] {
+                font-size: 1.2em;
+                width: calc(100%);
+                box-sizing: border-box;
+                margin-top: 5px;
+
+                padding-bottom: 7px;
+                padding-left: 7px;
+                order: 2;
+            }
+
+            input[type="tel"]:focus {
+                box-shadow: none;
+            }
+
+            input[type="tel"]:focus + label,
+            input[type="tel"]:focus ~ .note {
+                opacity: 1;
+                transition: 0.1s;
+            }
+
+            input[type="tel"] + label,
+            .note {
+                opacity: 0;
+                display: block;
+                font-size: 0.8rem;
+                font-weight: bold;
+                color: #008bdb;
+            }
+
+            input[type="tel"] + label {
+                order: 1;
+            }
+
+            .note {
+                order: 3;
+                color: #fe2000;
+            }
+        }
+    }
+}

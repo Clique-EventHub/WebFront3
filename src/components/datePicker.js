@@ -32,8 +32,7 @@ class DatePicker extends Component {
             },
             'disabledDays': disabled,
             'controlEnable': (this.props.controlEnable) ? true : false,
-            'showSelectedDate': (this.props.showSelectedDate) ? true : false,
-            'isFirst': true
+            'showSelectedDate': (this.props.showSelectedDate) ? true : false
         }
 
         this.onDayClick = this.onDayClick.bind(this);
@@ -44,31 +43,24 @@ class DatePicker extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.initialDates) {
+        if(this.props.isLoad === false && nextProps.isLoad === true) {
             const oldD = this.props.initialDates;
             const newD = nextProps.initialDates;
-            let tmp = true;
+            let isNotChange = true;
 
-            if(this.state.isFirst) {
-                this.setState({
-                    ...this.state,
-                    'isFirst': false
-                });
-                tmp = false;
-            }
-            else if(oldD.length === newD.length) {
-                for(let i = 0; i < oldD.length && tmp; i++) {
+            if(oldD.length === newD.length) {
+                for(let i = 0; i < oldD.length && isNotChange; i++) {
                     if(oldD[i].constructor === Array && newD[i].constructor === Array) {
-                        tmp = this.compareDate(new Date(oldD[i][0]), new Date(newD[i][0])) && this.compareDate(new Date(oldD[i][1]), new Date(newD[i][1]));
+                        isNotChange = this.compareDate(new Date(oldD[i][0]), new Date(newD[i][0])) && this.compareDate(new Date(oldD[i][1]), new Date(newD[i][1]));
                     } else if(typeof(oldD[i].getMonth) === "function" && typeof(newD[i].getMonth) === "function" ) {
-                        tmp = this.compareDate(new Date(oldD[i]), new Date(newD[i]));
+                        isNotChange = this.compareDate(new Date(oldD[i]), new Date(newD[i]));
                     }
                 }
             } else {
-                tmp = false;
+                isNotChange = false;
             }
 
-            if(!tmp) {
+            if(!isNotChange) {
                 let new_selectedDates = [];
                 newD.forEach((item) => {
                     if(item.constructor === Array) {
@@ -80,14 +72,20 @@ class DatePicker extends Component {
 
                 this.setState({
                     ...this.state,
-                    'selectedDays': new_selectedDates,
-                    'isFirst': false
+                    'selectedDays': new_selectedDates
                 })
+
+                if(typeof(this.props.onSetDates) === "function") {
+                    this.props.onSetDates(new_selectedDates);
+                }
             }
+
         }
     }
 
     compareDate(day1, day2) {
+        day1 = new Date(day1);
+        day2 = new Date(day2);
         return (day1.getFullYear() === day2.getFullYear() && day1.getMonth() === day2.getMonth() && day1.getDate() === day2.getDate());
     }
 
@@ -233,7 +231,7 @@ class DatePicker extends Component {
                 case 0:
                     reply = (
                     <p className="Reply">
-                        {selectedDays[0].toLocaleDateString()}
+                        {new Date(selectedDays[0]).toLocaleDateString()}
                     </p>);
                     break;;
                 case 1:
@@ -243,7 +241,7 @@ class DatePicker extends Component {
                     if(range.date0 === null || range.date1 === null || selectedDays.length === 1) {
                         reply = (
                         <p className="Reply">
-                            {selectedDays[0].toLocaleDateString()}
+                            {new Date(selectedDays[0]).toLocaleDateString()}
                         </p>);
                     } else {
                         let from = (range.date0.getTime() < range.date1.getTime()) ? range.date0 : range.date1;
@@ -311,7 +309,8 @@ DatePicker.defaultProps = {
     'controlEnable': true,
     'onSetDates': function(result) {
         console.log(result);
-    }
+    },
+    'isLoad': true
 }
 
 export default DatePicker;

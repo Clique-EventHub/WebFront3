@@ -31,22 +31,28 @@ class PictureUpload extends Component {
             'isInit': false,
             'pictures': [],
             'text': this.props.text || "Upload",
-            'initValues': []
+            'initValues': [],
+            'mapPictures': {}
         }
+        //Problem is picture in input files is not in the same order as pictures
+        //So instead of using index as only reference, use mapPicture object to map between files instead
+        //And then use that map in place of pictures <In case of using only pictures -> need to implement more logic>
+
         this.onSelectedPoster = this.onSelectedPoster.bind(this);
         this.removeImg = this.removeImg.bind(this);
+        this.renderImage = this.renderImage.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         if(this.state.isInit !== nextProps.isInit && nextProps.isInit === true) {
-            new Promise((resolve, reject) => resolve(true)).then(() => {
-                this.setState({
-                    ...this.state,
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
                     'isInit': true,
                     'pictures': nextProps.srcs,
                     'initValues': nextProps.srcs
-                })
-            }).then(() => {
+                }
+            }, () => {
                 const div = this.refs["preview-image"];
                 nextProps.srcs.forEach((url, index) => {
                     const child = div.children[index];
@@ -63,35 +69,65 @@ class PictureUpload extends Component {
 
         this.setState({
             ...this.state,
-            'pictures': (this.props.persistentImg) ? this.state.initValues : []
-        });
+            'pictures': (this.props.persistentImg) ? this.state.initValues : [],
+            'mapPictures': {}
+        }, () => {
+            if(input.files) {
+                let _this = this;
+                for(let i = 0; i < input.files.length; i++) {
+                    let index = Number(i);
+                    if(input.files[index]) {
+                        let reader = new FileReader();
 
-        if(input.files) {
-            let _this = this;
-            for(let i = 0; i < input.files.length; i++) {
-                let index = Number(i);
-                if(input.files[index]) {
-                    let reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        _this.setState({
-                            ..._this.state,
-                            'pictures': _this.state.pictures.concat(e.target.result)
-                        });
+                        reader.onload = function(e) {
+                            _this.setState((prevState) => {
+                                let new_map = { ...prevState.mapPictures };
+                                new_map[index] = {
+                                    pic: e.target.result,
+                                    file: input.files[index]
+                                }
+                                if(!_this.props.persistentImg) {
+                                    return {
+                                        ...prevState,
+                                        'mapPictures': new_map,
+                                        'pictures': [],
+                                        'initValues': []
+                                    }
+                                }
+                                return {
+                                    ...prevState,
+                                    'mapPictures': new_map
+                                }
+                            }, () => {
+                                _this.forceUpdate()
+                            })
+                        }
+                        reader.readAsDataURL(input.files[index]);
                     }
-                    reader.readAsDataURL(input.files[index]);
                 }
             }
-        }
+        });
     }
 
-    removeImg(index) {
+    removeImg(index, isFile) {
         const pics = this.state.pictures;
         const init = this.state.initValues;
+        let nextPics = pics.slice(0, index).concat(pics.slice(index+1, pics.length));
+        let nextInit = (!isFile && index < init.length) ? init.slice(0, index).concat(init.slice(index+1, init.length)) : init
+        let new_map = { ...this.state.mapPictures };
+        if(isFile) {
+            delete new_map[index - nextInit.length];
+        }
+
+        console.log(nextPics, nextInit, new_map);
+
         this.setState({
             ...this.state,
-            'pictures': pics.slice(0, index).concat(pics.slice(index+1, pics.length)),
-            'initValues': (index < init.length) ? init.slice(0, index).concat(init.slice(index+1, init.length)) : init
+            'pictures': nextPics,
+            'initValues':nextInit,
+            'mapPictures': new_map
+        }, () => {
+            this.forceUpdate();
         });
     }
 
@@ -106,18 +142,33 @@ class PictureUpload extends Component {
         return true;
     }
 
-    componentDidUpdate() {
+    renderImage() {
         if(this.state.isInit) {
             const div = this.refs["preview-image"];
             this.state.pictures.forEach((item, index) => {
                 let child = div.children[index];
                 child.style.backgroundImage = `url('${item}')`;
             })
+            Object.keys(this.state.mapPictures).forEach((item, index) => {
+                let child = div.children[index + this.state.pictures.length];
+                child.style.backgroundImage = `url('${this.state.mapPictures[item].pic}')`;
+            })
+        }
+    }
+
+    componentDidUpdate() {
+        if(this.state.isInit) {
+            this.renderImage();
 
             if(typeof(this.props.onUpdate) === "function") {
                 const input = this.refs["files"];
-                if(this.state.pictures.length > 0) this.props.onUpdate(this.state.pictures, input.files);
-                else this.props.onUpdate(this.state.pictures, null);
+                const files = [];
+                Object.keys(this.state.mapPictures).forEach((key) => {
+                    files.push(this.state.mapPictures[key].file);
+                })
+                let pictures = [].concat(this.state.pictures);
+                pictures = pictures.concat(Object.keys(this.state.mapPictures).map((item) => this.state.mapPictures[item].pic));
+                this.props.onUpdate(pictures, files);
             }
         }
     }
@@ -126,15 +177,34 @@ class PictureUpload extends Component {
         return (
             <div className="PictureUpload" style={this.props.style}>
                 <label className="fileContainer">
-                    <div>{(this.props.showFilesNumber && this.state.pictures.length > 0) ? `${this.state.pictures.length} files` : this.state.text }</div>
-                    <input type="file" ref="files" onChange={this.onSelectedPoster} className="fileInput" accept="image/*" multiple={this.props.isMultiple} />
+                    <div>{(this.props.showFilesNumber && ((this.state.pictures.length + Object.keys(this.state.mapPictures).length) > 0)) ? `${this.state.pictures.length + Object.keys(this.state.mapPictures).length} files` : this.state.text }</div>
+                    <input
+                        type="file"
+                        ref="files"
+                        onChange={this.onSelectedPoster}
+                        className="fileInput"
+                        accept="image/*"
+                        multiple={this.props.isMultiple}
+                        onClick={(event)=> {
+                            event.target.value = null
+                        }}
+                    />
                 </label>
                 <div ref="preview-image" className="PreviewImage-Container">
                     {
                         this.state.pictures.map((item, index) => {
                             return (
                                 <div data-alt="preview-image" key={index}>
-                                    <span onClick={() => { this.removeImg(index); }} />
+                                    <span onClick={() => { this.removeImg(index, false); }} />
+                                </div>
+                            );
+                        })
+                    }
+                    {
+                        Object.keys(this.state.mapPictures).map((item, index) => {
+                            return (
+                                <div data-alt="preview-image" key={parseInt(item, 10) + this.state.pictures.length}>
+                                    <span onClick={() => { this.removeImg(parseInt(item, 10) + this.state.pictures.length, true); }} />
                                 </div>
                             );
                         })
@@ -151,7 +221,7 @@ PictureUpload.defaultProps = {
     'srcs': [],
     'showFilesNumber': true,
     'persistentImg': true,
-    'onUpdate': (pictures) => console.log(pictures),
+    'onUpdate': (pictures, fileInput) => console.log(pictures, fileInput),
     'isMultiple': false
 }
 

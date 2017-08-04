@@ -21,6 +21,13 @@ button {
   padding-bottom: 0px;
 }
 
+.force-smooth {
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
 select {
   /* styling */
   background-color: white;
@@ -1041,8 +1048,6 @@ section[content="for-you"] {
   flex: 2;
   display: inline-block;
   text-align: left;
-  padding-top: 20px;
-  padding-left: 20px;
 }
 
 article[role="event-item"]:hover {

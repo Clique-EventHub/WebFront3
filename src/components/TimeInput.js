@@ -30,6 +30,17 @@ class TimeInput extends Component {
         if (nextProps.initTime) {
             this.onChangeHandler(nextProps.initTime);
         }
+
+        if( nextProps.isLoad && ! this.props.isLoad ) {
+            this.setState({
+                ...this.state,
+                time: nextProps.initialValue
+            });
+
+            if (nextProps.initialValue.length === 5) {
+                this.props.onTimeChange(nextProps.initialValue);
+            }
+        }
     }
 
     isValid (val) {
@@ -133,7 +144,9 @@ class TimeInput extends Component {
 }
 
 TimeInput.defaultProps = {
-    placeholder: ' '
+    placeholder: ' ',
+    initialValue: '',
+    isLoad: true
 };
 
 export default TimeInput;
