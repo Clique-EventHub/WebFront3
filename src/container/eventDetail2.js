@@ -49,6 +49,7 @@ class eventDetailFix extends Component {
         this.onResetPopup = this.onResetPopup.bind(this);
         this.onGetInfo = this.onGetInfo.bind(this);
         this.state = defaultState;
+        console.log("Hello")
     }
 
     onExit() {
@@ -363,7 +364,7 @@ class eventDetailFix extends Component {
 }
 
 eventDetailFix.defaultProps = {
-    'eventId': '594bf476e374d100140f04ec'
+    'eventId': '595ef6c7822dbf0014cb821c'
 }
 
 export default eventDetailFix;

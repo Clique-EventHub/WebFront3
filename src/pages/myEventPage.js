@@ -62,7 +62,7 @@ class myEventPage extends Component {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
             _this.setState({
-                ...this.state,
+                ..._this.state,
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
@@ -136,27 +136,30 @@ class myEventPage extends Component {
     render() {
         var i;
         var join_events = [];
+        var id_join = 0;
         if(this.state.n_join === 0) {
-            join_events.push(<p className="warn">You don't have any Joined Events.</p>)
+            join_events.push(<p key={id_join++} className="warn">You don't have any Joined Events.</p>)
         }
         for(i = 0; i < this.state.n_join; i++){
-            join_events.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+            join_events.push(<EventItem key={id_join++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         }
 
         var intr_events = [];
+        var id_intr = 0;
         if(this.state.n_intr === 0) {
-            intr_events.push(<p className="warn">You don't have any Interested Events.</p>)
+            intr_events.push(<p key={id_intr++} className="warn">You don't have any Interested Events.</p>)
         }
         for(i = 0; i < this.state.n_intr; i++){
-            intr_events.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+            intr_events.push(<EventItem key={id_intr++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         }
 
         var completed_events = [];
+        var id_cp = 0;
         if(this.state.n_completed === 0) {
-            completed_events.push(<p className="warn">You don't have any Completed Events.</p>)
+            completed_events.push(<p key={id_cp++} className="warn">You don't have any Completed Events.</p>)
         }
         for(i = 0; i < this.state.n_completed; i++){
-            completed_events.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+            completed_events.push(<EventItem key={id_cp++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         }
 
         return (
@@ -184,7 +187,7 @@ class myEventPage extends Component {
                       <h1>{this.state.n_completed}</h1>
                   </div>
                 </section>
-                <p className="line"></p>
+                <p className="line" />
                 <section className="my-event-center">
                 <h2 className={`join-${this.state.showJoin}`} onClick={this.onShowJoin.bind(this)}>Joined Event</h2>
                 <h2 className={`join-${!this.state.showJoin}`} onClick={this.onShowIntr.bind(this)}>Interested Event</h2>

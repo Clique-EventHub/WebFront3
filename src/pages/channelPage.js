@@ -1,6 +1,6 @@
 import React , { Component } from 'react';
 import EventItem from '../container/eventItem';
-import EditEvent from '../container/editEvent2';
+import EditEvent from '../container/editEvent';
 import Circle from '../components/circle';
 import pages from '../hoc/pages';
 import normalPage from '../hoc/normPage';

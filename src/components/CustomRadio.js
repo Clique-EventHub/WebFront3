@@ -15,7 +15,8 @@ class CustomRadio extends Component {
             'colorActive': (this.props.colorActive) ? this.props.colorActive : '#000',
             'hovered': false,
             'active': false,
-            'state': this.props.state
+            'state': this.props.state,
+            'isLoad': false
         }
         this.onClick = this.onClick.bind(this);
         this.onMouseOver = this.onMouseOver.bind(this);
@@ -23,6 +24,14 @@ class CustomRadio extends Component {
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.style = this.style.bind(this);
+        if(this.props.isLoad) {
+            setTimeout(() => {
+                this.setState({
+                    ...this.state,
+                    isLoad: true
+                })
+            }, 0);
+        }
     }
 
     onMouseOver() {
@@ -51,6 +60,25 @@ class CustomRadio extends Component {
             ...this.state,
             'active': false
         })
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if(nextProps.isLoad && !this.state.isLoad) {
+            let initialMode = 0;
+
+            this.state.state.forEach((item, index) => {
+                if(item.value === this.props.initialValue) {
+                    initialMode = index;
+                }
+            });
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
+                    mode: initialMode,
+                    isLoad: nextProps.isLoad
+                }
+            });
+        }
     }
 
     style() {
@@ -88,10 +116,12 @@ class CustomRadio extends Component {
 
     render() {
         if(this.state.state.length <= 1) return null;
+        if(this.props.text.length <= 0) return <div></div>;
 
         return (
             <div className={`CustomRadio ${(this.props.addedClass) ? this.props.addedClass : ''}`} onClick={this.onClick} style={this.style()} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp}>
                 <input className={`state-${this.state.state[this.state.mode].type}`} type="radio" value={this.state.state[this.state.mode].value} checked={this.state.mode !== 0} name="mode-option" />
+                <div data-role="spare" />
                 <label>{this.props.text}</label>
             </div>
         );
@@ -120,6 +150,8 @@ CustomRadio.defaultProps = {
     'color': '#878787',
     'colorHover': '#AAA',
     'colorActive': '#BBB',
+    'isLoad': true,
+    'initialValue': 'state-0',
     'onClick': (data) => {console.log(data)}
 }
 

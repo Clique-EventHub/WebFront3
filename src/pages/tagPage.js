@@ -4,51 +4,38 @@ import './css/tagstyle.css';
 
 import React , { Component } from 'react';
 import Axios from 'axios';
-import CardList from '../components/cardList';
-import ChannelList from '../components/channelList';
-import CircleList from '../components/circleList';
 import EventItem from '../container/eventItem';
-import SlickCarousel from '../components/slickCarousel';
 import normalPage from '../hoc/normPage';
 import pages from '../hoc/pages';
+import { hostname } from '../actions/index';
 
-class homePage extends Component {
+class tagPage extends Component {
 
     constructor(props) {
         super(props);
 
+        const keyword = this.props.location.query.keyword || '';
+
         this.state = {
-            listOfEvent: [],
-            listOfUnDe: []
+            listOfEvents: []
         };
-        let list_event = [], list_event_unde = [];
-
-        Axios.get('http://139.59.97.65:1111/tags/search?keywords=camp').then((data) => {
-            console.log("get!!!");
-             console.log(JSON.stringify(data.data.events));
-
-            data.data.events.map((event) => {
-              if(list_event.length < 6) {
-                list_event.push(event._id);
-              } else {
-                list_event_unde.push(event._id);
-              }
-            });
-            this.setState({
-              listOfEvent: list_event,
-              listOfUnDe: list_event_unde
-            });
-
-        }, (error) => {
-            console.log("get event search error");
-        });
     }
 
-
-    onClickMe() {
-        // this.props.searched_item_handler(true);
+    componentWillReceiveProps(nextProps) {
+        const keyword = nextProps.location.query.keyword || '';
+        if(typeof keyword === "string" && keyword.length > 0) {
+            if(keyword.length !== 0) {
+                Axios.get(`${hostname}tags/search?keywords=${keyword}`).then((data) => {
+                    this.setState({
+                        ...this.state,
+                        listOfEvents: data.data.events
+                    });
+                }, (error) => {
+                    console.log("get event search error");
+                });
+            }
+        }
     }
-
 
     componentWillMount() {
         document.title = "Event Hub | Tag";
@@ -57,32 +44,27 @@ class homePage extends Component {
     render() {
         // console.log(this.state.listOfEvent);
         //Note: if EventDetail is shown, side-menu should not be pressed -> drastic layout change
+        const keyword = this.props.location.query.keyword ? this.props.location.query.keyword : 'No keyword';
+
         return (
-            <section role="tag-content" onClick={this.onClickMe}>
-
-                <div className="below-carousel">
-                        <article className="tag-proflie basic-card">
-                            <img className="photo"  />
-                            <div className="tag-name"><h2>keyword</h2></div>
-                            <div className="like-button">LIKE</div>
-                        </article>
-
-                        <section content="event-list">
-                            {this.state.listOfEvent.map((ID) => {
-                              return <EventItem eventId={ID} detail-shown="true" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
-                            })}
-                            <br />
-                            {this.state.listOfUnDe.map((ID) => {
-                              return <EventItem eventId={ID} detail-shown="false" onToggle={this.props.onToggle} onSetItem={this.props.onSetItem} />
-                            })}
-                        </section>
-                </div>
-
-
+            <section role="tag-content">
+                <article className="tag-proflie basic-card">
+                    <img className="photo" />
+                    <div className="tag-name"><h2>{keyword}</h2></div>
+                    <div className="like-button">LIKE</div>
+                </article>
+                <section content="event-list" className="margin-auto">
+                    {
+                        this.state.listOfEvents.map((item, index) => {
+                            if(index < 6) return <EventItem eventId={item._id} key={index} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            else if(index === 6) return [<br key="abc"/>, <EventItem key="def" eventId={item._id} detail-shown="false" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />]
+                            else return <EventItem eventId={item._id} detail-shown="false" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        })
+                    }
+                </section>
             </section>
         );
     }
 }
 
-
-export default normalPage(pages(homePage, true));
+export default normalPage(pages(tagPage, true));

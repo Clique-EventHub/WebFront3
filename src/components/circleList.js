@@ -66,27 +66,18 @@ class circleList extends Component {
         let wrapperClass = `${this.props.parent}List`;
         return (
             <section className={wrapperClass}>
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
-                <Circle parent={this.props.parent} />
+                {
+                    this.props.tags.map((tagName, index) => {
+                        return <Circle key={index} parent={this.props.parent} tagName={tagName} />
+                    })
+                }
             </section>
         );
     }
+}
+
+circleList.defaultProps = {
+    'tags': ["CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP", "CAMP"]
 }
 
 export default circleList;

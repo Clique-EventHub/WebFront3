@@ -4,6 +4,7 @@ import EventItem from '../container/eventItem';
 import './css/editEvent2.css';
 import './css/channelInfostyle.css';
 import axios from 'axios';
+import { hostname } from '../actions/index';
 import { getCookie } from '../actions/common';
 
 const TAG_1 = [
@@ -80,7 +81,7 @@ class channelInfo extends Component {
             'channel_id': "595e86832ff0cf001402ab99"
         }
 
-           axios.get('http://139.59.97.65:1111/channel?id=' + this.state.channel_id).then((data) => {
+           axios.get(`${hostname}channel?id=${this.state.channel_id}`).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.name))
             console.log(JSON.stringify(data.data.picture))
@@ -151,7 +152,7 @@ class channelInfo extends Component {
         console.log("dddd");
         console.log(responseBody.detail);
         console.log(this.state.channel_id);
-        axios.put('http://139.59.97.65:1111/channel?id='+ this.state.channel_id, responseBody, config).then((response) => {
+        axios.put(`${hostname}channel?id=${this.state.channel_id}`, responseBody, config).then((response) => {
             console.log("saved!!!");
             return true;
         }, (error) => {

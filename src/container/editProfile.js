@@ -6,6 +6,7 @@ import { getCookie } from '../actions/common';
 import './css/editProfile.css';
 import * as facultyMap from '../actions/facultyMap';
 let useCls = " toggle-vis";
+import { hostname } from '../actions/index';
 
 class editProfile extends Component {
 
@@ -13,6 +14,36 @@ class editProfile extends Component {
         super(props);
 
         this.state = {
+          'firstName': '',
+          'lastName': '',
+          'picture': '',
+          'regId': '',
+          'faculty': '99',
+          'birth_day': '',
+          'nick_name': '',
+          'lineId': '',
+          'email': '',
+          'phone': '',
+          'shirt_size': '',
+          'disease': '',
+          'allergy': '',
+          'dorm_building': '',
+          'dorm_room': '',
+          'dorm_bed': '',
+          'tag_like': [],
+
+          'new_birth_day': '',
+          'new_nick_name': '',
+          'new_lineId': '',
+          'new_email': '',
+          'new_phone': '',
+          'new_shirt_size': '',
+          'new_disease': '',
+          'new_allergy': '',
+          'new_dorm_building': '',
+          'new_dorm_room': '',
+          'new_dorm_bed': '',
+          'new_tag_like': [],
           'isLoading': true
         };
 
@@ -33,10 +64,12 @@ class editProfile extends Component {
 
         let _this = this;
 
-        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
+        axios.get(`${hostname}user`, config).then((data) => {
             console.log("get!!!");
             console.log(JSON.stringify(data.data.firstName));
+            console.log(data.data);
             _this.setState({
+                ..._this.state,
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
@@ -117,22 +150,7 @@ class editProfile extends Component {
             }
         }
 
-        let responseBody = {
-            'birth_day': this.refs.birth.value,
-            'nick_name': this.refs.nick_name.value,
-            'lineId': this.refs.line.value,
-            'email': this.refs.email.value,
-            'phone': this.refs.mobile.value,
-            'shirt_size': this.refs.size.value,
-            'disease': this.refs.med.value,
-            'allergy': this.refs.food.value,
-            'dorm_building': this.refs.dorm_building.value,
-            'dorm_room': this.refs.dorm_room.value,
-            'dorm_bed': this.refs.dorm_bed.value,
-            'tag_like': 'new_tag_like',
-        }
-
-        axios.put('http://139.59.97.65:1111/user', responseBody, config).then((response) => {
+        axios.put(`${hostname}user`, newState, config).then((response) => {
             var msg = response.msg;
             var code = response.code;
             console.log(msg);
@@ -144,7 +162,7 @@ class editProfile extends Component {
         })
 
         if(typeof(this.props.onSaveItem) === "function") {
-            this.props.onSaveItem(responseBody);
+            this.props.onSaveItem(newState);
         }
 
         this.props.toggle_pop_item();

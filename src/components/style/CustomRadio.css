@@ -4,6 +4,9 @@ div.CustomRadio {
   justify-content: center;
   align-items: center;
   font-family: sans-serif;
+  position: relative;
+
+  font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
 }
 
 div.CustomRadio input[type="radio"] {
@@ -14,13 +17,18 @@ div.CustomRadio input[type="radio"] ~ label {
   display: inline-block;
   vertical-align: text-bottom;
   vertical-align: bottom;
-  font-size: calc(17px);
-  line-height: 17px;
+  font-size: calc(1.3rem);
+  line-height: 1.3rem;
+}
+
+div.CustomRadio input[type="radio"] ~ div[data-role='spare'] {
+    display: inline-block;
+    height: 1.3rem;
 }
 
 div.CustomRadio input[type="radio"] ~ label:before {
-  width: 17px;
-  height: 17px;
+  width: 1.3rem;
+  height: 1.3rem;
   float: left;
   display: inline-block;
   border-radius: 3px;
@@ -39,29 +47,29 @@ div.CustomRadio input[type="radio"].state-none ~ label:before {
 
 div.CustomRadio input[type="radio"].state-circle ~ label:before {
   content: "\2022";
-  font-size: calc(17px + 11px);
+  font-size: calc(1.3rem + 11px);
   text-align: center;
-  line-height: calc(17px + 10px);
+  line-height: calc(1.3rem + 10px);
 }
 
 div.CustomRadio input[type="radio"].state-square ~ label:before {
   content: '■';
-  font-size: calc(17px + 3px);
+  font-size: calc(1.3rem + 3px);
   text-align: center;
-  line-height: calc(17px - 1px);
+  line-height: calc(1.3rem - 1px);
 }
 
 div.CustomRadio input[type="radio"].state-triangle ~ label:before {
   content: "\25B6";
-  font-size: calc(17px);
+  font-size: calc(1.3rem);
   text-align: center;
   padding-left: 1px;
-  line-height: calc(17px - 3px);
+  line-height: calc(1.3rem - 3px);
 }
 
 div.CustomRadio input[type="radio"].state-diamond ~ label:before {
   content: "\25C8";
-  font-size: calc(17px - 5px);
+  font-size: calc(1.3rem - 5px);
   text-align: center;
-  line-height: calc(17px - 1px);
+  line-height: calc(1.3rem - 1px);
 }

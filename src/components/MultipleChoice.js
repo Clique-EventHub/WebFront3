@@ -1,14 +1,37 @@
 import React, { Component } from 'react';
 import CustomRadio from './CustomRadio';
+import _ from 'lodash';
 
 class MultipleChoice extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            active: {}
+            active: {},
+            isLoad: false
         }
         this.onSetActive = this.onSetActive.bind(this);
         this.onEvalBlock = this.onEvalBlock.bind(this);
+        this.onLoad = this.onLoad.bind(this);
+
+        if(this.props.isLoad) {
+            setTimeout(() => this.onLoad(), 0);
+        }
+    }
+
+    onLoad() {
+        this.setState((prevState, props) => {
+            return {
+                ...prevState,
+                active: this.props.initialValue,
+                isLoad: true
+            }
+        })
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if(nextProps.isLoad && !this.state.isLoad) {
+            this.onLoad();
+        }
     }
 
     onSetActive(index, new_mode) {
@@ -89,7 +112,7 @@ class MultipleChoice extends Component {
     }
 
     componentDidUpdate() {
-        // console.log(this.props.options);
+        console.log(this.state);
     }
 
     render() {
@@ -99,11 +122,22 @@ class MultipleChoice extends Component {
                     this.props.options.map((text, index) => {
                         return (
                             <div key={index}>
-                                <CustomRadio key={index} text={text} state={this.props.state} isBlockedAction={
-                                    this.onEvalBlock(index)
-                                } onClick={(new_mode) => {
-                                    this.onSetActive(index, new_mode);
-                                }} color={this.props.color} colorHover={this.props.colorHover} colorActive={this.props.colorActive} />
+                                <CustomRadio
+                                    key={index}
+                                    text={text}
+                                    state={this.props.state}
+                                    isBlockedAction={
+                                        this.onEvalBlock(index)
+                                    }
+                                    onClick={(new_mode) => {
+                                        this.onSetActive(index, new_mode);
+                                    }}
+                                    color={this.props.color}
+                                    colorHover={this.props.colorHover}
+                                    colorActive={this.props.colorActive}
+                                    isLoad={this.props.isLoad}
+                                    initialValue={_.get(this.props.initialValue, index, this.props.state[0].value)}
+                                />
                                 {this.props.additionalButton}
                             </div>
                         );
@@ -112,6 +146,12 @@ class MultipleChoice extends Component {
             </div>
         );
     }
+}
+
+MultipleChoice.defaultProps = {
+    initialValue: {},
+    isLoad: true,
+    onUpdate: (res) => { console.log(res);}
 }
 
 export default MultipleChoice;

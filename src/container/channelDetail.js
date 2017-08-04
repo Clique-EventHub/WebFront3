@@ -27,7 +27,7 @@ class channelInfo extends Component {
             'detail': "",
             'picture_large': []
         }
-        axios.get('http://139.59.97.65:1111/channel?id=' + "5953e2f4dd3c09001422e9ed").then((data) => {
+        axios.get(`${hostname}channel?id=${"5953e2f4dd3c09001422e9ed"}`).then((data) => {
             console.log("get!!!dd");
             console.log(JSON.stringify(data.data.name))
             this.setState({

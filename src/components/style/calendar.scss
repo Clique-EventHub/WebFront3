@@ -87,6 +87,9 @@ $blob-size: 60px;
     height: calc(6*#{$calendar-cell-height}) !important;
 }
 
+.Calendar .Body .Days.d-6 .Day {
+    min-height: $calendar-cell-height !important;
+}
 
 .Calendar .Body .Week .Day,
 .Calendar .Body .Days .Day {

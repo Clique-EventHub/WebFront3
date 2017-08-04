@@ -78,6 +78,10 @@
   height: calc(6*130px) !important;
 }
 
+.Calendar .Body .Days.d-6 .Day {
+  min-height: 130px !important;
+}
+
 .Calendar .Body .Week .Day,
 .Calendar .Body .Days .Day {
   width: calc(100%/7);

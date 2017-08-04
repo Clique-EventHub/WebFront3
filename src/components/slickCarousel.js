@@ -58,7 +58,7 @@ class slickCarousel extends Component {
                     <div className='single-item'>
                         {
                             this.props.posters.map((src, index) => {
-                                return (this.state.imageLoad[index]) ? (
+                                return (this.state.imageLoad[index] && src !== '') ? (
                                     <div key={index} className="slick-slide-item" style={{backgroundImage: `url(${src})`}} onClick={this.onItemClick} />
                                 ) : (
                                     <div key={index} className={`slick-slide ${this.state.imageColor[index]}`} onClick={this.onItemClick} />
@@ -87,5 +87,16 @@ slickCarousel.defaultProps = {
         `../../resource/images/poster_dummy/9.jpg`
     ]
 }
+
+/*
+posters: [
+    `../../resource/images/poster_dummy/3.jpg`,
+    `../../resource/images/poster_dummy/13.jpg`,
+    `../../resource/images/poster_dummy/25.jpg`,
+    `../../resource/images/poster_dummy/22.jpg`,
+    `../../resource/images/poster_dummy/26.jpg`,
+    `../../resource/images/poster_dummy/9.jpg`
+]
+*/
 
 export default slickCarousel;

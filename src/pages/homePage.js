@@ -18,22 +18,27 @@ import axios from 'axios';
 import { hostname } from '../actions/index';
 import { getCookie } from '../actions/common';
 
+const demo = true;
+
 class homePage extends Component {
 
     constructor(props) {
         super(props);
         this.onItemPopUpClick = this.onItemPopUpClick.bind(this);
-        const nonsenseId = Array(3).fill(1).map((x, y) => String(x+y) );
+        // const nonsenseId = Array(3).fill(1).map((x, y) => String(x+y) );
+        const demoId = Array(15).fill(1).map(() => "595ef6c7822dbf0014cb821c");
         this.state = {
-            'eventHot': nonsenseId,
-            'eventNew': nonsenseId,
-            'eventUpcomming': nonsenseId,
-            'eventForYou': nonsenseId
+            'eventHot': demoId.slice(0, 4),
+            'eventNew': demoId.slice(0, 4),
+            'eventUpcomming': demoId,
+            'eventForYou': demoId.slice(0, 4),
+            'channelSubscribe': demoId,
+            'tagsLike': []
         }
     }
 
     onItemPopUpClick(item) {
-        if(this.props.pages.pop_up_item === null) this.props.set_pop_up_item(item);
+        this.props.set_pop_up_item(item);
         this.props.toggle_pop_item();
     }
 
@@ -61,43 +66,44 @@ class homePage extends Component {
             }
         }
 
-        axios.get(`${hostname}event/hot`, config).then((data) => data.data).then((res) => {
-            let eventHotId = [];
-            if(res.first) eventHotId.push(res.first._id);
-            if(res.second) eventHotId.push(res.second._id);
-            if(res.third) eventHotId.push(res.third._id);
+        if(!demo) {
+            axios.get(`${hostname}event/hot`, config).then((data) => data.data).then((res) => {
+                let eventHotId = [];
+                if(res.first) eventHotId.push(res.first._id);
+                if(res.second) eventHotId.push(res.second._id);
+                if(res.third) eventHotId.push(res.third._id);
 
-            this.setState((prevState, props) => {
-                return ({
-                    ...this.state,
-                    'eventHot': eventHotId
+                this.setState((prevState, props) => {
+                    return ({
+                        ...this.state,
+                        'eventHot': eventHotId
+                    })
                 })
             })
-        })
 
-        axios.get(`${hostname}event/new`, config).then((data) => data.data.events).then((res) => {
-            this.setState({
-                ...this.state,
-                'eventNew': res.map((item) => item._id)
+            axios.get(`${hostname}event/new`, config).then((data) => data.data.events).then((res) => {
+                this.setState({
+                    ...this.state,
+                    'eventNew': res.map((item) => item._id)
+                })
             })
-        })
 
-        axios.get(`${hostname}event/upcoming`, config).then((data) => data.data.events).then(
-        (res) => {
-            this.setState({
-                ...this.state,
-                'eventUpcomming': res.map((item) => item._id)
+            axios.get(`${hostname}event/upcoming`, config).then((data) => data.data.events).then(
+            (res) => {
+                this.setState({
+                    ...this.state,
+                    'eventUpcomming': res.map((item) => item._id)
+                })
+            });
+
+            axios.get(`${hostname}event/foryou`, { ...config, ...authConfig }).then((data) => data.data.events).then(
+            (res) => {
+                this.setState({
+                    ...this.state,
+                    'eventForYou': res
+                })
             })
-        });
-
-        axios.get(`${hostname}event/foryou`, { ...config, ...authConfig }).then((data) => data.data.events).then(
-        (res) => {
-            this.setState({
-                ...this.state,
-                'eventForYou': res
-            })
-        })
-
+        }
     }
 
     componentDidMount() {
@@ -129,7 +135,7 @@ class homePage extends Component {
                         </section>
                         <section content="new">
                             <h2>New</h2>
-                            <div style={{'display': 'flex', 'flexWrap': 'wrap'}}>
+                            <div style={{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
                                 {
                                     this.state.eventNew.map((id, index) => {
                                         return (<EventItem key={index} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
@@ -145,7 +151,7 @@ class homePage extends Component {
                         </section>
                         <section content="for-you">
                             <h2>For you</h2>
-                            <div style={{'display': 'flex', 'flexWrap': 'wrap'}}>
+                            <div style={{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
                                 {
                                     this.state.eventForYou.map((id, index) => {
                                         return (<EventItem key={index} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)

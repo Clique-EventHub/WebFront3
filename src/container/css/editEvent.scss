@@ -14,20 +14,97 @@ $color-dark-red: #fe2000;
 
 .event-edit {
     padding-right: 50px;
-    width: 900px;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
-    .content {
-        display: flex;
+    font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+    font-size: 1rem;
+
+    b {
+        font-size: 1.25rem;
+        font-weight: 700;
     }
 
-    .content div:nth-child(1) {
+    h2.NoBottom {
+        margin-bottom: 0px;
+    }
+
+    .moveUp-50 {
+        position: relative;
+        top: -50px;
+    }
+
+    .moveUp-20 {
+        position: relative;
+        top: -20px;
+    }
+
+    .fullwidth {
+        position: relative;
+        left: -30px;
+        width: calc(100% + 80px);
+        padding:  10px 50px 10px 30px;
+        box-sizing: border-box;
+    }
+    nav {
+        // border-bottom: 1px solid #CCC;
+        h1 {
+            font-size: 2em;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            position: relative;
+            top: -10px;
+        }
+    }
+    footer {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .Card-Demo {
+        background-color: #EEE;
+    }
+    .content {
+        // display: flex;
+    }
+
+    hr {
+        border: none;
+        height: 1px;
+        /* Set the hr color */
+        color: rgba(128, 128, 128, 0.35); /* old IE */
+        background-color: rgba(128, 128, 128, 0.35); /* Modern Browsers */
+        margin: 20px 0px;
+        padding: 0px;
+
+        clear: both;
+        display: block;
+    }
+
+    hr.fullwidth {
+        width: calc(100% + 80px);
+        padding: 0px;
+    }
+
+    div[data-role="recruitment"] {
+        .firstmeet {
+            margin-left: 10px;
+            button.Btn {
+                width: 200px;
+                height: 2.7rem;
+            }
+        }
+    }
+
+    .content div.fields {
         flex: 1;
         box-sizing: border-box;
 
-        input {
+        input[type="text"],
+        input[type="number"],
+        input[type="tel"],
+        textarea {
             font-size: 1.2em;
-            width: calc(100% - #{$right-margin});
+            width: calc(100%);
             box-sizing: border-box;
             margin-top: 5px;
 
@@ -35,15 +112,43 @@ $color-dark-red: #fe2000;
             padding-left: 7px;
         }
 
-        input:focus {
+        textarea {
+            margin-top: 5px;
+            border: 1.8px solid #ccc;
+            border-radius: 5px;
+            padding: 10px 10px;
+            resize: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus {
             box-shadow: none;
+        }
+
+        input[type="text"]:focus + label,
+        input[type="number"]:focus + label,
+        input[type="tel"]:focus + label,
+        textarea:focus + label,
+        input[type="text"]:focus ~ .note,
+        input[type="number"]:focus ~ .note,
+        input[type="tel"]:focus ~ .note,
+        textarea:focus ~ .note {
+            opacity: 1;
+            transition: 0.1s;
+        }
+
+        .flex-half {
+            flex: 1 1 50%;
+            padding-left: 10px;
         }
 
         .flex {
             display: flex;
             flex-direction: column;
 
-            * {
+            > * {
                 flex: 1;
             }
         }
@@ -55,18 +160,311 @@ $color-dark-red: #fe2000;
         .flex-order-2 {
             order: 2;
         }
+        .flex-order-3 {
+            order: 3;
+        }
 
-        label {
+        input[type="text"] + label,
+        input[type="number"] + label,
+        input[type="tel"] + label,
+        textarea + label,
+        .note {
             opacity: 0;
             display: block;
-            font-size: 0.8em;
+            font-size: 1rem;
             font-weight: bold;
             color: $color-dark-blue;
         }
 
-        input:focus + label {
-            opacity: 1;
-            transition: opacity 0.1s;
+        .note {
+            color: $color-dark-red;
+        }
+    }
+
+    .tag-container {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    button {
+        &.bt {
+          position: relative;
+          border: 1.8px solid;
+          border-radius: 20px;
+          width: 120px;
+          height: 35px;
+          font-size: 1em;
+          border-color: #AAAAAA;
+          color: #888888;
+          background-color: #FFFFFF;
+          margin-right: 15px;
+          margin-top: 40px;
+        }
+
+        &.blue {
+          border-color: #00BFF0;
+          color: #FFFFFF;
+          background-color: #00BFF0;
+        }
+
+        &.tag {
+            border: 1.8px solid;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: normal;
+            margin-right: 20px;
+            margin-bottom: 10px;
+            width: 140px;
+            height: 35px;
+            border-color: #CCCCCC;
+            color: #999999;
+            background-color: #FFFFFF;
+            flex: 1 0 140px;
+
+            &.long {
+                font-size: 0.7em;
+            }
+
+            &.empty {
+                height: 0px;
+                border: none;
+                background-color: rgba(0,0,0,0) !important;
+                outline: none;
+            }
+            &.empty:hover,
+            &.empty:active {
+                background-color: rgba(0,0,0,0) !important;
+            }
+        }
+
+        &.Btn {
+            border-color: #CCCCCC !important;
+            color: #999999 !important;
+            background-color: #FFFFFF !important;
+            margin: 5px;
+            margin: 5px;
+
+            &.wBorder {
+                border: 1px solid #878787;
+            }
+
+            &.Btn-Small {
+                width: 200px;
+                max-width: 200px;
+                min-width: 200px;
+                margin-right: 5px;
+            }
+
+            &.Btn-Primary {
+                border: 1.8px solid;
+                border-radius: 5px;
+                font-size: 0.9em;
+                font-weight: normal;
+                padding: 10px;
+            }
+
+            &.Btn-Block {
+                width: 100%;
+                position: relative;
+            }
+        }
+
+        &.Btn-active {
+            border-color: #EEE !important;
+            color: #FFF !important;
+            background-color: #729afd !important;
+        }
+
+        &.Btn:hover,
+        &.Btn-active:hover {
+            border-color: #EEE !important;
+            color: #FFF !important;
+        }
+
+        &.Btn:hover {
+            background-color: #4caf50 !important;
+        }
+
+        &.Btn-active:hover {
+            background-color: #ff636d !important;
+        }
+
+        > img {
+            height: 1em;
+            width: 1em;
+        }
+    }
+
+    .CustomRadio {
+        color: #888888 !important;
+        border-color: #888888 !important;
+
+        &:hover {
+            color: #5080FC !important;
+            border-color: #5080FC !important;
+
+            input[type="radio"].state-square ~ label:before {
+              background-color: #5080FC;
+              color: #5080FC;
+            }
+
+            input[type="radio"].state-circle ~ div[data-role='spare']:before {
+                background-color: #5080FC;
+                color: #5080FC;
+            }
+        }
+
+        &:active {
+            color: #376AFC !important;
+            border-color: #376AFC !important;
+
+            input[type="radio"].state-square ~ label:before {
+              background-color: #376AFC;
+              color: #5080FC;
+            }
+
+            input[type="radio"].state-circle ~ div[data-role='spare']:before {
+                background-color: #376AFC;
+                color: #5080FC;
+            }
+        }
+
+        input[type="radio"] ~ label {
+            font-size: 0.9rem;
+        }
+        input[type="radio"].state-circle ~ label:before {
+            content: "";
+        }
+        input[type="radio"].state-square ~ label:before {
+            content: "";
+        }
+        input[type="radio"].state-circle ~ div[data-role='spare']:before {
+            content: "";
+
+            width: 10px;
+            height: 10px;
+            top: 0.65rem;
+            left: calc(0.65em);
+            transform: translate(-50%, -50%);
+
+            border-radius: 50%;
+            background-color: #888888;
+
+            display: block;
+            position: absolute;
+        }
+        input[type="radio"].state-square ~ label:before {
+          background-color: #888888;
+        }
+    }
+
+    .fields-selected {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        margin-left: 20px;
+
+        > * {
+            flex: 1 1 33%;
+            justify-content: flex-start;
+            margin: 5px 0px;
+        }
+    }
+
+    .addList {
+        margin-top: 20px;
+        align-items: flex-start;
+        position: relative;
+        flex-direction: row !important;
+        flex-wrap: wrap;
+    }
+
+    .AddList {
+        flex: 1 1 100%;
+        max-width: 33%;
+        width: 100%;
+        min-width: 250px;
+        box-sizing: border-box;
+        padding: 0px 10px;
+        display: inline-block;
+
+        &.Border {
+            border: 1px solid #CCC;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0px;
+
+            li {
+                display: flex;
+                align-items: center;
+                margin: 3px 0px;
+
+                input {
+                    width: 100%;
+                    font-size: 1em;
+                    padding: 3px 5px;
+                    height: 1.2em;
+                    flex: 1 1 100%;
+                }
+
+                button {
+                    width: 45px !important;
+                    height: auto;
+                }
+            }
+        }
+
+        .ChildBox {
+            flex-wrap: wrap;
+            border: 1px solid #CCC;
+            border-radius: 5px;
+            padding: 15px;
+            position: relative;
+            padding-top: 40px;
+
+            input {
+                margin-bottom: 7px;
+                outline: none;
+                border: 1px solid rgba(0,0,0,0.05);
+            }
+
+            > * {
+                display: block;
+            }
+
+            .right {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: auto !important;
+
+                img {
+                    height: 1.5em;
+                    width: 1.5em;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .event-edit {
+        div[data-role="meta"] {
+            flex-wrap: wrap;
+            .flex-half {
+                flex: 1 1 100% !important;
+                padding-left: inherit;
+            }
+        }
+
+        .AddList {
+            max-width: 100%;
         }
     }
 }
