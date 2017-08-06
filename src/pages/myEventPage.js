@@ -5,6 +5,7 @@ import pages from '../hoc/pages';
 // import { Link } from 'react-router';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
+import { hostname } from '../actions/index';
 import * as facultyMap from '../actions/facultyMap';
 import CardList from '../components/cardList';
 import EventItem from '../container/eventItem';
@@ -58,9 +59,7 @@ class myEventPage extends Component {
 
         let _this = this;
 
-        axios.get('http://139.59.97.65:1111/user', config).then((data) => {
-            console.log("get!!!");
-            console.log(JSON.stringify(data.data.firstName));
+        axios.get(`${hostname}user`, config).then((data) => {
             _this.setState({
                 ..._this.state,
                 'firstName': data.data.firstName,
@@ -88,7 +87,7 @@ class myEventPage extends Component {
                 'showJoin': true
             })
         }, (error) => {
-            console.log("get user error");
+            console.log("get user error", error);
         });
     }
 

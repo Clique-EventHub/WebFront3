@@ -5,7 +5,8 @@ div.edit-profile {
   position: relative;
   z-index: 555;
   padding: 10px 10px 30px 10px;
-  width: 680px;
+  max-width: 680px;
+  width: calc(100% - 20px);
 }
 
 div.edit-profile section.edit-pro-head {
@@ -78,7 +79,7 @@ div.edit-profile section.edit-pro-left input[type="text"] {
   border:none;
   border-bottom:1px solid #ccc;
   margin-left: 45px;
-  width: 260px;
+  width: calc(100% - 70px);
   z-index: 560;
   font-family:inherit;
   font-size: 1em;
@@ -86,12 +87,14 @@ div.edit-profile section.edit-pro-left input[type="text"] {
 }
 
 div.edit-profile section.edit-pro-left input.w110 {
-  width: 110px;
+  /*width: 110px;*/
+  flex: 1 1 50%;
 }
 
 div.edit-profile section.edit-pro-left input.w45 {
-  width: 45px;
+  /*width: 45px;*/
   margin-left: 15px;
+  flex: 1 1 25%;
 }
 
 div.edit-profile section.edit-pro-left div {
@@ -221,5 +224,25 @@ div.edit-profile p.sec-line {
   height: 390px;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.1);
-  left: 400px;
+  left: 360px;
+}
+
+@media all and (max-width: 768px) {
+    div.edit-profile {
+        margin-top: 1px !important;
+        margin-bottom: 1px !important;
+    }
+
+    div.edit-profile .flex-sp {
+        flex-wrap: wrap;
+    }
+
+    div.edit-profile p.sec-line {
+        display: none;
+    }
+
+    div.edit-profile .edit-pro-left,
+    div.edit-profile .edit-pro-right {
+        flex-basis: 100% !important;
+    }
 }

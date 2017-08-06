@@ -41,3 +41,6 @@ export const UPDATE_USER_EVENTS_INFO_INTEREST = 'update_user_events_info_interes
 export const UPDATE_USER_EVENTS_INFO_SUBSCRIBE = 'update_user_events_info_subscribe';
 export const UPDATE_USER_ADMIN_INFO = 'update_user_admin_info';
 export const UPDATE_USER_FRIENDS_INFO = 'UPDATE_USER_FRIENDS_INFO ';
+
+export const UPDATE_EVENT_MAP = 'ADD_EVENT_MAP';
+export const UPDATE_CHANNEL_MAP = 'ADD_CHANNE:_MAP';

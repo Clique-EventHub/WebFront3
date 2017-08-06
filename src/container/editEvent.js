@@ -72,15 +72,24 @@ const DateButton = (props) => {
     return <PopupButton {...props} BtnClass="Btn-Small" obj={<DateAndTime {...props} />} />
 }
 
+const DateDefault = {
+    Dates: [],
+    Time: {
+        Start: "",
+        End: ""
+    }
+}
+
 class EditEvent extends Component {
     constructor(props) {
         super(props);
         const fieldState = {};
         FieldsName.forEach((item) => fieldState[item] = state[0].value);
         this.state = {
-            'eventDate': [],
-            'firstMeetDate': [],
-            'recruitmentDate': [],
+            'eventDate': { ...DateDefault },
+            'firstMeetDate': { ...DateDefault },
+            'recruitmentDate': { ...DateDefault },
+            'joinableDate': { ...DateDefault },
             'contact': [],
             'notes': [],
             'refs': {
@@ -148,6 +157,11 @@ class EditEvent extends Component {
                     'isLoad': true
                 })
             })
+        } else {
+            this.setState({
+                ...this.state,
+                'isLoad': true
+            })
         }
     }
 
@@ -165,7 +179,7 @@ class EditEvent extends Component {
         if(states.notes && states.notes.constructor === Array && states.notes.length === 2) {
             new_state.enableRecruitment = true;
             new_state.recruitmentDate = {
-                Dates: _.get(states, 'notes[1].dates', []).map((item) => convertItem(item)),
+                Dates: _.get(states, 'notes[1].content', []).map((item) => convertItem(item)),
                 Time: {
                     Start: '',
                     End: ''
@@ -237,6 +251,11 @@ class EditEvent extends Component {
         })
         new_state.selectedFaculty = selectedFaculty;
         new_state.video = _.get(states, 'video', '');
+        const jStart = _.get(states, 'joinable_start_time', null);
+        const jEnd = _.get(states, 'joinable_end_time', null);
+        if(jStart !== null && jEnd !== null) {
+            new_state.joinableDate = [[new Date(jStart), new Date(jEnd)]];
+        }
 
         this.firstMeet_Notes.value = _.get(states, 'notes[0].note', '');
         this.firstMeet_Location.value = _.get(states, 'notes[0].content.location', '');
@@ -273,7 +292,11 @@ class EditEvent extends Component {
             'contact_information': 'contact',
             'tags': 'tagsState',
             'joinable_amount': 'maxJoin',
-            'video': 'video'
+            'video': 'video',
+            'faculty_require': 'selectedFaculty',
+            'year_require': 'selectedYear',
+            'joinable_end_time': 'joinableDate',
+            'joinable_start_time': 'joinableDate'
         }
 
         uploadedObj["notes"] = [];
@@ -294,28 +317,36 @@ class EditEvent extends Component {
             })
         }
 
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            }
+        }
+
         const mapConvertFunc = {
-            'time_each_day': (res) => res.Dates,
-            'about': (res) => res.split("\n\n"),
+            'time_each_day': (res) => _.get(res, 'Dates', []),
+            'about': (res) => _.get(res, '', '').split("\n\n"),
             'time_start': (res) => {
-                let start_date = res.Dates[0];
+                let start_date = _.get(res, 'Dates[0]', [new Date(new Date().setTime(0))]);
                 if(start_date.constructor === Array) start_date = start_date[0];
                 const time = res.Time.Start.split(":");
                 return new Date(new Date(start_date).setHours(Number(time[0]), Number(time[1]), 0))
             },
             'time_end': (res) => {
-                let end_date = res.Dates[res.Dates.length - 1];
+                let r = _.get(res, 'Dates', []);
+                let end_date = (r.length > 0) ? r[r.length - 1] : new Date(new Date().setTime(0));
                 if(end_date.constructor === Array) end_date = end_date[1];
                 const time = res.Time.End.split(":");
                 return new Date(new Date(end_date).setHours(Number(time[0]), Number(time[1]), 0))
             },
             'date_start': (res) => {
-                let start_date = res.Dates[0];
+                let start_date = _.get(res, 'Dates[0]', [new Date(new Date().setTime(0))]);
                 if(start_date.constructor === Array) start_date = start_date[0];
                 return new Date(new Date(start_date).setUTCHours(0, 0, 0));
             },
             'date_end': (res) => {
-                let end_date = res.Dates[res.Dates.length - 1];
+                let r = _.get(res, 'Dates', []);
+                let end_date = (r.length > 0) ? r[r.length - 1] : new Date(new Date().setTime(0));
                 if(end_date.constructor === Array) end_date = end_date[1];
                 return new Date(new Date(end_date).setUTCHours(0, 0, 0));
             },
@@ -324,6 +355,24 @@ class EditEvent extends Component {
                 Object.keys(res).forEach((key) => {
                     if(res[key] === state[1].value) {
                         rArray.push(ClientToServerFields[key])
+                    }
+                })
+                return rArray;
+            },
+            'faculty_require': (res) => {
+                let rArray = [];
+                Object.keys(res).forEach((key) => {
+                    if(res[key] === "true") {
+                        rArray.push(getCodeList()[key])
+                    }
+                })
+                return rArray;
+            },
+            'year_require': (res) => {
+                let rArray = [];
+                Object.keys(res).forEach((key) => {
+                    if(res[key] === "true") {
+                        rArray.push(optionYear[key])
                     }
                 })
                 return rArray;
@@ -369,205 +418,226 @@ class EditEvent extends Component {
                     if(value) rTags.push(TAG_2[index])
                 })
                 return rTags;
+            },
+            'joinable_end_time': (res) => {
+                const last_length = _.get(res, 'Dates', []).length-1;
+                const last_item = _.get(res, `Dates[${last_length}]`, []).length - 1;
+                return new Date(_.get(res.Dates, `[${last_length}][${last_item}]`, new Date().setTime(0)));
+            },
+            'joinable_start_time': (res) => {
+                return new Date(_.get(res.Dates, '[0][0]', new Date().setTime(0)))
             }
         }
         const _this = this;
 
-        Object.keys(refObject).forEach((key) => {
+        ["faculty_require", "year_require", 'joinable_start_time', 'joinable_end_time'].forEach((key) => {
             compareSetDiff(key, mapKeyword[key], mapConvertFunc[key])
         })
 
-        if(refObject.picture !== _.get(this.state, 'poster[0]', '')) {
-            const oldPoster = new Set(refObject.picture);
-            const newPoster = this.state.poster[0];
+        Object.keys(refObject).forEach((key) => {
+            compareSetDiff(key, mapKeyword[key], mapConvertFunc[key])
+        });
 
-            if(!oldPoster.has(newPoster)) {
-                if(!checkPicturesUrl(refObject.picture)) {
-                    uploadedObj["picture"] = this.state.poster;
-                }
-            }
-        }
+        if(this.props.eventId && this.props.eventId.length > 0) {
+            console.log(uploadedObj)
 
-        const config = {
-            'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
-                'crossDomain': true
-            }
-        }
+            if(refObject.picture !== _.get(this.state, 'poster[0]', '')) {
+                const oldPoster = new Set(refObject.picture);
+                const newPoster = this.state.poster[0];
 
-        let pictures = [];
-        if(!_.get(refObject, 'picture_large', []).equals(_.get(this.state, 'picture'))) {
-            //Do something
-            const oldPicture = refObject.picture_large;
-            const newPicture = _.get(this.state, 'picture', []);
-            const diffA = oldPicture.filter(function(x) { return newPicture.indexOf(x) < 0 }); //oldPicture - newPicture
-            // const diffB = newPicture.filter(function(x) { return oldPicture.indexOf(x) < 0 }) //newPicture - oldPicture
-
-            if(diffA.length > 0) {
-                //TODO: DELETING OLD PICTURES
-                const configs = {
-                    ...config,
-                    'data': {
-                        'urls': diffA.filter((item) => checkPicturesUrl(item))
+                if(!oldPoster.has(newPoster)) {
+                    if(!checkPicturesUrl(refObject.picture)) {
+                        uploadedObj["picture"] = this.state.poster;
                     }
                 }
+            }
 
-                uploadPromises.push(
-                    new Promise((good, bad) => {
-                        axios.delete(`${hostname}picture`, configs).then((data) => {
-                            this.onChangeValue('uploadProgress.uploadStatus.pictures.delete', true);
-                            return good(true);
+            let pictures = [];
+            if(!_.get(refObject, 'picture_large', []).equals(_.get(this.state, 'picture'))) {
+                //Do something
+                const oldPicture = refObject.picture_large;
+                const newPicture = _.get(this.state, 'picture', []);
+                const diffA = oldPicture.filter(function(x) { return newPicture.indexOf(x) < 0 }); //oldPicture - newPicture
+                // const diffB = newPicture.filter(function(x) { return oldPicture.indexOf(x) < 0 }) //newPicture - oldPicture
+
+                if(diffA.length > 0) {
+                    //TODO: DELETING OLD PICTURES
+                    const configs = {
+                        ...config,
+                        'data': {
+                            'urls': diffA.filter((item) => checkPicturesUrl(item))
+                        }
+                    }
+
+                    uploadPromises.push(
+                        new Promise((good, bad) => {
+                            axios.delete(`${hostname}picture`, configs).then((data) => {
+                                this.onChangeValue('uploadProgress.uploadStatus.pictures.delete', true);
+                                return good(true);
+                            }).catch((error) => {
+                                console.log(error);
+                                return bad(error);
+                            })
+                        })
+                    )
+                } else {
+                    this.onChangeValue('uploadProgress.uploadStatus.pictures.delete', true);
+                }
+
+                const picture_file = _.get(this.state, 'picture_file', []);
+
+                if(picture_file.length > 0) {
+                    const formData = new FormData();
+                    picture_file.forEach((file) => {
+                        formData.append('pictures', file);
+                    })
+                    uploadPromises.push(new Promise((good, bad) => {
+                        axios.post(`${hostname}picture?id=${this.props.eventId}&size=large&field=event`, formData, config).then(
+                            (data) => {
+                                this.onChangeValue('uploadProgress.uploadStatus.pictures.add', true);
+                                return good(true);
+                            }).catch((e) => {
+                                bad(e)
+                            })
+                    }))
+                }
+
+                // if(diffB.length > 0) {
+                //     //TODO: UPDATING NEW PICTURES TO SERVER (DIFFERENT URL)
+                //     //Actually should not be possible right now
+                // } else {
+                //     this.onChangeValue('uploadProgress.uploadStatus.picture.add', true);
+                // }
+            }
+
+            //Poster Process
+            const oldPoster = _.get(refObject, 'picture', "");
+            let newPoster = _.get(this.state, 'poster', [""])
+            if(newPoster.constructor === Array && newPoster.length > 0) newPoster = newPoster[0];
+
+            if(oldPoster !== newPoster) {
+                const posterPromises = [];
+
+                posterPromises.push(axios.delete(`${hostname}picture`, {
+                    ...config,
+                    'data': {
+                        'urls': [oldPoster]
+                    }
+                }));
+
+                const poster_file = _.get(this.state,'poster_file', []);
+                if(poster_file.length > 0) {
+                    const formData = new FormData();
+                    formData.append('pictures', poster_file[0]);
+                    posterPromises.push(
+                        axios.post(`${hostname}picture?id=${this.props.eventId}&size=small&field=event`, formData, config)
+                    );
+                }
+
+                uploadPromises.push(new Promise((good, bad) => {
+                    Promise.all(posterPromises).then((datas) => {
+                        this.onChangeValue('uploadProgress.uploadStatus.poster', true);
+                        good(true);
+                    }).catch((e) => {
+                        console.log(e);
+                        bad(e);
+                    })
+                }))
+            }
+
+            //Admin Process
+            const oldAdmin = _.get(refObject, 'admins', []);
+            const newAdmin = _.get(this.state, 'admins', []);
+
+            if(!oldAdmin.equals(newAdmin)) {
+                const deleteAdmins = oldAdmin.filter(function(x) { return newAdmin.indexOf(x) < 0 });
+                const addAdmins = newAdmin.filter(function(x) { return oldAdmin.indexOf(x) < 0 });
+
+                if(deleteAdmins.length > 0) {
+                    let deleteAdminPromises = []
+                    deleteAdmins.forEach((item) => {
+                        deleteAdminPromises.push(axios.delete(`${hostname}admin/event/delete?id=${this.props.eventId}`,
+                        {
+                            ...config,
+                            params: {
+                                user: item
+                            }
+                        }))
+                    })
+                    uploadPromises.push(new Promise((good, bad) => {
+                        Promise.all(deleteAdminPromises).then((result) => {
+                            this.onChangeValue('uploadProgress.uploadStatus.admins.delete', true);
+                            good(true);
                         }).catch((error) => {
                             console.log(error);
-                            return bad(error);
+                            bad(error)
                         })
-                    })
-                )
-            } else {
-                this.onChangeValue('uploadProgress.uploadStatus.pictures.delete', true);
-            }
-
-            const picture_file = _.get(this.state, 'picture_file', []);
-
-            if(picture_file.length > 0) {
-                const formData = new FormData();
-                picture_file.forEach((file) => {
-                    formData.append('pictures', file);
-                })
-                uploadPromises.push(new Promise((good, bad) => {
-                    axios.post(`${hostname}picture?id=${this.props.eventId}&size=large&field=event`, formData, config).then(
-                        (data) => {
-                            this.onChangeValue('uploadProgress.uploadStatus.pictures.add', true);
-                            return good(true);
-                        }).catch((e) => {
-                            bad(e)
-                        })
-                }))
-            }
-
-            // if(diffB.length > 0) {
-            //     //TODO: UPDATING NEW PICTURES TO SERVER (DIFFERENT URL)
-            //     //Actually should not be possible right now
-            // } else {
-            //     this.onChangeValue('uploadProgress.uploadStatus.picture.add', true);
-            // }
-        }
-
-        //Poster Process
-        const oldPoster = _.get(refObject, 'picture', "");
-        let newPoster = _.get(this.state, 'poster', [""])
-        if(newPoster.constructor === Array && newPoster.length > 0) newPoster = newPoster[0];
-
-        if(oldPoster !== newPoster) {
-            const posterPromises = [];
-
-            posterPromises.push(axios.delete(`${hostname}picture`, {
-                ...config,
-                'data': {
-                    'urls': [oldPoster]
-                }
-            }));
-
-            const poster_file = _.get(this.state,'poster_file', []);
-            if(poster_file.length > 0) {
-                const formData = new FormData();
-                formData.append('pictures', poster_file[0]);
-                posterPromises.push(
-                    axios.post(`${hostname}picture?id=${this.props.eventId}&size=small&field=event`, formData, config)
-                );
-            }
-
-            uploadPromises.push(new Promise((good, bad) => {
-                Promise.all(posterPromises).then((datas) => {
-                    this.onChangeValue('uploadProgress.uploadStatus.poster', true);
-                    good(true);
-                }).catch((e) => {
-                    console.log(e);
-                    bad(e);
-                })
-            }))
-        }
-
-        //Admin Process
-        const oldAdmin = _.get(refObject, 'admins', []);
-        const newAdmin = _.get(this.state, 'admins', []);
-
-        if(!oldAdmin.equals(newAdmin)) {
-            const deleteAdmins = oldAdmin.filter(function(x) { return newAdmin.indexOf(x) < 0 });
-            const addAdmins = newAdmin.filter(function(x) { return oldAdmin.indexOf(x) < 0 });
-
-            if(deleteAdmins.length > 0) {
-                let deleteAdminPromises = []
-                deleteAdmins.forEach((item) => {
-                    deleteAdminPromises.push(axios.delete(`${hostname}admin/event/delete?id=${this.props.eventId}`,
-                    {
-                        ...config,
-                        params: {
-                            user: item
-                        }
                     }))
-                })
-                uploadPromises.push(new Promise((good, bad) => {
-                    Promise.all(deleteAdminPromises).then((result) => {
-                        this.onChangeValue('uploadProgress.uploadStatus.admins.delete', true);
-                        good(true);
-                    }).catch((error) => {
-                        console.log(error);
-                        bad(error)
+                } else {
+                    this.onChangeValue('uploadProgress.uploadStatus.admins.delete', true);
+                }
+
+                if(addAdmins.length > 0) {
+
+                    let addAdminPromises = []
+
+                    //REG_ID
+                    addAdmins.forEach((item) => {
+                        addAdminPromises.push(axios.put(`${hostname}admin/event/add?id=${this.props.eventId}`, {
+                            user: item
+                        }, config))
                     })
-                }))
+
+                    uploadPromises.push(new Promise((good, bad) => {
+                        Promise.all(addAdminPromises).then((result) => {
+                            this.onChangeValue('uploadProgress.uploadStatus.admins.add', true);
+                            good(true);
+                        }).catch((error) => {
+                            console.log(error);
+                            bad(error);
+                        })
+                    }))
+                }
             } else {
-                this.onChangeValue('uploadProgress.uploadStatus.admins.delete', true);
+                this.onChangeValue('uploadProgress.uploadStatus.admins.add', true);
             }
 
-            if(addAdmins.length > 0) {
+            /*Fields that need to use external api
+                - poster
+                    - if original file is modified
+                        - if url is not from server, then uploadedObj must have modified picture field
+                        - else need to use api to delete picture
+                    - if this.state.poster_file length is not 0, then need to upload picture to server
+                - picture
+                    - if original file is modified
+                        - if urls is not from server then uploadedObj must have picture_large field
+                        - else need to use api to delete pictures
+                    - if this.state.picture_file length is not 0, then need to upload picture to server
+                - admin
+                    - If original list of admin is modified
+                        - Need to find the deleted admin and use api to remove old admin
+                        - Need tp find the added admin and use api to include new admin
+            */
+            uploadPromises.push(axios.put(`${hostname}event?id=${this.props.eventId}`, uploadedObj, config));
 
-                let addAdminPromises = []
-
-                //REG_ID
-                addAdmins.forEach((item) => {
-                    addAdminPromises.push(axios.put(`${hostname}admin/event/add?id=${this.props.eventId}`, {
-                        user: item
-                    }, config))
-                })
-
-                uploadPromises.push(new Promise((good, bad) => {
-                    Promise.all(addAdminPromises).then((result) => {
-                        this.onChangeValue('uploadProgress.uploadStatus.admins.add', true);
-                        good(true);
-                    }).catch((error) => {
-                        console.log(error);
-                        bad(error);
-                    })
-                }))
-            }
+            Promise.all(uploadPromises).then(() => {
+                alert("Uploaded Completed");
+            }).catch((e) => {
+                console.log(e);
+            })
         } else {
-            this.onChangeValue('uploadProgress.uploadStatus.admins.add', true);
+            Object.keys(mapKeyword).forEach((key) => {
+                compareSetDiff(key, mapKeyword[key], mapConvertFunc[key])
+            })
+            axios.post(`${hostname}event`, {
+                ...uploadedObj,
+                'channel': this.props.channelId
+            }, config).then((data) => {
+                console.log("COMPLETED!!! ", data)
+            }).catch((e) => {
+                console.log(e);
+            })
         }
-
-        /*Fields that need to use external api
-            - poster
-                - if original file is modified
-                    - if url is not from server, then uploadedObj must have modified picture field
-                    - else need to use api to delete picture
-                - if this.state.poster_file length is not 0, then need to upload picture to server
-            - picture
-                - if original file is modified
-                    - if urls is not from server then uploadedObj must have picture_large field
-                    - else need to use api to delete pictures
-                - if this.state.picture_file length is not 0, then need to upload picture to server
-            - admin
-                - If original list of admin is modified
-                    - Need to find the deleted admin and use api to remove old admin
-                    - Need tp find the added admin and use api to include new admin
-        */
-        uploadPromises.push(axios.put(`${hostname}event?id=${this.props.eventId}`, uploadedObj, config));
-
-        Promise.all(uploadPromises).then(() => {
-            alert("Uploaded Completed");
-        }).catch((e) => {
-            console.log(e);
-        })
 
         function compareSetDiff(refName, stateName, convertFunc) {
             if(typeof convertFunc === "function") {
@@ -602,6 +672,8 @@ class EditEvent extends Component {
     onDateUpdate(val, refName) {
         if(refName === "eventDate" || refName === "firstMeetDate" || refName === "recruitmentDate") {
             this.onChangeValue(refName, val);
+        } else if(refName === "joinableDate") {
+            this.onChangeValue(refName, val);
         }
     }
 
@@ -617,7 +689,7 @@ class EditEvent extends Component {
     }
 
     componentDidUpdate() {
-        console.log(this.state)
+        console.log(this.state);
         this.onTextAreaChange();
     }
 
@@ -723,6 +795,16 @@ class EditEvent extends Component {
                                         onUpdate={(val) => this.onDateUpdate.bind(this)(val, "eventDate")}
                                         controlEnable={true}
                                     />
+                                    <DateButton
+                                        initialDates={_.get(this.state, 'joinableDate.Dates', [])}
+                                        isLoad={this.state.isLoad}
+                                        text="DATE JOIN"
+                                        initialMode={2}
+                                        onUpdate={(val) => this.onDateUpdate.bind(this)(val, "joinableDate")}
+                                        controlEnable={false}
+                                        enableTime={false}
+                                    />
+
                                 </div>
                                 <div className="right flex-order-2 flex-half">
                                     <div style={{'height': '100%', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}>
@@ -925,7 +1007,9 @@ class EditEvent extends Component {
                                         isInit={this.state.isLoad}
                                         initialState={!this.state.outsiderAccessible}
                                         classNameOff="Btn Btn-Primary"
-                                        callback={(isActive) => {}} />
+                                        callback={(isActive) => {
+                                            this.onChangeValue('outsiderAccessible', !isActive);
+                                        }} />
                                     <PopupButton
                                         BtnStyle={{'position': 'relative', 'left': '-5px'}}
                                         BtnClass="Btn-Block" text="FACULTY"
@@ -1056,8 +1140,12 @@ class EditEvent extends Component {
 }
 
 EditEvent.defaultProps = {
-    'eventId': "595ef6c7822dbf0014cb821c"
+    'eventId': "",
+    'channelId': "595ef6b8822dbf0014cb821b"
 }
+
+//event 595ef6c7822dbf0014cb821c
+//channel 5946205a4b908f001403aba5
 
 export default autoBind(EditEvent);
 

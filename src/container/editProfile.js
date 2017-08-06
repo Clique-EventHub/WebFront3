@@ -214,7 +214,7 @@ class editProfile extends Component {
                             </div>
                         </section>
                         <p className="hr"></p>
-                        <div className="flex">
+                        <div className="flex flex-sp">
                             <section className="edit-pro-left">
                                 <img src="../../resource/icon/icon3.svg" alt="id"/> <p>{this.state.regId}</p>
                                 <img src="../../resource/icon/icon6.svg" alt="birth"/> <input ref="birth" type="text" placeholder="Birthdate" value={this.state.new_birth_day} onChange={this.onKeyPressed}/>

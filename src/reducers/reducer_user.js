@@ -7,6 +7,16 @@ import { GET_USER_INFO,
     FB_FETCH_USERS_FRIENDS_LIST,
     UPDATE_USER_FRIENDS_INFO } from '../actions/types';
 
+export const inMeta = [
+        "_id",
+        "facebookId",
+        "firstName",
+        "lastName",
+        "picture",
+        "picture_200px",
+        "email"
+    ]
+
 const initalState = {
     'meta': {
         'id': null,
@@ -84,6 +94,13 @@ const initalState = {
 export default ( state = initalState, action ) => {
     switch (action.type) {
         case GET_USER_INFO:
+            const info = {};
+            Object.keys(action.payload).filter(
+                (key) => inMeta.indexOf(key) === -1
+            ).forEach(
+                (key) => info[key] = action.payload[key]
+            );
+
             return ({
                 ...state,
                 'meta': {
@@ -97,15 +114,7 @@ export default ( state = initalState, action ) => {
                 },
                 'info': {
                     ...state.info,
-                    "gender": action.payload.gender,
-                    "phone": action.payload.phone,
-                    "shirt_size": action.payload.shirt_size,
-                    "allergy": action.payload.allergy,
-                    "disease": action.payload.disease,
-                    "regId": action.payload.regId,
-                    "twitterUsername": action.payload.twitterUsername,
-                    "lineId": action.payload.lineId,
-                    "birth_day": action.payload.birth_day
+                    ...info
                 }
             });
         case UPDATE_USER_EVENTS_INFO_JOIN:

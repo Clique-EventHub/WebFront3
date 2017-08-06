@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import './css/eventDetail2.css'
 import * as facultyMap from '../actions/facultyMap';
 import axios from 'axios';
-import { hostname } from '../actions/index';
+import { hostname, urlName } from '../actions/index';
+import { getCookie, getChannel } from '../actions/common';
 import ReactLoading from 'react-loading';
 import { Link } from 'react-router';
 import Image from '../components/Image';
+import autoBind from '../hoc/autoBind';
+import _ from 'lodash';
 
 //https://codepen.io/bh/pen/JBlCc
 let useCls = " toggle-vis";
@@ -28,7 +31,9 @@ const defaultState = {
     'tags': null,
     'forms': null,
     'isLoading': true,
-    'error': null
+    'error': null,
+    'require_field': [],
+    'optional_field': []
 }
 
 function replaceIncorrectLink(str) {
@@ -39,6 +44,50 @@ function replaceIncorrectLink(str) {
         return str;
     }
     return null;
+}
+
+class PopupButton extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isEnable: false
+        }
+        this.toggleState = this.toggleState.bind(this);
+    }
+
+    toggleState() {
+        this.setState({
+            ...this.state,
+            isEnable: !this.state.isEnable
+        })
+    }
+
+    render() {
+        const style = {
+            ...this.props.OuterStyle,
+            'position': 'absolute',
+            'zIndex': '500'
+        }
+        if(this.props.isRight) style['right'] = '0px';
+        const PopUp = (this.state.isEnable) ? (
+            <div style={style} className={this.props.OuterClass ? this.props.OuterClass : ''}>
+                {this.props.obj}
+            </div>
+        ) : null;
+
+        return (
+            <div style={{
+                    ...this.props.overrideOutermostStyle,
+                    'position': 'relative'
+                }}>
+                <div
+                    className={`${this.props.BtnClass ? this.props.BtnClass : ''}`}
+                    style={{...this.props.BtnStyle}}
+                    onClick={this.toggleState} />
+                {PopUp}
+            </div>
+        );
+    }
 }
 
 class eventDetailFix extends Component {
@@ -98,15 +147,14 @@ class eventDetailFix extends Component {
                 ...data.data,
                 isLoading: false
             }
-            console.log(data.data);
             this.setState(rObj);
             this.onResetPopup();
             return data.data;
         }).then((event) => {
-            axios.get(`${hostname}channel?id=${event.channel}&stat=false`, { headers: { 'crossDomain': true }}).then((res) => {
+            getChannel(event.channel, false).then((res) => {
                 this.setState({
                     ...this.state,
-                    'channel': res.data
+                    'channel': res
                 });
                 this.onResetPopup();
             })
@@ -133,6 +181,61 @@ class eventDetailFix extends Component {
             this.refs[refName].className += useCls;
         }
     }
+
+    onClickJoin() {
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie("fb_sever_token"))
+            }
+        }
+
+        new Promise((gg) => {
+            let fields = {
+                'require_field': {},
+                'optional_field': {}
+            };
+
+            const metaKeys = [
+                "email",
+                "facebookId",
+                "firstName",
+                "id",
+                "lastName",
+                "picture",
+                "picture_200px"
+            ]
+
+            this.state.require_field.forEach((key) => {
+                if(metaKeys.indexOf(key) !== -1) {
+                    fields["require_field"][key] = _.get(this.props.user, `meta[${key}]`, '')
+                } else {
+                    fields["require_field"][key] = _.get(this.props.user, `info[${key}]`, '')
+                }
+            })
+
+            this.state.optional_field.forEach((key) => {
+                if(metaKeys.indexOf(key) !== -1) {
+                    fields["require_field"][key] = _.get(this.props.user, `meta[${key}]`, '')
+                } else {
+                    fields["require_field"][key] = _.get(this.props.user, `info[${key}]`, '')
+                }
+            })
+
+            axios.put(`${hostname}user/join?id=${this.props.eventId}`, fields, config).then((data) => {
+                gg(data);
+            }).catch((e) => {
+                gg(e);
+            })
+        }).then((whatever) => {
+            console.log(whatever);
+            // this.props.context.router.push(`/form?id=${'596c561c15cd7b3235449c42'}`);
+        })
+
+    }
+
+    // componentDidUpdate() {
+    //     console.log(this.state);
+    // }
 
     render() {
 
@@ -185,7 +288,11 @@ class eventDetailFix extends Component {
                                 <div className={`warning-pop-up basic-card-no-glow ${useCls}`} data-role="share-popup" ref="share-popup">
                                     <div className="btn-c btn-facebook" />
                                     <div className="btn-c btn-twitter" />
-                                    <div className="btn-c btn-share" />
+                                    <PopupButton overrideOutermostStyle={{
+                                            'maxWidth': 'calc(2.2em + 10px)'
+                                        }} BtnClass='btn-c btn-share' obj={
+                                            <input value={`${urlName}?eid=${this.props.eventId}`} className="mar-20 bottom-outline-1 border-focus-blue border-transition" style={{'fontSize': '1.2em', 'maxWidth': '100px'}} />
+                                        } OuterClass={'basic-card-no-glow'} />
                                     <div className="btn-invite shade-blue" onClick={() => {this.onBtnClick("invite-popup")}}>INVITE</div>
                                 </div>
                                 <div className={`warning-pop-up basic-card-no-glow ${useCls}`} data-role="invite-popup" ref="invite-popup">
@@ -226,24 +333,14 @@ class eventDetailFix extends Component {
                                             <div className="item"><span className="icon fa fa-user" />Nickname</div>
                                             <div className="item"><span className="icon"><strong>ID</strong></span>Student ID</div>
                                             <div className="item"><span className="icon t-shirt" />T-Shirt Size</div>
-                                            <div className="item"><span className="icon fa fa-user" />Name - Surname</div>
-                                            <div className="item"><span className="icon fa fa-user" />Nickname</div>
-                                            <div className="item"><span className="icon"><strong>ID</strong></span>Student ID</div>
-                                            <div className="item"><span className="icon t-shirt" />T-Shirt Size</div>
-                                            <div className="item"><span className="icon fa fa-user" />Name - Surname</div>
-                                            <div className="item"><span className="icon fa fa-user" />Nickname</div>
-                                            <div className="item"><span className="icon"><strong>ID</strong></span>Student ID</div>
-                                            <div className="item"><span className="icon t-shirt" />T-Shirt Size</div>
                                         </div>
                                     </div>
                                     <div className="Bottom">
                                         <div className="btn-round shade-red">
                                             DISAPPROVE
                                         </div>
-                                        <div className="btn-round shade-green">
-                                            <Link to={`/form?id=${'5953991b46643c4fda2f4679'}`}>
-                                                APPROVE
-                                            </Link>
+                                        <div className="btn-round shade-green" onClick={this.onClickJoin.bind(this)}>
+                                            APPROVE
                                         </div>
                                     </div>
                                 </div>
@@ -367,4 +464,4 @@ eventDetailFix.defaultProps = {
     'eventId': '595ef6c7822dbf0014cb821c'
 }
 
-export default eventDetailFix;
+export default autoBind(eventDetailFix);

@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { hostname } from './index';
+import { myStore } from '../index';
+import * as actions from './index'
 
 export function clone(obj) {
     if (null === obj || "object" !== typeof obj) return obj;
@@ -134,4 +136,41 @@ export function objModStr(obj,is, value) {
         return obj;
     else
         return objModStr(obj[is[0]],is.slice(1), value);
+}
+
+export function getEvent(id, stat) {
+    const eventMap =  myStore.getState().map.events;
+    const useStat = stat ? stat : false;
+    return new Promise((resolve, reject) => {
+        if(typeof eventMap[id] === "undefined") {
+            if(actions.checkEvent(id)) {
+                axios.get(`${hostname}event?id=${id}&stat=${useStat}`, {
+                    crossDomain: true
+                }).then(
+                    (data) => resolve(data.data)
+                ).catch((e) => reject(e))
+            } else {
+                setTimeout(() => {
+                    resolve(myStore.getState().map.events[id]);
+                }, 200);
+            }
+        } else {
+            resolve(eventMap[id])
+        }
+    })
+}
+
+export function getChannel(id, stat) {
+    const channelMap = myStore.getState().map.channels;
+    const useStat = stat ? stat : false;
+    return new Promise((resolve, reject) => {
+        if(typeof channelMap[id] === "undefined") {
+            actions.checkChannel(id);
+            axios.get(`${hostname}channel?id=${id}&stat=${useStat}`).then(
+                (data) => resolve(data.data)
+            ).catch((e) => reject(e))
+        } else {
+            resolve(channelMap[id])
+        }
+    })
 }

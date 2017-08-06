@@ -6,7 +6,10 @@ import pages from '../hoc/pages';
 import normalPage from '../hoc/normPage';
 import axios from 'axios';
 import { getCookie } from '../actions/common';
+import { hostname } from '../actions/index';
 import './css/channelPage.css';
+
+import ChannelDetail from '../container/channelDetail';
 
 class channelPage extends Component {
 
@@ -15,7 +18,6 @@ class channelPage extends Component {
         let _this = this;
 
         this.state = {
-            'channel_id': "5946205a4b908f001403aba5",
             'isLoading': true,
             'isFollow': false,
         }
@@ -33,15 +35,16 @@ class channelPage extends Component {
                 }
             }
 
-            axios.put('http://139.59.97.65:1111/user/subscribe?id=' + _this.state.channel_id, config).then((response) => {
+            const channel_id = this.props.params.id;
+
+            axios.put(`${hostname}user/subscribe?id=${channel_id}`, config).then((response) => {
                 console.log("followed!!!");
                 this.setState({
                     ...this.state,
                     'isFollow': true
                 });
             }, (error) => {
-                console.log("follow error");
-                console.log(error.msg);
+                console.log("follow error", error);
             });
         }
 
@@ -65,9 +68,9 @@ class channelPage extends Component {
             }
         }
 
-        axios.get('http://139.59.97.65:1111/channel?id=' + _this.state.channel_id).then((data) => {
-            console.log("get!!!");
-            console.log(JSON.stringify(data.data.name));
+        const channel_id = this.props.params.id;
+
+        axios.get(`${hostname}channel?id=${channel_id}`).then((data) => {
             _this.setState({
                 'name': data.data.name,
                 'picture': data.data.picture,
@@ -75,10 +78,10 @@ class channelPage extends Component {
                 'events': data.data.events,
             })
         }, (error) => {
-            console.log("get channel error");
+            console.log("get channel error", error);
         });
 
-        axios.get('http://139.59.97.65:1111/user/subscribe', config).then((data) => {
+        axios.get(`${hostname}user/subscribe`, config).then((data) => {
             console.log("get subscribe!!!");
 
             if(data.data.hasOwnProperty(_this.state.name)){
@@ -97,11 +100,6 @@ class channelPage extends Component {
 
     render() {
 
-        let posterTest = [];
-        for(var i = 1; i < 32; i++) {
-            posterTest.push(`../../resource/images/poster_dummy/${i}.jpg`);
-        }
-
         return (
             <section className="channel-main">
                 <button onClick={() => {this.onItemPopUpClick(<EditEvent key="test"/>)}}>Create Event</button>
@@ -112,7 +110,9 @@ class channelPage extends Component {
                     </div>
                     <img src={this.state.cover_picture} alt="cn-cover-pic"/>
                     <img src={this.state.picture} alt="cn-profile-pic"/>
-                    <div className="cn-detail">
+                    <div className="cn-detail" onClick={() => {
+                            this.onItemPopUpClick(<ChannelDetail onToggle={this.props.toggle_pop_item} />)
+                        }}>
                         <button>MORE DETAIL</button>
                     </div>
                     <div className="cn-name">
@@ -124,22 +124,22 @@ class channelPage extends Component {
                     <section className="cn-top-event">
                         <h1>TOP Event</h1>
                         <p className="hr"></p>
-                        <EventItem posterSrc={posterTest[0]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                        <EventItem posterSrc={posterTest[1]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                     </section>
                     <section className="cn-all-event">
                         <h1>Event of this channel</h1>
                         <p className="hr"></p>
-                        <EventItem posterSrc={posterTest[2]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                        <EventItem posterSrc={posterTest[3]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                        <EventItem posterSrc={posterTest[4]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                     </section>
                     <section className="cn-completed-event">
                         <h1>Completed Event</h1>
                         <p className="hr"></p>
-                        <EventItem posterSrc={posterTest[5]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                        <EventItem posterSrc={posterTest[6]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
-                        <EventItem posterSrc={posterTest[7]} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                     </section>
                 </section>
             </section>

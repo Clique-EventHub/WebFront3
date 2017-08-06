@@ -54,8 +54,6 @@ class profilePopup extends Component {
             let _this = this;
 
             axios.get(`${hostname}user`, config).then((data) => {
-                console.log("get!!!");
-                console.log(JSON.stringify(data.data.firstName));
                 _this.setState({
                     ..._this.state,
                     'firstName': data.data.firstName,
@@ -67,12 +65,11 @@ class profilePopup extends Component {
                     'n_noti': data.data.notification.length,
                     'isLoading': false
                 })
-                console.log("number of event : " + data.data.join_events.length);
                 _this.getEvent(0);
                 _this.getEvent(1);
                 _this.getEvent(2);
             }, (error) => {
-                console.log("get user error");
+                console.log(error);
             });
         }
     }
@@ -80,26 +77,31 @@ class profilePopup extends Component {
     getEvent(i) {
         let _this = this;
 
-        console.log("get event : " + this.state.join_events[i]);
         if(this.state.join_events.length >= i+1){
             axios.get(`${hostname}event?id=${this.state.join_events[i]}`).then((data) => {
                 if(i === 0){
-                    _this.setState({
-                        ..._this.state,
-                        'event1_title': data.data.title,
-                        'event1_date_start': data.data.date_start,
+                    _this.setState((prevState) => {
+                        return {
+                            ...prevState,
+                            'event1_title': data.data.title,
+                            'event1_date_start': data.data.date_start,
+                        }
                     })
                 } else if (i === 1) {
-                    _this.setState({
-                        ..._this.state,
-                        'event2_title': data.data.title,
-                        'event2_date_start': data.data.date_start,
+                    _this.setState((prevState) => {
+                        return {
+                            ...prevState,
+                            'event2_title': data.data.title,
+                            'event2_date_start': data.data.date_start,
+                        }
                     })
                 } else if (i === 2) {
-                    _this.setState({
-                        ..._this.state,
-                        'event3_title': data.data.title,
-                        'event3_date_start': data.data.date_start,
+                    _this.setState((prevState) => {
+                        return {
+                            ...prevState,
+                            'event3_title': data.data.title,
+                            'event3_date_start': data.data.date_start,
+                        }
                     })
                 }
 
@@ -138,7 +140,6 @@ class profilePopup extends Component {
                         'n_noti': data.data.notification.length,
                         'isLoading': false
                     })
-                    console.log("number of event : " + data.data.join_events.length);
                     _this.getEvent(0);
                     _this.getEvent(1);
                     _this.getEvent(2);

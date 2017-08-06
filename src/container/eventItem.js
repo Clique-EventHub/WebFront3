@@ -4,19 +4,18 @@ import React, { Component } from 'react';
 import EventDetail from './eventDetail';
 import EventDetailFix from './eventDetail2';
 import _ from 'lodash';
-import { getRandomShade } from '../actions/common';
-import axios from 'axios';
+import { getRandomShade, getEvent } from '../actions/common';
 import { hostname } from '../actions/index';
 
 const defaultState = {
-    'title': 'Hello',
-    'poster': "https://about.canva.com/wp-content/uploads/sites/3/2015/01/concert_poster.png",
+    'title': 'No Info',
+    'poster': '',
     'isJoined': false,
-    'channel_name': 'Creator Name',
+    'channel_name': 'No Info',
     'date_time': [],
-    'location': 'Chulachakrabong Bld.',
+    'location': 'No Info',
     'about': `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum eros purus, eu suscipit lorem eleifend eget. Pellentesque a finibus felis. Pellentesque quis neque ut dui finibus iaculis. Fusce ac placerat`,
-    'stats': '360 peoples join this',
+    'stats': 'No Info',
     'isLoad': false
 }
 
@@ -125,29 +124,50 @@ class eventItem extends Component {
         }
         tmp.isJoined = (typeof(this.props.isJoined) === "boolean") ? this.props.isJoined : (typeof(this.props.isJoined) === "string") ? (this.props.isJoined === "true") : false;
         this.state = tmp;
+
+        if(typeof(this.props.eventId) === "string" && !this.state.isLoad) {
+            setTimeout(() => {
+                this.onLoadData(this.props.eventId);
+            }, 0);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        if(typeof(nextProps.eventId) === "string" || !this.state.isLoad) {
+        if(typeof(nextProps.eventId) === "string" && !this.state.isLoad) {
             this.onLoadData(nextProps.eventId);
         }
     }
 
     onLoadData(id) {
-        axios.get(`${hostname}event?id=${id}&stat=false`, { headers: { 'crossDomain': true }}).then((res) => {
-            this.setState({
-                ...this.state,
-                'title': res.data.title,
-                'poster': res.data.picture,
-                'channel_name': res.data.channel_name,
-                'location': res.data.location,
-                'about': res.data.about[0],
-                'isLoad': true,
-                'date_time': res.data.time_each_day
-            });
+        getEvent(id, false).then((res) => {
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    title: _.get(res, 'title', defaultState.title),
+                    poster: _.get(res, 'picture', defaultState.poster),
+                    channel_name: _.get(res, 'channel_name', defaultState.channel_name),
+                    location: _.get(res, 'location', defaultState.location),
+                    about: _.get(res, 'about[0]', defaultState.about),
+                    isLoad: true,
+                    date_time: _.get(res, 'time_each_day', [])
+                })
+            })
         }).catch((e) => {
             console.log(e);
         })
+
+        // this.setState((prevState) => {
+        //     return ({
+        //         ...prevState,
+        //         title: '',
+        //         poster: '',
+        //         channel_name: '',
+        //         location: '',
+        //         about: '',
+        //         isLoad: true,
+        //         date_time: []
+        //     })
+        // })
     }
 
     onButtonClick() {

@@ -3,11 +3,13 @@ import * as types from './types';
 import axios from 'axios';
 import { setCookie, getCookie, clearAllCookie } from './common';
 import * as facultyMap from './facultyMap';
+import _ from 'lodash';
 
 //myStore.getState()
 
 // const hostname = "https://api.cueventhub.com/";
 export const hostname = "https://api.cueventhub.com/";
+export const urlName = "http://localhost:3000/#/";
 const expireDefaultInterval = 1000*60*60*3;
 
 export const requestActionList = [
@@ -256,6 +258,23 @@ function init_user_info(dispatch) {
             payload: data.data
         })
     });
+
+    Promise.all([
+        requestWithAuthorization(`${hostname}user/show-admin-channels`, {
+            'method': 'get'
+        }),
+        requestWithAuthorization(`${hostname}user/show-admin-events`, {
+            'method': 'get'
+        })
+    ]).then((results) => {
+        dispatch({
+            type: types.UPDATE_USER_ADMIN_INFO,
+            payload: {
+                channel: results[0].data.channels,
+                event: results[1].data.event_info
+            }
+        })
+    })
     updateActivities(dispatch);
 }
 
@@ -516,103 +535,148 @@ export function fbGetSeverToken(dispatch) {
 
 //
 
-export function getEvent(id) {
-    const rObj = request(`${hostname}event?id=${id}`, "get", types.GET_EVENT);
-    return rObj.action;
+let alreadyCalled = {
+    events: {},
+    channels: {}
 }
 
-export function searchEvent(keyword) {
-    const rObj = request(`${hostname}event/search?keyword=${keyword}`, "get", types.SEARCH_EVENT_KEYWORD);
-    return rObj.action;
-}
-
-export function searchChannel(keyword) {
-    const rObj = request(`${hostname}listAll`, "get", types.SEARCH_CHANNEL_KEYWORD);
-    return rObj.action;
-}
-
-export function searchEventTag(tags) {
-    //tags is array of string tag
-    let searchWord = "";
-    tags.map((tag, index) => {
-        if(index !== tags.length-1) searchWord += tag + ",";
-        else searchWord += tag;
-        return null;
-    });
-    const rObj = request(`${hostname}tags/search?keywords=${searchWord}`, "get", types.SEARCH_EVENT_TAG);
-    return rObj.action;
-}
-
-export function searchByDate(startDate, endDate) {
-    const rObj = request(`${hostname}event/searchbydate?date_start=${startDate}&date_end=${endDate}`, "get", types.SEARCH_BY_DATE);
-    return rObj.action;
-}
-
-export function getNewEvent(top) {
-    let rObj = null;
-    if(top !== null && top >= 1) {
-        rObj = request(`${hostname}event/new?top=${top}`, "get", types.FETCH_NEW_EVENT);
-    }
-    else {
-        rObj = request(`${hostname}event/new`, "get", types.FETCH_NEW_EVENT);
-    }
-    return rObj.action;
-}
-
-export function getAllEvent() {
-    const rObj = request(`${hostname}listAll`, "get", types.FETCH_ALL_EVENTS);
-    return rObj.action;
-}
-
-export function getAllChannel() {
-    const rObj = request(`${hostname}channel/listAll`, "get", types.FETCH_ALL_CHANNELS);
-    return rObj.action;
-}
-
-export function getChannel(id) {
-    axios.get(`${hostname}channel?id=${id}`,{headers: {'crossDomain': true}}).then((channel) => {
-        var eventsPromiseAsync = [];
-
-        channel.data.events.map((event_id) => {
-            var tmp = new Promise((resolve, reject) => {
-                axios.get(`${hostname}event?id=${event_id}`,{headers: {'crossDomain': true}}).then((data) => {
-
-                    myStore.dispatch({
-                        type: `${types.SET_EVENTS_IN_CHANNEL}_FULFILLED`,
-                        payload: data
-                    });
-
-                    resolve(data);
-                }, (error) => {
-                    myStore.dispatch({
-                        type: `${types.SET_EVENTS_IN_CHANNEL}_REJECTED`,
-                        payload: error
-                    });
-                    reject(error);
-                });
-            });
-
-            eventsPromiseAsync.push(tmp);
-            return null;
-
-        });
-
-        myStore.dispatch({
-            type: `${types.GET_CHANNEL}_FULFILLED`,
-            payload: channel
-        });
-
-        return channel;
-    }).catch((error) => {
-        myStore.dispatch({
-            type: `${types.GET_CHANNEL}_REJECTED`,
-            payload: error
+export function checkEvent(id) {
+    const map = myStore.getState().map;
+    if(_.get(alreadyCalled.events, `${id}`, false)) return false;
+    if(typeof map.events[id] === "undefined") {
+        alreadyCalled.events[id] = true;
+        axios.get(`${hostname}event?id=${id}&stat=false`).then(
+            (data) => data.data
+        ).then((data) => {
+            if(typeof myStore.getState().map.events[id] === "undefined") {
+                myStore.dispatch({
+                    type: types.UPDATE_EVENT_MAP,
+                    payload: data
+                })
+            }
         })
-    });
-
-    return {
-        type: `${types.GET_CHANNEL}_PENDING`
-    };
+    }
+    return true;
 }
+
+export function checkChannel(id) {
+    const map = myStore.getState().map;
+    if(_.get(alreadyCalled.channels, `${id}`, false)) return false;
+    if(typeof map.channels[id] === "undefined") {
+        alreadyCalled.channels[id] = true;
+        axios.get(`${hostname}channel?id=${id}&stat=false`).then(
+            (data) => data.data
+        ).then((data) => {
+            if(typeof myStore.getState().map.channels[id] === "undefined") {
+                myStore.dispatch({
+                    type: types.UPDATE_CHANNEL_MAP,
+                    payload: data
+                })
+            }
+        })
+    }
+    return true;
+}
+
+//
+
+// export function getEvent(id) {
+//     const rObj = request(`${hostname}event?id=${id}`, "get", types.GET_EVENT);
+//     return rObj.action;
+// }
+//
+// export function searchEvent(keyword) {
+//     const rObj = request(`${hostname}event/search?keyword=${keyword}`, "get", types.SEARCH_EVENT_KEYWORD);
+//     return rObj.action;
+// }
+//
+// export function searchChannel(keyword) {
+//     const rObj = request(`${hostname}listAll`, "get", types.SEARCH_CHANNEL_KEYWORD);
+//     return rObj.action;
+// }
+//
+// export function searchEventTag(tags) {
+//     //tags is array of string tag
+//     let searchWord = "";
+//     tags.map((tag, index) => {
+//         if(index !== tags.length-1) searchWord += tag + ",";
+//         else searchWord += tag;
+//         return null;
+//     });
+//     const rObj = request(`${hostname}tags/search?keywords=${searchWord}`, "get", types.SEARCH_EVENT_TAG);
+//     return rObj.action;
+// }
+//
+// export function searchByDate(startDate, endDate) {
+//     const rObj = request(`${hostname}event/searchbydate?date_start=${startDate}&date_end=${endDate}`, "get", types.SEARCH_BY_DATE);
+//     return rObj.action;
+// }
+//
+// export function getNewEvent(top) {
+//     let rObj = null;
+//     if(top !== null && top >= 1) {
+//         rObj = request(`${hostname}event/new?top=${top}`, "get", types.FETCH_NEW_EVENT);
+//     }
+//     else {
+//         rObj = request(`${hostname}event/new`, "get", types.FETCH_NEW_EVENT);
+//     }
+//     return rObj.action;
+// }
+//
+// export function getAllEvent() {
+//     const rObj = request(`${hostname}listAll`, "get", types.FETCH_ALL_EVENTS);
+//     return rObj.action;
+// }
+//
+// export function getAllChannel() {
+//     const rObj = request(`${hostname}channel/listAll`, "get", types.FETCH_ALL_CHANNELS);
+//     return rObj.action;
+// }
+//
+// export function getChannel(id) {
+//     axios.get(`${hostname}channel?id=${id}`,{headers: {'crossDomain': true}}).then((channel) => {
+//         var eventsPromiseAsync = [];
+//
+//         channel.data.events.map((event_id) => {
+//             var tmp = new Promise((resolve, reject) => {
+//                 axios.get(`${hostname}event?id=${event_id}`,{headers: {'crossDomain': true}}).then((data) => {
+//
+//                     myStore.dispatch({
+//                         type: `${types.SET_EVENTS_IN_CHANNEL}_FULFILLED`,
+//                         payload: data
+//                     });
+//
+//                     resolve(data);
+//                 }, (error) => {
+//                     myStore.dispatch({
+//                         type: `${types.SET_EVENTS_IN_CHANNEL}_REJECTED`,
+//                         payload: error
+//                     });
+//                     reject(error);
+//                 });
+//             });
+//
+//             eventsPromiseAsync.push(tmp);
+//             return null;
+//
+//         });
+//
+//         myStore.dispatch({
+//             type: `${types.GET_CHANNEL}_FULFILLED`,
+//             payload: channel
+//         });
+//
+//         return channel;
+//     }).catch((error) => {
+//         myStore.dispatch({
+//             type: `${types.GET_CHANNEL}_REJECTED`,
+//             payload: error
+//         })
+//     });
+//
+//     return {
+//         type: `${types.GET_CHANNEL}_PENDING`
+//     };
+// }
 
 //
