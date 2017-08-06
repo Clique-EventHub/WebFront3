@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
-import autoBind from '../hoc/autoBind';
-import EventItem from '../container/eventItem';
-import './css/channelInfostyle.css';
 import './css/channelDetail.css';
-import './css/eventDetail2.css'
 import axios from 'axios';
-import { getCookie } from '../actions/common';
-import * as facultyMap from '../actions/facultyMap';
 import { hostname } from '../actions/index';
 import ReactLoading from 'react-loading';
 
-
-class channelInfo extends Component {
+class channelDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -20,14 +13,13 @@ class channelInfo extends Component {
         // about, video, location, date_start, date_end, picture, picture_large, year_require, faculty_require, tags, agreement, contact_information,
         // joinable_start_time, joinable_end_time, joinable_amount, time_start, time_end, optional_field, require_field, show, outsider_accessible
 
-
         this.state = {
             'name': "",
             'picture': "",
             'detail': "",
             'picture_large': []
         }
-        axios.get(`${hostname}channel?id=${"5953e2f4dd3c09001422e9ed"}`).then((data) => {
+        axios.get(`${hostname}channel?id=${"595e87682ff0cf001402ab9c"}`).then((data) => {
             console.log("get!!!dd");
             console.log(JSON.stringify(data.data.name))
             this.setState({
@@ -46,10 +38,10 @@ class channelInfo extends Component {
     }
 
     render () {
-console.log(this.state.picture_large);
+        console.log(this.state.picture_large);
         return (
-            <div>
-                <article className="edit-event basic-card-no-glow modal-main">
+            <div className="modal-container">
+                <article className="edit-event basic-card-no-glow modal-main card-width">
                     <button className="card-exit invisible square-round" role="event-exit" onClick={this.onExit.bind(this)}>
                         <img src="../../resource/images/X.svg" />
                     </button>
@@ -61,10 +53,8 @@ console.log(this.state.picture_large);
                     <p className="l1"></p>
 
                     <div className="event-bio">
-
                         <h3 className="display-none">Bio</h3>
-                        <p>     {this.state.detail}
-                        </p>
+                        <p>{this.state.detail}</p>
                     </div>
                 <div className="marginleft">
                     <div className="chan-img-slide">
@@ -93,4 +83,4 @@ console.log(this.state.picture_large);
     }
 }
 
-export default autoBind(channelInfo);
+export default channelDetail;
