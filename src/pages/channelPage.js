@@ -10,6 +10,7 @@ import { hostname } from '../actions/index';
 import './css/channelPage.css';
 
 import ChannelDetail from '../container/channelDetail';
+import ChannelInfo from '../container/channelInfo';
 
 class channelPage extends Component {
 
@@ -99,7 +100,7 @@ class channelPage extends Component {
     }
 
     render() {
-
+        //<ChannelDetail onToggle={this.props.toggle_pop_item} />
         return (
             <section className="channel-main">
                 <button onClick={() => {this.onItemPopUpClick(<EditEvent key="test"/>)}}>Create Event</button>
@@ -111,7 +112,7 @@ class channelPage extends Component {
                     <img src={this.state.cover_picture} alt="cn-cover-pic"/>
                     <img src={this.state.picture} alt="cn-profile-pic"/>
                     <div className="cn-detail" onClick={() => {
-                            this.onItemPopUpClick(<ChannelDetail onToggle={this.props.toggle_pop_item} />)
+                            this.onItemPopUpClick(<ChannelInfo onToggle={this.props.toggle_pop_item} />)
                         }}>
                         <button>MORE DETAIL</button>
                     </div>

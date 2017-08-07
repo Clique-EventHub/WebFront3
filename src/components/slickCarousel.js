@@ -79,12 +79,10 @@ class slickCarousel extends Component {
 
 slickCarousel.defaultProps = {
     posters: [
-        `../../resource/images/poster_dummy/3.jpg`,
-        `../../resource/images/poster_dummy/13.jpg`,
-        `../../resource/images/poster_dummy/25.jpg`,
-        `../../resource/images/poster_dummy/22.jpg`,
-        `../../resource/images/poster_dummy/26.jpg`,
-        `../../resource/images/poster_dummy/9.jpg`
+        ``,
+        ``,
+        ``,
+        ``,
     ]
 }
 

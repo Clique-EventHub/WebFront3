@@ -17,7 +17,7 @@ import thunk from 'redux-thunk';
 
 import rootReducer from './reducers/index';
 
-export const DEBUG = false;
+export const DEBUG = true;
 let middlewares = [DEBUG && logger, thunk].filter(Boolean);
 
 //Currently there is a problem with redux-promise

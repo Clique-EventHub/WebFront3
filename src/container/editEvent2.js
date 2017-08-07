@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import autoBind from '../hoc/autoBind';
 import EventItem from '../container/eventItem';
-import './css/editEvent2.css';
+// import './css/editEvent2.css';
 import axios from 'axios';
 import { getCookie, objModStr } from '../actions/common';
 import CustomRadio from '../components/CustomRadio';
@@ -12,7 +12,7 @@ import { hostname } from '../actions/index';
 import series from '../functions/PromiseSeries';
 import PictureUpload from '../components/PictureUpload';
 
-import Btn from './EditEvent2/Btn';
+import Btn from '../components/Btn';
 import AddAdmin from './EditEvent2/AddAdmin';
 import AddList from './EditEvent2/AddList';
 
@@ -928,4 +928,4 @@ class EditEvent extends Component {
     }
 }
 
-export default autoBind(EditEvent);
+// export default autoBind(EditEvent);

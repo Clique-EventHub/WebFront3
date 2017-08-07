@@ -1,26 +1,49 @@
-h2.chan-name {
+.channel-detail {
+    font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+}
+
+.channel-detail h2.chan-name {
   height: auto;
   width: auto;
   font-family: inherit;
   word-wrap: break-word;
   display: inline;
-  position: absolute;
+
   top: 4.3vw;
   left: 15.4vw;
   font-size: 30px;
   color: black;
   text-transform: uppercase;
   font-weight: bold;
+  margin: 0px;
 }
 
-div .chan-img-slide {
+.channel-detail p {
+    margin-left: 0px !important;
+}
+
+.channel-detail div.side-style {
+    display: inline-flex;
+    /*align-items: center;*/
+    justify-content: center;
+    flex-direction: column;
+}
+
+.channel-detail div.side-style > *:first-child {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.channel-detail div.chan-img-slide {
   overflow-x: scroll;
   overflow-y: hidden;
   height: 430px;
   white-space: nowrap;
 }
 
-div .chan-img-slide img {
+.channel-detail div.chan-img-slide img,
+.channel-detail div.chan-img-slide div.img-fallback {
   height: 400px;
   display: inline-block;
   margin-left: 10px;
@@ -29,7 +52,11 @@ div .chan-img-slide img {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
-.box {
+.channel-detail div.chan-img-slide div.img-fallback {
+    width: 300px;
+}
+
+.channel-detail .box {
   border: 1px solid #878787;
   border-radius: 5px;
   box-sizing: border-box;
@@ -40,10 +67,10 @@ div .chan-img-slide img {
 
 }
 
-button.bt-fol {
+.channel-detail button.bt-fol {
   position: relative;
   top: -3.5vw;
-  left: 2.4vw;
+  /*left: 2.4vw;*/
   border: 1.8px solid;
   border-radius: 20px;
   width: 90px;
@@ -52,4 +79,54 @@ button.bt-fol {
   border-color: #AAAAAA;
   color: #888888;
   background-color: #FFFFFF;
+}
+
+.channel-detail .modal-container2 {
+  position: fixed;
+  overflow: scroll;
+  top: 65px;
+  width: 100vw;
+  height: calc(100vh - 65px);
+}
+
+.channel-detail .chan-img {
+  height: 135px;
+  width: 135px;
+  min-width: 135px;
+  max-width: 135px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0px;
+  margin-right: 20px;
+  padding: 0px;
+  border: 1px solid white;
+}
+
+.channel-detail .changeprofile {
+    /*display: inline-block;*/
+    border-radius: 100%;
+    padding: 0px;
+    margin: 15px 0px 15px 15px;
+}
+
+.channel-detail .changeprofile:hover .chan-img {
+    border: 1px solid lightgrey;
+}
+
+.channel-detail footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.channel-detail .changeprofile [type=file] {
+    cursor: inherit;
+    display: none;
+    filter: alpha(opacity=0);
+    height: 0px;
+    width: 0px;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    top: 0;
 }

@@ -5,7 +5,7 @@ import EventItem from '../container/eventItem';
 import './css/editEvent.css';
 
 import AddList from './EditEvent2/AddList';
-import Btn from './EditEvent2/Btn';
+import Btn from '../components/Btn';
 import DateAndTime from './EditEvent2/DateAndTime';
 import CustomRadio from '../components/CustomRadio';
 import PictureUpload from '../components/PictureUpload';
@@ -97,8 +97,8 @@ class EditEvent extends Component {
                 'url': []
             },
             'tagsState': {
-                'top': [TAG_1.map(() => false)],
-                'bottom': [TAG_2.map(() => false)]
+                'top': TAG_1.map(() => false),
+                'bottom': TAG_2.map(() => false)
             },
             'fieldsState': fieldState,
             'enableQuestion': false,
@@ -141,6 +141,7 @@ class EditEvent extends Component {
         this.resizeTextArea = this.resizeTextArea.bind(this);
         this.onTextAreaChange = this.onTextAreaChange.bind(this);
         this.onChangeValue = this.onChangeValue.bind(this);
+        this.onChangeArrayValue = this.onChangeArrayValue.bind(this);
     }
 
     componentWillMount() {
@@ -688,12 +689,27 @@ class EditEvent extends Component {
         })
     }
 
+    onChangeArrayValue(pathToArray, index, value) {
+        this.setState((prevState) => {
+            let new_state = {...prevState};
+            let new_array = _.get(new_state, pathToArray, []);
+
+            if(index < new_array.length && index >= 0) new_array[index] = value;
+            else if(index >= new_array.length) new_array.push(value);
+
+            objModStr(new_state, pathToArray, new_array);
+            return new_state;
+        })
+    }
+    //"a[1].b[2].c[3].d[4]".split(/\[[0-9]+]\.*/g).filter((item) => item.length !== 0)
+
     componentDidUpdate() {
-        console.log(this.state);
+        // console.log(this.state);
         this.onTextAreaChange();
     }
 
     render () {
+        console.log(this.state);
         const TAG_TOP = TAG_1.map((key, index) => {
             return (
                 <Btn
@@ -703,7 +719,7 @@ class EditEvent extends Component {
                     initialState={_.get(this.state, `tagsState.top[${index}]`, false)}
                     classNameOn={`Btn tag Btn-active tag${(key.length === 0) ? ' empty' : ''}${(key.length > 7) ? ' long' : ''} `}
                     classNameOff={`Btn tag ${(key.length === 0) ? ' empty' : ''}${(key.length > 7) ? ' long' : ''}`}
-                    callback={(isActive) => {}}
+                    callback={(isActive) => {this.onChangeArrayValue('tagsState.top', index, isActive);}}
                 />);
         });
         const TAG_BOTTOM = TAG_2.map((key, index) => {
@@ -715,7 +731,7 @@ class EditEvent extends Component {
                     initialState={_.get(this.state, `tagsState.bottom[${index}]`, false)}
                     classNameOn={`Btn tag Btn-active tag${(key.length === 0) ? ' empty' : ''}${(key.length > 7) ? ' long' : ''} `}
                     classNameOff={`Btn tag ${(key.length === 0) ? ' empty' : ''}${(key.length > 7) ? ' long' : ''}`}
-                    callback={(isActive) => {}}
+                    callback={(isActive) => {this.onChangeArrayValue('tagsState.bottom', index, isActive);}}
                 />);
         });
 

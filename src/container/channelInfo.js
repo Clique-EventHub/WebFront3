@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import autoBind from '../hoc/autoBind';
-import EventItem from '../container/eventItem';
-import './css/editEvent2.css';
-import './css/channelInfostyle.css';
+import './css/channelDetail.css';
 import axios from 'axios';
 import { hostname } from '../actions/index';
 import { getCookie } from '../actions/common';
+import Image from '../components/Image';
+import Btn from '../components/Btn';
+import PictureUpload from '../components/PictureUpload';
+import _ from 'lodash';
 
 const TAG_1 = [
     "CAMP",
@@ -21,7 +22,12 @@ const TAG_1 = [
     "CONTEST",
     "EXHIBITION",
     "WORKSHOP",
-    "RELIGION"
+    "RELIGION",
+    "",
+    "",
+    "",
+    "",
+    ""
 ];
 
 const TAG_2 = [
@@ -36,94 +42,91 @@ const TAG_2 = [
     "MUSIC",
     "TECHNOLOGY",
     "NATURAL",
-    "HEALTH"
+    "HEALTH",
+    "",
+    "",
+    "",
+    "",
+    ""
 ]
 
-class Btn extends Component {
-    //BtnToggleState
-    constructor(props) {
-        super(props);
-        this.state = {
-            'isActive': false
-        }
-        this.onClick = this.onClick.bind(this);
-    }
+function onTextareaResize(textArea) {
+    textArea.style.height = 'auto';
+    textArea.style.height = textArea.scrollHeight+'px';
+}
 
-    onClick() {
-        let tmp = !this.state.isActive;
-        this.setState({
-            ...this.state,
-            'isActive': tmp
-        });
-        if(typeof(this.props.callback) === "function") this.props.callback(tmp);
-    }
-
-    render() {
-        return (
-            <button onClick={this.onClick} className={(this.state.isActive) ? this.props.classNameOn : this.props.classNameOff}>
-                {this.props.text}
-            </button>
-        );
-    }
+const Input = (props) => {
+    return (
+        <div className="mar-v-10 InputContainer">
+            {
+                (props.isTextarea) ? (
+                    <textarea
+                        className="flex-order-2 bottom-outline-1 border-focus-blue border-transition"
+                        placeholder={props.placeholder}
+                        ref={(textarea) => {
+                                if(typeof props.refI === "function") props.refI(textarea);
+                            }
+                        }
+                        onChange={(e) => onTextareaResize(e.target)}
+                    />
+                ) : (
+                    <input
+                        type="text"
+                        className="flex-order-2 bottom-outline-1 border-focus-blue border-transition"
+                        placeholder={props.placeholder}
+                        ref={(input) => {
+                            if(typeof props.refI === "function") {
+                                props.refI(input);
+                            }
+                        }}
+                    />
+                )
+            }
+            {
+                (_.get(props, 'text', '').length > 0) ? (
+                    <label className="flex-order-1">{props.text}</label>
+                ) : null
+            }
+            {(_.get(props, 'note', '').length > 0) ? (
+                <span className="flex-order-3 note">{props.note}</span>
+            ) : null}
+        </div>
+    )
 }
 
 class channelInfo extends Component {
     constructor(props) {
         super(props);
 
-        // title,about,video,channel,location,date_start,expire,date_end,picture,picture_large, year_require,faculty_require,tags,forms
-
-        // about, video, location, date_start, date_end, picture, picture_large, year_require, faculty_require, tags, agreement, contact_information,
-        // joinable_start_time, joinable_end_time, joinable_amount, time_start, time_end, optional_field, require_field, show, outsider_accessible
-
-
         this.state = {
             'channel_id': "595e86832ff0cf001402ab99"
         }
 
-           axios.get(`${hostname}channel?id=${this.state.channel_id}`).then((data) => {
-            console.log("get!!!");
-            console.log(JSON.stringify(data.data.name))
-            console.log(JSON.stringify(data.data.picture))
-            console.log(JSON.stringify(data.data.picture_large))
-            console.log(JSON.stringify(data.data.picture_large))
-
-            this.setState({
-                ...this.state,
-                'name': data.data.name,
-                'picture': data.data.picture,
-                'detail': data.data.detail,
-                'picture_large': data.data.picture_large,
-                'tags': data.data.tags,
-
-                'new_name': data.data.name,
-                'new_picture': data.data.picture,
-                'new_detail': data.data.detail,
-                'new_picture_large': data.data.picture_large,
-                'new_tags': data.data.tags,
-            });
+        axios.get(`${hostname}channel?id=${this.state.channel_id}`).then((data) => {
+            this.channelName.value = data.data.name;
+            // this.setState({
+            //     ...this.state,
+            //     'name': data.data.name,
+            //     'picture': data.data.picture,
+            //     'detail': data.data.detail,
+            //     'picture_large': data.data.picture_large,
+            //     'tags': data.data.tags,
+            //
+            //     'new_name': data.data.name,
+            //     'new_picture': data.data.picture,
+            //     'new_detail': data.data.detail,
+            //     'new_picture_large': data.data.picture_large,
+            //     'new_tags': data.data.tags,
+            // });
         }, (error) => {
             console.log("get channel error");
+            this.channelName.value = 'LOAD ERROR';
         });
 
-        this.onKeyPressed = this.onKeyPressed.bind(this);
         this.save = this.save.bind(this);
     }
 
-    onKeyPressed() {
-        const newState = {
-            ...this.state,
-            'new_name': this.refs.name.value,
-            //'new_picture': this.refs.picture.value,
-            'new_detail': this.refs.about.value,
-            //'new_picture_large': this.refs.picture_large.value,
-            //'new_tags': this.refs.tags.value,
-        };
-        this.setState(newState);
-    }
-
     save() {
-        console.log("kuyyyyy");
         this.setState({
             ...this.state,
             'name': this.state.new_name,
@@ -176,114 +179,91 @@ class channelInfo extends Component {
         this.props.toggle_pop_item();
     }
 
-    onSelectedPicture() {
-
-    }
-
-
-    onSelectedPoster() {
-        const input = this.refs["picture_large"];
-        const div = this.refs["preview-image"];
-        const _this = this;
-
-        if (input.files && input.files[0]) {
-            let reader = new FileReader();
-
-            reader.onload = function (e) {
-                div.style.backgroundImage = `url('${e.target.result}')`;
-
-                _this.setState({
-                    ..._this.state,
-                    'new': {
-                        ..._this.state.new,
-                        'picture_large': e.target.result
-                    }
-                })
-            }
-
-            reader.readAsDataURL(input.files[0]);
-        }
-
-
-    }
-
     onExit() {
         this.props.onToggle();
     }
 
-    onDelect() {
-        this.props.invisible();
-    }
-
-
     render () {
         return (
-            <div>
-                <article className="edit-event basic-card-no-glow modal-main">
+            <div className="modal-container">
+                <article className="edit-event basic-card-no-glow modal-main card-width channel-detail">
                     <button className="card-exit invisible square-round" role="event-exit" onClick={this.onExit.bind(this)}>
                         <img src="../../resource/images/X.svg" />
                     </button>
-
-
-                    <label className="changeprofile">
-                        <img src={this.state.new_picture} className="chan-img" alt="cn-profile-pic"/>
-                        <input type="file" ref="picture" onChange={this.onSelectedPicture} name="picture" className="fileInput" accept="image/*" />
-                     </label>
-
-
-                    <input className="chan-name" ref="name" type="text" placeholder="" value={this.state.new_name} onChange={this.onKeyPressed} />
-
-                    <p className="l1"></p>
-
-                    <div className="full-input">
-                        <h1>DETAIL</h1>
-                        <textarea className="detail" ref="about" type="text" placeholder="" value={this.state.new_detail} onChange={this.onKeyPressed}/>
-
+                    <div className="flex flex-aligns-item">
+                        <Image src={this.state.new_picture} imgClass="chan-img" rejectClass="chan-img" />
                         <div>
-                            <h1>PHOTO</h1>
-
-                            <label className="fileContainer">
-                                <div>UPLOAD</div>
-                                <input type="file" ref="poster" onChange={this.onSelectedPoster} id="poster" name="poster" className="fileInput" accept="image/*" />
-                            </label>
-
-                            <div className="photo-upload">
-                                pic1.png
-                                <button role="event-exit" onClick={this.onDelect.bind(this)}>
-                                    <img src="../../resource/images/X.svg" />
-                                </button>
-                            </div>
-
-                            <div data-alt="preview-image" ref="preview-image" />
+                            <Input refI={(input) => this.channelName = input} text="CHANNEL NAME" placeholder="CHANNEL NAME" />
                         </div>
-
-                        <h1>URL</h1> <input ref="url" type="text" placeholder="" />
-                        <h1>YOUTUBE</h1> <input ref="youtube" type="text" placeholder=""/>
                     </div>
+                    <hr className="thin" />
+                    <PictureUpload
+                        text="UPLOAD PROFILE IMAGE"
+                        isInit={true}
+                        srcs={['']}
+                        showFilesNumber={false}
+                        persistentImg={false}
+                        onUpdate={(val, t) => {
 
+                        }}
+                        style={{'width': '100%'}}
+                    />
+                    <Input refI={(textarea) => this.detail = textarea} text="CHANNEL DETAIL" placeholder="CHANNEL DETAIL" isTextarea={true} />
+                    <Input refI={(input) => this.channelLink = input} text="URL" placeholder="URL" />
+                    <Input refI={(input) => this.channelVideo = input} text="YOUTUBE EMBED" placeholder="YOUTUBE EMBED" />
+                    <PictureUpload
+                        text="UPLOAD PICTURES"
+                        isMultiple={true}
+                        isInit={true}
+                        srcs={['']}
+                        showFilesNumber={true}
+                        persistentImg={true}
+                        onUpdate={(val, t) => {
+
+                        }}
+                        style={{'width': '100%'}}
+                    />
                     <div className="chan-tag">
                         <h1>TAG</h1>
-                        {
-                            TAG_1.map((key, index) => {
-                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag"/>);
-                            })
-                        }
-                        <br />
-                        <br />
-                        {
-                            TAG_2.map((key, index) => {
-                                return (<Btn key={index} text={`${key}`} classNameOn="Btn-active tag" classNameOff="Btn tag"/>);
-                            })
-                        }
+                        <div className="tag-container">
+                            {
+                                TAG_1.map((key, index) => {
+                                    return (
+                                        <Btn
+                                            key={index}
+                                            text={`${key}`}
+                                            isInit={true}
+                                            initialState={false}
+                                            classNameOn={`Btn tag Btn-active tag${(key.length === 0) ? ' empty' : ''}${(key.length > 7) ? ' long' : ''} `}
+                                            classNameOff={`Btn tag ${(key.length === 0) ? ' empty' : ''}${(key.length > 7) ? ' long' : ''}`}
+                                            callback={(isActive) => {}}
+                                        />
+                                    );
+                                })
+                            }
+                        </div>
+                        <div className="tag-container mar-v-10">
+                            {
+                                TAG_2.map((key, index) => {
+                                    return (
+                                        <Btn
+                                            key={index}
+                                            text={`${key}`}
+                                            isInit={true}
+                                            initialState={false}
+                                            classNameOn={`Btn tag Btn-active tag${(key.length === 0) ? ' empty' : ''}${(key.length > 7) ? ' long' : ''} `}
+                                            classNameOff={`Btn tag ${(key.length === 0) ? ' empty' : ''}${(key.length > 7) ? ' long' : ''}`}
+                                            callback={(isActive) => {}}
+                                        />
+                                    );
+                                })
+                            }
+                        </div>
                     </div>
-
-                    <br />
-                    <br />
-                    <br />
-                    <div>
-                        <button className="bt blue" onClick={this.save.bind(this)}>SAVE</button>
-                        <button className="bt" onClick={this.cancel.bind(this)}>CANCLE</button>
-                    </div>
+                    <footer>
+                        <button className="bt">CANCEL</button>
+                        <button className="bt blue">SAVE</button>
+                    </footer>
                 </article>
                 <div className="background-overlay"/>
             </div>
@@ -291,4 +271,4 @@ class channelInfo extends Component {
     }
 }
 
-export default autoBind(channelInfo);
+export default channelInfo;

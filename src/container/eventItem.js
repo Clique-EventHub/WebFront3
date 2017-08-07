@@ -253,7 +253,7 @@ class eventItem extends Component {
 }
 
 eventItem.defaultProps = {
-    'eventId': '595ef6c7822dbf0014cb821c'
+    'eventId': ''
 }
 
 export default eventItem;

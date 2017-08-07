@@ -1,67 +1,74 @@
 import React, { Component } from 'react';
 import './css/channelDetail.css';
+import Image from '../components/Image';
 import axios from 'axios';
 import { hostname } from '../actions/index';
 import ReactLoading from 'react-loading';
+import _ from 'lodash';
 
 class channelDetail extends Component {
     constructor(props) {
         super(props);
 
-        // title,about,video,channel,location,date_start,expire,date_end,picture,picture_large, year_require,faculty_require,tags,forms
-
-        // about, video, location, date_start, date_end, picture, picture_large, year_require, faculty_require, tags, agreement, contact_information,
-        // joinable_start_time, joinable_end_time, joinable_amount, time_start, time_end, optional_field, require_field, show, outsider_accessible
-
         this.state = {
             'name': "",
             'picture': "",
-            'detail': "",
-            'picture_large': []
+            'detail': [""],
+            'picture_large': [],
+            'isLoad': false
         }
-        axios.get(`${hostname}channel?id=${"595e87682ff0cf001402ab9c"}`).then((data) => {
+    }
+
+    componentWillMount() {
+        axios.get(`${hostname}channel?id=${"595ef6b8822dbf0014cb821b"}`).then((data) => {
             console.log("get!!!dd");
             console.log(JSON.stringify(data.data.name))
             this.setState({
                 'name': data.data.name,
                 'picture': data.data.picture,
-                'detail': data.data.detail,
-                'picture_large': data.data.picture_large
+                'detail': [
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum eros purus, eu suscipit lorem eleifend eget. Pellentesque a finibus felis. Pellentesque quis neque ut dui finibus iaculis. Fusce ac placerat',
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum eros purus, eu suscipit lorem eleifend eget. Pellentesque a finibus felis. Pellentesque quis neque ut dui finibus iaculis. Fusce ac placerat'
+                    ],
+                'picture_large': _.get(data, 'data.picture_large', []),
+                'isLoad': true
             });
         }, (error) => {
             console.log("get channel error");
         });
     }
 
+
+
     onExit() {
         this.props.onToggle();
     }
 
     render () {
-        console.log(this.state.picture_large);
-        return (
-            <div className="modal-container">
-                <article className="edit-event basic-card-no-glow modal-main card-width">
-                    <button className="card-exit invisible square-round" role="event-exit" onClick={this.onExit.bind(this)}>
-                        <img src="../../resource/images/X.svg" />
-                    </button>
-
-                    <img src={this.state.picture} className="chan-img" alt="cn-profile-pic"/>
-                    <h2 className="chan-name">{this.state.name}</h2>
-                    <button className="bt-fol" alt="btn-follow">FOLLOW</button>
-
-                    <p className="l1"></p>
-
-                    <div className="event-bio">
-                        <h3 className="display-none">Bio</h3>
-                        <p>{this.state.detail}</p>
+        // console.log(this.state.picture_large);
+        const content = (this.state.isLoad) ? (
+            <section>
+                <div className="flex">
+                    <Image src={this.state.picture} imgClass="chan-img" rejectClass="chan-img" />
+                    <div className="side-style">
+                        <h2 className="chan-name">{this.state.name}</h2>
+                        <button className="bt-fol" alt="btn-follow">FOLLOW</button>
                     </div>
+                </div>
+                <p className="l1"></p>
+                <div className="event-bio">
+                    <h3 className="display-none">Bio</h3>
+                    {
+                        (this.state.detail.constructor === Array) ?
+                        this.state.detail.map((text, index) => <p key={index}>{text}</p>) : (<p>{this.state.detail}</p>)
+                    }
+                </div>
                 <div className="marginleft">
                     <div className="chan-img-slide">
                         {
-                                this.state.picture_large.map((url) => {
-                                    return <a href={url}><img src={url} /></a>
-                                })
+                            this.state.picture_large.map((url, index) => {
+                                return <a href={url} key={index}><Image src={url} rejectClass="img-fallback" /></a>
+                            })
                         }
                     </div>
                     <a href="#" className="box">
@@ -72,8 +79,29 @@ class channelDetail extends Component {
                         YOUTUBE
                         <div>www.youtube.com</div>
                     </a>
-                </ div>
+                </div>
+            </section>
+        ) : (
+            <div style={{'fontSize': '30px', 'margin': 'auto', 'color': '#878787', 'textAlign': 'center'}}>
+                <div style={{'margin': 'auto', 'width': '50px', 'display': 'inline-block', 'position': 'relative', 'top': '12px', 'marginLeft': '5px'}}>
+                    <ReactLoading type={'bars'} color={'#878787'} height='40px' width='40px' />
+                </div>
+                Loading
+                <div style={{'margin': 'auto', 'width': '50px', 'display': 'inline-block', 'position': 'relative', 'top': '12px', 'marginLeft': '5px'}}>
+                    <ReactLoading type={'bars'} color={'#878787'} height='40px' width='40px' />
+                </div>
+            </div>
+        )
 
+        return (
+            <div className="modal-container">
+                <article className="edit-event basic-card-no-glow modal-main card-width channel-detail">
+                    <button className="card-exit invisible square-round" role="event-exit" onClick={this.onExit.bind(this)}>
+                        <img src="../../resource/images/X.svg" />
+                    </button>
+                    {
+                        content
+                    }
                 </article>
                 <div className="background-overlay"/>
             </div>
