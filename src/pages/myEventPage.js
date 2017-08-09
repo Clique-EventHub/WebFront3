@@ -82,7 +82,7 @@ class myEventPage extends Component {
                 'interest_events': data.data.interest_events,
                 'already_joined_events': data.data.already_joined_events,
                 'n_join': data.data.join_events.length,
-                'n_intr': 2,
+                'n_intr': data.data.interest_events.length,
                 'n_completed': data.data.already_joined_events.length,
                 'showJoin': true
             })

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+// import axios from 'axios';
 import EventDetailFix from '../container/eventDetail2';
 import $ from 'jquery';
 import './style/calendar.css';
+import { getEvent } from '../actions/common'
 
 Date.prototype.addDays = function(days) {
     var dat = new Date(this.valueOf());
@@ -113,72 +115,73 @@ class Calendar extends Component {
         this.state = {
             'refDate': new Date().setHours(0, 0, 0, 0),
             'DateState': [],
-            'events': [
-                {
-                    'from': new Date("2017-06-10"),
-                    'to': new Date("2017-06-20"),
-                    'name': "Dream",
-                    'eventId': '',
-                    'color': 'blue',
-                    'nudge': 0
-                },
-                {
-                    'from': new Date("2017-06-11"),
-                    'to': new Date("2017-06-15"),
-                    'name': "Of",
-                    'eventId': '',
-                    'color': 'yellow',
-                    'nudge': 1
-                },
-                {
-                    'from': new Date("2017-06-30"),
-                    'to': new Date("2017-07-02"),
-                    'name': "La La La",
-                    'eventId': '',
-                    'color': 'green',
-                    'nudge': 0
-                },
-                {
-                    'from': new Date("2017-06-24"),
-                    'to': new Date("2017-06-26"),
-                    'name': "LOL",
-                    'eventId': '',
-                    'color': 'red',
-                    'nudge': 0
-                },
-                {
-                    'from': new Date("2017-06-11"),
-                    'to': new Date("2017-06-14"),
-                    'name': "LOL LOL LOL",
-                    'eventId': '',
-                    'color': 'pink',
-                    'nudge': 2
-                },
-                {
-                    'from': new Date("2017-06-21"),
-                    'to': new Date("2017-06-21"),
-                    'name': "more...",
-                    'eventId': '',
-                    'color': 'blue',
-                    'nudge': 0
-                },
-                {
-                    'from': new Date("2017-06-15"),
-                    'to': new Date("2017-06-16"),
-                    'name': "I spy with little eyes",
-                    'eventId': '',
-                    'color': 'red',
-                    'nudge': 0
-                },
-                {
-                    'from': new Date("2017-06-16"),
-                    'to': new Date("2017-06-18"),
-                    'name': "La La Land",
-                    'eventId': '',
-                    'color': 'pink',
-                    'nudge': 0
-                }
-            ]
+            'events': []
+            // [
+            //     {
+            //         'from': new Date("2017-06-10"),
+            //         'to': new Date("2017-06-20"),
+            //         'name': "Dream",
+            //         'eventId': '',
+            //         'color': 'blue',
+            //         'nudge': 0
+            //     },
+            //     {
+            //         'from': new Date("2017-06-11"),
+            //         'to': new Date("2017-06-15"),
+            //         'name': "Of",
+            //         'eventId': '',
+            //         'color': 'yellow',
+            //         'nudge': 1
+            //     },
+            //     {
+            //         'from': new Date("2017-06-30"),
+            //         'to': new Date("2017-07-02"),
+            //         'name': "La La La",
+            //         'eventId': '',
+            //         'color': 'green',
+            //         'nudge': 0
+            //     },
+            //     {
+            //         'from': new Date("2017-06-24"),
+            //         'to': new Date("2017-06-26"),
+            //         'name': "LOL",
+            //         'eventId': '',
+            //         'color': 'red',
+            //         'nudge': 0
+            //     },
+            //     {
+            //         'from': new Date("2017-06-11"),
+            //         'to': new Date("2017-06-14"),
+            //         'name': "LOL LOL LOL",
+            //         'eventId': '',
+            //         'color': 'pink',
+            //         'nudge': 2
+            //     },
+            //     {
+            //         'from': new Date("2017-06-21"),
+            //         'to': new Date("2017-06-21"),
+            //         'name': "more...",
+            //         'eventId': '',
+            //         'color': 'blue',
+            //         'nudge': 0
+            //     },
+            //     {
+            //         'from': new Date("2017-06-15"),
+            //         'to': new Date("2017-06-16"),
+            //         'name': "I spy with little eyes",
+            //         'eventId': '',
+            //         'color': 'red',
+            //         'nudge': 0
+            //     },
+            //     {
+            //         'from': new Date("2017-06-16"),
+            //         'to': new Date("2017-06-18"),
+            //         'name': "La La Land",
+            //         'eventId': '',
+            //         'color': 'pink',
+            //         'nudge': 0
+            //     }
+
         }
 
         this.onClickPrev = this.onClickPrev.bind(this);
@@ -189,6 +192,44 @@ class Calendar extends Component {
         this.onDateClick = this.onDateClick.bind(this)
         this.onItemPopUpClick = this.onItemPopUpClick.bind(this);
         this.onClickEvent = this.onClickEvent.bind(this);
+        this.getEventInfo = this.getEventInfo.bind(this);
+    }
+
+    getEventInfo(nextProps) {
+        var events = [];
+        var color = ['red','pink','yellow','green','blue'];
+        var i;
+        for(i = 0; i < nextProps.user.events.general.join.length; i++){
+            getEvent(nextProps.user.events.general.join[i][Object.keys(nextProps.user.events.general.join[i])[0]]["event_id"], false).then((data) =>
+                events.push(
+                    {
+                        'from': new Date(data.date_start),
+                        'to': new Date(data.date_end),
+                        'name': data.title,
+                        'eventId': data._id,
+                        'color': color[i%5],
+                        'nudge': 0
+                    }
+                )
+
+            )
+        }
+        for(i = nextProps.user.events.general.join.length; i < nextProps.user.events.general.interest.length; i++){
+            getEvent(nextProps.user.events.general.interest[i][Object.keys(nextProps.user.events.general.interest[i])[0]]["event_id"], false).then((data) =>
+                events.push(
+                    {
+                        'from': new Date(data.date_start),
+                        'to': new Date(data.date_end),
+                        'name': data.title,
+                        'eventId': data._id,
+                        'color': color[i%5],
+                        'nudge': 0
+                    }
+                )
+
+            )
+        }
+        return (events);
     }
 
     compareDate(day1, day2) {
@@ -361,6 +402,20 @@ class Calendar extends Component {
     componentWillMount() {
         this.onSetCalendar(new Date(this.state.refDate));
         let sortedEvents = [...this.state.events];
+        sortedEvents = sortedEvents.sort((a, b) => {
+            if(a.from < b.from) return -1;
+            else if(a.from > b.from) return 1;
+            return 0;
+        });
+        this.setState({
+            ...(this.state),
+            'events': sortedEvents
+        });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.onSetCalendar(new Date(this.state.refDate));
+        let sortedEvents = this.getEventInfo(nextProps);
         sortedEvents = sortedEvents.sort((a, b) => {
             if(a.from < b.from) return -1;
             else if(a.from > b.from) return 1;
