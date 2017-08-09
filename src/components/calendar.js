@@ -196,40 +196,31 @@ class Calendar extends Component {
     }
 
     getEventInfo(nextProps) {
-        var events = [];
-        var color = ['red','pink','yellow','green','blue'];
-        var i;
+        let eventPromises = [];
+        let color = ['red','pink','yellow','green','blue'];
+        let i;
+
         for(i = 0; i < nextProps.user.events.general.join.length; i++){
-            getEvent(nextProps.user.events.general.join[i][Object.keys(nextProps.user.events.general.join[i])[0]]["event_id"], false).then((data) =>
-                events.push(
+            eventPromises.push(getEvent(nextProps.user.events.general.join[Number(i)], false));
+        }
+        for(i = nextProps.user.events.general.join.length; i < nextProps.user.events.general.join.length+nextProps.user.events.general.interest.length; i++) {
+            eventPromises.push(getEvent(nextProps.user.events.general.interest[Number(i)], false));
+        }
+
+        return Promise.all(eventPromises).then((datas) => {
+            return datas.map((data, index) => {
+                return (
                     {
                         'from': new Date(data.date_start),
                         'to': new Date(data.date_end),
                         'name': data.title,
                         'eventId': data._id,
-                        'color': color[i%5],
+                        'color': color[index%5],
                         'nudge': 0
                     }
-                )
-
-            )
-        }
-        for(i = nextProps.user.events.general.join.length; i < nextProps.user.events.general.interest.length; i++){
-            getEvent(nextProps.user.events.general.interest[i][Object.keys(nextProps.user.events.general.interest[i])[0]]["event_id"], false).then((data) =>
-                events.push(
-                    {
-                        'from': new Date(data.date_start),
-                        'to': new Date(data.date_end),
-                        'name': data.title,
-                        'eventId': data._id,
-                        'color': color[i%5],
-                        'nudge': 0
-                    }
-                )
-
-            )
-        }
-        return (events);
+                );
+            })
+        });
     }
 
     compareDate(day1, day2) {
@@ -415,16 +406,21 @@ class Calendar extends Component {
 
     componentWillReceiveProps(nextProps) {
         this.onSetCalendar(new Date(this.state.refDate));
-        let sortedEvents = this.getEventInfo(nextProps);
-        sortedEvents = sortedEvents.sort((a, b) => {
-            if(a.from < b.from) return -1;
-            else if(a.from > b.from) return 1;
-            return 0;
-        });
-        this.setState({
-            ...(this.state),
-            'events': sortedEvents
-        });
+        this.getEventInfo(nextProps).then((events) => {
+            let sortedEvents = events;
+            sortedEvents = sortedEvents.sort((a, b) => {
+                if(a.from < b.from) return -1;
+                else if(a.from > b.from) return 1;
+                return 0;
+            });
+
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
+                    'events': sortedEvents
+                }
+            })
+        })
     }
 
     onDateClick(date) {
