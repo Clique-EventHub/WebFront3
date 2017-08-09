@@ -203,7 +203,7 @@ class Calendar extends Component {
         for(i = 0; i < nextProps.user.events.general.join.length; i++){
             eventPromises.push(getEvent(nextProps.user.events.general.join[Number(i)], false));
         }
-        for(i = nextProps.user.events.general.join.length; i < nextProps.user.events.general.join.length+nextProps.user.events.general.interest.length; i++) {
+        for(i = nextProps.user.events.general.join.length; i < nextProps.user.events.general.join.length + nextProps.user.events.general.interest.length; i++) {
             eventPromises.push(getEvent(nextProps.user.events.general.interest[Number(i)], false));
         }
 

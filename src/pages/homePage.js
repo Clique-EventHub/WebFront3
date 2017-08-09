@@ -106,7 +106,7 @@ class homePage extends Component {
                 this.setState((prevState, props) => {
                     return ({
                         ...this.state,
-                        'eventNew': res.map((item) => item._id),
+                        'eventNew': res.map((item) => item._id).slice(0, 4),
                         'progress': {
                             ...this.state.progress,
                             'new': true
@@ -131,7 +131,7 @@ class homePage extends Component {
                 this.setState((prevState, props) => {
                     return ({
                         ...this.state,
-                        'eventUpcomming': res.map((item) => item._id),
+                        'eventUpcomming': res.map((item) => item._id).slice(0, 4),
                         'progress': {
                             ...this.state.progress,
                             'upcoming': true
@@ -156,7 +156,7 @@ class homePage extends Component {
                 this.setState((prevState, props) => {
                     return ({
                         ...this.state,
-                        'eventForYou': res.map((item) => item._id),
+                        'eventForYou': res.map((item) => item._id).slice(0, 4),
                         'progress': {
                             ...this.state.progress,
                             'forYou': true
@@ -197,7 +197,7 @@ class homePage extends Component {
                 </section>
                 <div className="below-carousel">
                     <section content="upcomming">
-                        <h2>Upcomming</h2>
+                        <h2>Upcoming Events</h2>
                         <CardList eventIds={this.state.eventUpcomming} onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                     </section>
                     <section content="bottom-half">

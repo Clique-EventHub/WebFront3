@@ -851,6 +851,8 @@ section[content="for-you"] {
     flex: 2;
     display: inline-block;
     text-align: left;
+    padding-top: 20px;
+    padding-left: 20px;
 }
 
 $event-item-height: 300px;
@@ -1076,6 +1078,11 @@ article.tag-item {
     align-items: center;
     margin-right: 20px;
     margin-top: 20px;
+}
+
+article.tag-item:hover,
+article.tag-item:active {
+    box-shadow: 0px 0px 20px #5dbdf0 !important;
 }
 
 article.channel-item {
