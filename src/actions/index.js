@@ -203,7 +203,7 @@ function updateActivities(dispatch) {
         dispatch({
             type: types.UPDATE_USER_EVENTS_INFO_SUBSCRIBE,
             payload: {
-                subscribe: res.data[Object.keys(res.data).filter((key) => key !== "notification")].map((item) => item[Object.keys(item)].channel_id),
+                subscribe: (res.data[Object.keys(res.data).filter((key) => key !== "notification")] || []).map((item) => item[Object.keys(item)].channel_id),
                 notification: res.data.notification
             }
         })
