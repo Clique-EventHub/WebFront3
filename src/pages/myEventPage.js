@@ -38,8 +38,8 @@ class myEventPage extends Component {
           'join_events': '',
           'interest_events': '',
           'already_joined_events': '',
-          'n_join': '',
-          'n_intr': '',
+          'n_join': 0,
+          'n_intr': 0,
           'n_completed': '',
           'showJoin': true,
           'isLoading': true,
@@ -57,11 +57,9 @@ class myEventPage extends Component {
             }
         }
 
-        let _this = this;
-
         axios.get(`${hostname}user`, config).then((data) => {
-            _this.setState({
-                ..._this.state,
+            this.setState({
+                ...this.state,
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
@@ -140,7 +138,7 @@ class myEventPage extends Component {
             join_events.push(<p key={id_join++} className="warn">You don't have any Joined Events.</p>)
         }
         for(i = 0; i < this.state.n_join; i++){
-            join_events.push(<EventItem key={id_join++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+            join_events.push(<EventItem key={id_join++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} eventId={this.state.join_events[Number(i)]}/>);
         }
 
         var intr_events = [];
@@ -149,7 +147,8 @@ class myEventPage extends Component {
             intr_events.push(<p key={id_intr++} className="warn">You don't have any Interested Events.</p>)
         }
         for(i = 0; i < this.state.n_intr; i++){
-            intr_events.push(<EventItem key={id_intr++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+            console.log(this.state.interest_events[Number(i)]);
+            intr_events.push(<EventItem key={id_intr++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} eventId={this.state.interest_events[Number(i)]}/>);
         }
 
         var completed_events = [];
@@ -158,7 +157,7 @@ class myEventPage extends Component {
             completed_events.push(<p key={id_cp++} className="warn">You don't have any Completed Events.</p>)
         }
         for(i = 0; i < this.state.n_completed; i++){
-            completed_events.push(<EventItem key={id_cp++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
+            completed_events.push(<EventItem key={id_cp++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} eventId={this.state.already_joined_events[Number(i)]} />);
         }
 
         return (

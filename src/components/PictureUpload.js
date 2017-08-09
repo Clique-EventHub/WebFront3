@@ -41,9 +41,19 @@ class PictureUpload extends Component {
         this.onSelectedPoster = this.onSelectedPoster.bind(this);
         this.removeImg = this.removeImg.bind(this);
         this.renderImage = this.renderImage.bind(this);
+
+        if(this.props.isInit) {
+            setTimeout(() => {
+                this.setState({
+                    ...this.state,
+                    'isInit': true
+                })
+            }, 0);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log(nextProps);
         if(this.state.isInit !== nextProps.isInit && nextProps.isInit === true) {
             this.setState((prevState) => {
                 return {
@@ -119,8 +129,6 @@ class PictureUpload extends Component {
             delete new_map[index - nextInit.length];
         }
 
-        console.log(nextPics, nextInit, new_map);
-
         this.setState({
             ...this.state,
             'pictures': nextPics,
@@ -132,12 +140,24 @@ class PictureUpload extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+        if(this.state.isInit !== nextProps.isInit) {
+            return true;
+        }
+
         if(nextState.pictures.length === this.state.pictures.length) {
             let isSame = true;
             for(let i = 0;  i < nextState.pictures.length && isSame; i++) {
                 isSame = (nextState.pictures[i].slice(0,200) === this.state.pictures[i].slice(0,200));
             }
             return !isSame;
+        } else if(nextState.mapPictures.length > 0) {
+            let isSame = true;
+            const keys = Object.keys(nextState.mapPictures);
+            for(let i = 0; i < nextState.mapPictures.length && isSame; i++) {
+                isSame = nextState.mapPictures[keys[Number(i)]].pic.slice(0, 200) === this.state.mapPictures[keys[Number(i)]].pic.slice(0, 200);
+            }
+            console.log(!isSame);
+            return !isSame
         }
         return true;
     }
@@ -159,7 +179,6 @@ class PictureUpload extends Component {
     componentDidUpdate() {
         if(this.state.isInit) {
             this.renderImage();
-
             if(typeof(this.props.onUpdate) === "function") {
                 const input = this.refs["files"];
                 const files = [];

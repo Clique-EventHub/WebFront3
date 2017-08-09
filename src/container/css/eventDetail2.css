@@ -88,11 +88,13 @@ article.event-detail-fix div .warning-pop-up[data-role="share-popup"] div.btn-c 
 article.event-detail-fix div .warning-pop-up[data-role="share-popup"] div.btn-facebook {
   background-image: url("https://upload.wikimedia.org/wikipedia/en/thumb/8/8c/Facebook_Home_logo_old.svg/1024px-Facebook_Home_logo_old.svg.png");
   background-size: cover;
+  cursor: not-allowed;
 }
 
 article.event-detail-fix div .warning-pop-up[data-role="share-popup"] div.btn-twitter {
   background-image: url("http://hs.umt.edu/anthropology/images/twitter-bird-white-on-blue.png");
   background-size: cover;
+  cursor: not-allowed;
 }
 
 article.event-detail-fix div .warning-pop-up[data-role="share-popup"] div.btn-share {
@@ -109,6 +111,7 @@ article.event-detail-fix div .warning-pop-up[data-role="share-popup"] div.btn-in
   line-height: 2.2em;
   text-align: center;
   color: #FFF;
+  cursor: not-allowed;
 }
 
 article.event-detail-fix div .warning-pop-up[data-role="share-popup"] div.btn-facebook:hover,
@@ -505,6 +508,12 @@ article.event-detail-fix div .event-info .to-right button[alt="btn-interest"]:ho
   background-color: rgba(252, 195, 37, 0.85);
 }
 
+article.event-detail-fix div .event-info .to-right button[alt="btn-interest"].active,
+article.event-detail-fix div .event-info .to-right button[alt="btn-join"].active {
+  cursor: not-allowed;
+}
+
+article.event-detail-fix div .event-info .to-right button[alt="btn-interest"].active,
 article.event-detail-fix div .event-info .to-right button[alt="btn-interest"]:active {
   color: #FFF;
   background-color: #fcc325;
@@ -520,7 +529,8 @@ article.event-detail-fix div .event-info .to-right button[alt="btn-join"]:hover 
   background-color: rgba(63, 136, 254, 0.85);
 }
 
-article.event-detail-fix div .event-info .to-right button[alt="btn-join"]:active {
+article.event-detail-fix div .event-info .to-right button[alt="btn-join"]:active,
+article.event-detail-fix div .event-info .to-right button[alt="btn-join"].active {
   color: #FFF;
   background-color: #3f88fe;
 }

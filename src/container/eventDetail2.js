@@ -15,6 +15,8 @@ let useCls = " toggle-vis";
 const codeList = facultyMap.getCodeList();
 let index = 0;
 
+const isImplement = false;
+
 const defaultState = {
     'title': null,
     'about': [],
@@ -142,12 +144,26 @@ class eventDetailFix extends Component {
         const id = overrideId || this.props.eventId;
 
         axios.get(`${hostname}event?id=${id}`, { headers: { 'crossDomain': true }}).then((data) => {
-            let rObj = {
-                ...defaultState,
-                ...data.data,
-                isLoading: false
-            }
-            this.setState(rObj);
+            this.setState((prevState) => {
+                return ({
+                    ...defaultState,
+                    ...data.data,
+                    isLoading: false
+                })
+            }, () => {
+                if(_.get(this.props, 'user.events.general.interest', []).indexOf(id) !== -1) {
+                    if(this.interestBtn.className.indexOf(" active") === -1) this.interestBtn.className += " active";
+                } else {
+                    if(this.interestBtn.className.indexOf(" active") !== -1) this.interestBtn.className.replace(" active", "");
+                }
+
+                if(_.get(this.props, 'user.events.general.join', []).indexOf(id) !== -1) {
+                    if(this.joinBtn.className.indexOf(" active") === -1) this.joinBtn.className += " active";
+                } else {
+                    if(this.joinBtn.className.indexOf(" active") !== -1) this.joinBtn.className.replace(" active", "");
+                }
+
+            });
             this.onResetPopup();
             return data.data;
         }).then((event) => {
@@ -159,6 +175,7 @@ class eventDetailFix extends Component {
                 this.onResetPopup();
             })
         }).catch((error) => {
+            console.log(error.response);
             this.setState({
                 ...this.state,
                 'error': 'Oh! Ow! Something went wrong. Please check your internet connection',
@@ -180,6 +197,19 @@ class eventDetailFix extends Component {
         } else {
             this.refs[refName].className += useCls;
         }
+    }
+
+    onClickInterest() {
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie("fb_sever_token"))
+            }
+        }
+        axios.put(`${hostname}user/interest?id=${this.props.eventId}`, {}, config).then((data) => {
+            console.log(data);
+        }).catch((e) => {
+            console.log(e);
+        })
     }
 
     onClickJoin() {
@@ -226,6 +256,7 @@ class eventDetailFix extends Component {
             }).catch((e) => {
                 gg(e);
             })
+
         }).then((whatever) => {
             console.log(whatever);
             // this.props.context.router.push(`/form?id=${'596c561c15cd7b3235449c42'}`);
@@ -233,9 +264,9 @@ class eventDetailFix extends Component {
 
     }
 
-    // componentDidUpdate() {
-    //     console.log(this.state);
-    // }
+    componentDidUpdate() {
+        console.log(this.state);
+    }
 
     render() {
 
@@ -282,8 +313,11 @@ class eventDetailFix extends Component {
                             <div className="share-interest-join" aria-hidden="true">
                                 <div className="float-left" onClick={() => {this.onBtnClick("share-popup")}}><i className="fa fa-share-square-o" aria-hidden="true"></i> SHARE</div>
                                 <div className="to-right" >
-                                    <button alt="btn-interest">INTEREST</button>
-                                    <button alt="btn-join" onClick={() => {this.onBtnClick("warning-popup")}}>JOIN</button>
+                                    <button alt="btn-interest" ref={(btn) => this.interestBtn = btn} onClick={this.onClickInterest.bind(this)}>INTEREST</button>
+                                    <button alt="btn-join" ref={(btn) => this.joinBtn = btn} onClick={() => {
+                                            if(this.joinBtn.className.indexOf(" active") === -1)
+                                                this.onBtnClick("warning-popup")
+                                        }}>JOIN</button>
                                 </div>
                                 <div className={`warning-pop-up basic-card-no-glow ${useCls}`} data-role="share-popup" ref="share-popup">
                                     <div className="btn-c btn-facebook" />
@@ -293,7 +327,9 @@ class eventDetailFix extends Component {
                                         }} BtnClass='btn-c btn-share' obj={
                                             <input value={`${urlName}?eid=${this.props.eventId}`} className="mar-20 bottom-outline-1 border-focus-blue border-transition" style={{'fontSize': '1.2em', 'maxWidth': '100px'}} />
                                         } OuterClass={'basic-card-no-glow'} />
-                                    <div className="btn-invite shade-blue" onClick={() => {this.onBtnClick("invite-popup")}}>INVITE</div>
+                                    <div className="btn-invite shade-blue" onClick={() => {
+                                            if(isImplement) this.onBtnClick("invite-popup")
+                                        }}>INVITE</div>
                                 </div>
                                 <div className={`warning-pop-up basic-card-no-glow ${useCls}`} data-role="invite-popup" ref="invite-popup">
                                     <button className="invisible square-round" role="event-exit" onClick={this.onResetPopup}>

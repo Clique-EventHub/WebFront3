@@ -3,55 +3,115 @@
 import './css/tagstyle.css';
 
 import React , { Component } from 'react';
-import Axios from 'axios';
+import axios from 'axios';
 import EventItem from '../container/eventItem';
 import normalPage from '../hoc/normPage';
 import pages from '../hoc/pages';
 import { hostname } from '../actions/index';
+import { getCookie } from '../actions/common';
+import Image from '../components/Image';
+import _ from 'lodash';
 
 class tagPage extends Component {
 
     constructor(props) {
         super(props);
-
-        const keyword = this.props.location.query.keyword || '';
-
         this.state = {
-            listOfEvents: []
+            listOfEvents: [],
+            like_state: true
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        const keyword = nextProps.location.query.keyword || '';
-        if(typeof keyword === "string" && keyword.length > 0) {
-            if(keyword.length !== 0) {
-                Axios.get(`${hostname}tags/search?keywords=${keyword}`).then((data) => {
-                    this.setState({
-                        ...this.state,
-                        listOfEvents: data.data.events
-                    });
-                }, (error) => {
-                    console.log("get event search error");
-                });
+    setLikeState(target, isActive) {
+        let isChange = false;
+        let isAdd = false;
+        if(isActive) {
+            if(target.className.indexOf(" active") === -1) {
+                target.className = target.className.concat(" active");
+                isChange = true;
+                isAdd = true;
+            }
+        } else {
+            if(target.className.indexOf(" active") !== -1) {
+                target.className = target.className.replace(" active", "");
+                isChange = true;
+            }
+        }
+
+        if(isChange) {
+            if(getCookie('fb_sever_token')) {
+                let config = {
+                    'headers': {
+                        'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                        'crossDomain': true
+                    }
+                }
+                axios.get(`${hostname}user`, config).then(
+                    (data) => data.data
+                ).then((data) => {
+                    const keyword = this.props.location.query.keyword || '';
+                    const new_tag_like = Array.from(new Set(_.get(data, 'tag_like', [])));
+
+                    if(isAdd) {
+                        axios.put(`${hostname}user`, {
+                            tag_like: new_tag_like.concat([keyword])
+                        }, config)
+                    } else {
+                        axios.put(`${hostname}user`, {
+                            tag_like: new_tag_like.filter((item) => item !== keyword)
+                        }, config)
+                    }
+
+                })
             }
         }
     }
 
     componentWillMount() {
         document.title = "Event Hub | Tag";
+        const keyword = this.props.location.query.keyword || '';
+        if(typeof keyword === "string" && keyword.length > 0) {
+            if(keyword.length !== 0) {
+
+                let config = {
+                    'headers': {
+                        'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                        'crossDomain': true
+                    }
+                }
+
+                Promise.all([
+                    axios.get(`${hostname}user`, config),
+                    axios.get(`${hostname}tags/search?keywords=${keyword}`)
+                ]).then((datas) => {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            like_state: (_.get(datas[0], 'data.tag_like', []).indexOf(keyword) !== -1),
+                            listOfEvents: datas[1].data.events
+                        });
+                    }, () => {
+                        this.setLikeState.bind(this)(this.likeButton, this.state.like_state);
+                    });
+                })
+            }
+        }
     }
 
     render() {
-        // console.log(this.state.listOfEvent);
         //Note: if EventDetail is shown, side-menu should not be pressed -> drastic layout change
         const keyword = this.props.location.query.keyword ? this.props.location.query.keyword : 'No keyword';
 
         return (
             <section role="tag-content">
-                <article className="tag-proflie basic-card">
-                    <img className="photo" />
-                    <div className="tag-name"><h2>{keyword}</h2></div>
-                    <div className="like-button">LIKE</div>
+                <article className="tag-proflie basic-card-no-glow">
+                    <div className="tag-info-container">
+                        <Image src="" imgClass="photo" rejectClass="photo" />
+                        <div className="tag-name"><h2>{keyword}</h2></div>
+                        <div ref={(div) => this.likeButton = div} className="like-button" onClick={(e) => {
+                                this.setLikeState.bind(this)(e.target, (e.target.className.indexOf(" active") === -1))
+                            }}>LIKE</div>
+                    </div>
                 </article>
                 <section content="event-list" className="margin-auto">
                     {

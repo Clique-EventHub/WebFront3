@@ -100,11 +100,13 @@ article.event-detail-fix {
             div.btn-facebook {
                 background-image: url('https://upload.wikimedia.org/wikipedia/en/thumb/8/8c/Facebook_Home_logo_old.svg/1024px-Facebook_Home_logo_old.svg.png');
                 background-size: cover;
+                cursor: not-allowed;
             }
 
             div.btn-twitter {
                 background-image: url('http://hs.umt.edu/anthropology/images/twitter-bird-white-on-blue.png');
                 background-size: cover;
+                cursor: not-allowed;
             }
 
             div.btn-share {
@@ -122,6 +124,7 @@ article.event-detail-fix {
                 line-height: 2.2em;
                 text-align: center;
                 color: #FFF;
+                cursor: not-allowed;
             }
 
             div.btn-facebook:hover,
@@ -497,6 +500,12 @@ article.event-detail-fix {
                     color: #FFF;
                     background-color: rgba(252, 195, 37, 0.85);
                 }
+
+                button[alt="btn-interest"].active,
+                button[alt="btn-join"].active {
+                    cursor: not-allowed
+                }
+                button[alt="btn-interest"].active,
                 button[alt="btn-interest"]:active {
                     color: #FFF;
                     background-color: rgba(252, 195, 37, 1);
@@ -510,7 +519,8 @@ article.event-detail-fix {
                     color: #FFF;
                     background-color: rgba(63, 136, 254, 0.85);
                 }
-                button[alt="btn-join"]:active {
+                button[alt="btn-join"]:active,
+                button[alt="btn-join"].active {
                     color: #FFF;
                     background-color: rgba(63, 136, 254, 1);
                 }

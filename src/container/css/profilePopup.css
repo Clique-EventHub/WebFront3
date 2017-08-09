@@ -68,81 +68,33 @@ div.profile-section h4 {
 }
 
 
-div.my-event1 {
+div.my-event {
   height: 25px;
 }
 
 
-div.my-event1 p {
-  margin-left: 30px;
+div.my-event p {
+  margin-left: 10px;
   margin-top: 0px;
   margin-bottom: 0px;
   font-size: 0.9em;
   color: #FF1493;
 }
 
+div.my-event p:before {
+    content: "";
+    display: inline-block;
 
-div.my-event1 div[alt="event-icon"] {
-  border-radius: 50%;
-  height: 12px;
-  width: 12px;
-  background: #FF1493;
-  margin-top: 4px;
-  margin-left: 10px;
-  margin-right: 5px;
-  position: absolute;
-}
+    border-radius: 50%;
+    min-height: 12px;
+    min-width: 12px;
+    max-height: 12px;
+    max-width: 12px;
 
-
-div.my-event2 {
-  height: 25px;
-}
-
-
-div.my-event2 p {
-  margin-left: 30px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  font-size: 0.9em;
-  color: #1493FF;
-}
-
-
-div.my-event2 div[alt="event-icon"] {
-  border-radius: 50%;
-  height: 12px;
-  width: 12px;
-  background: #1493FF;
-  margin-top: 4px;
-  margin-left: 10px;
-  margin-right: 5px;
-  position: absolute;
-}
-
-
-div.my-event3 {
-  height: 25px;
-}
-
-
-div.my-event3 p {
-  margin-left: 30px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  font-size: 0.9em;
-  color: #FFC000;
-}
-
-
-div.my-event3 div[alt="event-icon"] {
-  border-radius: 50%;
-  height: 12px;
-  width: 12px;
-  background: #FFC000;
-  margin-top: 4px;
-  margin-left: 10px;
-  margin-right: 5px;
-  position: absolute;
+    background-color: #FF1493;
+    margin-top: 4px;
+    margin-left: 10px;
+    margin-right: 5px;
 }
 
 div.my-noti {

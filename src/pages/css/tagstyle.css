@@ -1,66 +1,80 @@
-
 /* start FM*/
 article.tag-proflie {
-    margin: 20px auto;
-    padding: 10px;
-    width: 90%;
-    background: #FFF;
-    height: 135px;
-    display: -webkit-box;
-    /* OLD - iOS 6-, Safari 3.1-6 */
-    display: -moz-box;
-    /* OLD - Firefox 19- (buggy but mostly works) */
-    display: -ms-flexbox;
-    /* TWEENER - IE 10 */
-    display: -webkit-flex;
-    /* NEW - Chrome */
-    display: flex;
-    align-items: center;
-    font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
-
-
-}
-div.tag-icon {
-    border-radius: 50%;
-    height: 12px;
-    width: 12px;
-    background: #FF1493;
-    margin-top:4px;
-    margin-left: 10px;
-    margin-right: 5px;
-    position: absolute;
+  margin: 20px auto;
+  padding: 20px 10px;
+  width: 90%;
+  background: #FFF;
+  display: flex;
+  justify-content: center;
 }
 
-div.tag-name {
-    font-size: 30px;
+article.tag-proflie .tag-info-container {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+  padding-left: 30px;
+  position: relative;
+  max-width: 900px;
+  width: 100%;
 }
 
-div.like-button {
-    border-radius: 35px;
-    border: 1px solid #000000;
-    margin-left: 30px;
-    /*padding: 20px;*/
-    /*padding-top: 6px;*/
-    width: 100px;
-    height: 17%;
-    text-align: center;
-    position: relative;
-    top: 0.3vw;
+article.tag-proflie div.tag-icon {
+  border-radius: 50%;
+  height: 12px;
+  width: 12px;
+  background: #FF1493;
+  margin-top: 4px;
+  margin-left: 10px;
+  margin-right: 5px;
+  position: absolute;
 }
 
+article.tag-proflie div.tag-name {
+  font-size: 30px;
+}
 
-img.photo {
-  min-height: 100%;
+article.tag-proflie div.like-button {
+  border-radius: 35px;
+  border: 1px solid #000000;
+  margin-left: 30px;
+  width: 100px;
+  height: 17%;
+  background-color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 30px;
+}
+
+article.tag-proflie div.like-button:hover {
+  filter: brightness(0.9);
+}
+
+article.tag-proflie div.like-button:active {
+  filter: brightness(0.7);
+}
+
+article.tag-proflie div.like-button.active {
+  background-color: #21ADEA;
+  color: #FFF;
+  border-color: #AAA;
+}
+
+article.tag-proflie .photo {
+  min-height: 135px;
   min-width: 135px;
-  max-height: 100%;
+  max-height: 135px;
   max-width: 135px;
   margin-right: 20px;
-  border-radius: 100%;
-  background-color: pink;
-
+  border-radius: 50%;
 }
 
-section[role="tag-content"] {
+article.tag-proflie section[role="tag-content"] {
   background-color: #F1F1F1;
   flex: 1;
   width: 100%;
@@ -72,13 +86,31 @@ section[role="tag-content"] {
   flex-direction: row;
   flex-wrap: wrap;
 }
-section[content="event-list"] {
-    flex: 2;
-    display: inline-block;
-    text-align: center;
+
+article.tag-proflie section[content="event-list"] {
+  flex: 2;
+  display: inline-block;
+  text-align: center;
 }
-section[role="tag-content"] .below-carousel {
+
+article.tag-proflie section[role="tag-content"] .below-carousel {
   max-width: 1440px;
   margin: auto;
 }
+
+@media all and (max-width: 630px) {
+  .tag-info-container {
+    flex-direction: column;
+    justify-content: center;
+    padding: 0px !important;
+  }
+  .tag-info-container .photo {
+    margin-right: 0px !important;
+  }
+  .tag-info-container .like-button {
+    position: static !important;
+    margin: 0px !important;
+  }
+}
+
 /*end FM*/

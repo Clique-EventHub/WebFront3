@@ -15,14 +15,17 @@ class channelDetail extends Component {
             'picture': "",
             'detail': [""],
             'picture_large': [],
-            'isLoad': false
+            'isLoad': false,
+            'url': '',
+            'video': {
+                'url': '',
+                'isExist': false
+            }
         }
     }
 
     componentWillMount() {
         axios.get(`${hostname}channel?id=${"595ef6b8822dbf0014cb821b"}`).then((data) => {
-            console.log("get!!!dd");
-            console.log(JSON.stringify(data.data.name))
             this.setState({
                 'name': data.data.name,
                 'picture': data.data.picture,
@@ -31,14 +34,33 @@ class channelDetail extends Component {
                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum eros purus, eu suscipit lorem eleifend eget. Pellentesque a finibus felis. Pellentesque quis neque ut dui finibus iaculis. Fusce ac placerat'
                     ],
                 'picture_large': _.get(data, 'data.picture_large', []),
+                'url': _.get(data, 'data.url', ''),
+                'video': {
+                    'url': 'https://www.youtube.com/embed/XGSy3_Czz8k',//_.get(data, 'data.video', ''),
+                    'isExist': true
+                },
                 'isLoad': true
+            }, () => {
+                const url = this.state.video.url;
+                console.log("Hi")
+                axios.get(url).catch((e) => {
+                    if(e.response.status === 404) {
+                        this.setState((prevState) => {
+                            return {
+                                ...prevState,
+                                'video': {
+                                    'url': prevState.video.url,
+                                    'isExist': false
+                                }
+                            }
+                        })
+                    }
+                })
             });
         }, (error) => {
             console.log("get channel error");
         });
     }
-
-
 
     onExit() {
         this.props.onToggle();
@@ -55,7 +77,7 @@ class channelDetail extends Component {
                         <button className="bt-fol" alt="btn-follow">FOLLOW</button>
                     </div>
                 </div>
-                <p className="l1"></p>
+                <hr className="thin" />
                 <div className="event-bio">
                     <h3 className="display-none">Bio</h3>
                     {
@@ -71,13 +93,28 @@ class channelDetail extends Component {
                             })
                         }
                     </div>
-                    <a href="#" className="box">
-                        FACEBOOK
-                        <div>www.facebook.com</div>
-                    </a>
-                    <a href="#" className="box">
-                        YOUTUBE
-                        <div>www.youtube.com</div>
+                    <hr className="thin" />
+                    {
+                        (this.state.video.isExist) ? (
+                            <div style={{
+                                    'position': 'relative',
+                                    'width': '100%',
+                                    'height': '0px',
+                                    'paddingBottom': '51%'
+                                }}>
+                                    <iframe style={{
+                                        'position': 'absolute',
+                                        'width': '100%',
+                                        'height': '100%',
+                                        'left': '0px',
+                                        'top': '0px'
+                                    }} src={this.state.video.url} />
+                            </div>
+                        ) : null
+                    }
+                    <a href={this.state.url} className="box">
+                        LINK
+                        <div>{this.state.url}</div>
                     </a>
                 </div>
             </section>
