@@ -1,0 +1,117 @@
+
+/* start FM*/
+article.tag-proflie {
+    margin: 20px auto;
+    padding: 20px 10px;
+    width: 90%;
+    background: #FFF;
+    display: flex;
+    justify-content: center;
+
+    .tag-info-container {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        align-items: center;
+        font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
+        padding-left: 30px;
+        position: relative;
+        max-width: 900px;
+        width: 100%;
+    }
+
+    div.tag-icon {
+        border-radius: 50%;
+        height: 12px;
+        width: 12px;
+        background: #FF1493;
+        margin-top:4px;
+        margin-left: 10px;
+        margin-right: 5px;
+        position: absolute;
+    }
+
+    div.tag-name {
+        font-size: 30px;
+    }
+
+    div.like-button {
+        border-radius: 35px;
+        border: 1px solid #000000;
+        margin-left: 30px;
+        width: 100px;
+        height: 17%;
+        background-color: #FFF;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        position: absolute;
+        right: 30px;
+    }
+
+    div.like-button:hover {
+        filter: brightness(0.9);
+    }
+    div.like-button:active {
+        filter: brightness(0.7);
+    }
+
+    div.like-button.active {
+        background-color: #21ADEA;
+        color: #FFF;
+        border-color: #AAA;
+    }
+
+    .photo {
+      min-height: 135px;
+      min-width: 135px;
+      max-height: 135px;
+      max-width: 135px;
+      margin-right: 20px;
+      border-radius: 50%;
+    }
+
+    section[role="tag-content"] {
+      background-color: #F1F1F1;
+      flex: 1;
+      width: 100%;
+      padding: 20px 20px 20px 20px;
+      box-sizing: border-box;
+      min-width: 280px;
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    section[content="event-list"] {
+        flex: 2;
+        display: inline-block;
+        text-align: center;
+    }
+    section[role="tag-content"] .below-carousel {
+      max-width: 1440px;
+      margin: auto;
+    }
+}
+
+@media all and (max-width: 630px) {
+    .tag-info-container {
+        flex-direction: column;
+        justify-content: center;
+        padding: 0px !important;
+
+        .photo {
+            margin-right: 0px !important;
+        }
+
+        .like-button {
+            position: static !important;
+            margin: 0px !important;
+        }
+    }
+}
+/*end FM*/

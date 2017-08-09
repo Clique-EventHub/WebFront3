@@ -61,30 +61,36 @@ section.channel-main section.channel-head div.edit-cn-detail button {
 }
 
 /*width < 768*/
-@media screen and (min-width: 769px) {
+
+@media screen and (max-width: 768px){
+  div.cn-name button.active{
+    border-color: #AAAAAA;
+    color: #555555;
+    background-color: #4ff779;
+  }
+
   div.cn-name {
     position: absolute;
     margin-top: 280px;
     margin-left: 25%;
     margin-right: 20%;
   }
-}
 
-@media screen and (min-width: 769px) {
   div.cn-name div {
     width: 60vw;
   }
-}
 
-@media screen and (max-width: 768px){
   div.cn-name h1{
     font-size: 2.2em;
     margin-top: 25px;
     margin-bottom: 30px;
   }
-}
-@media screen and (max-width: 768px){
-  div.cn-name   button{
+
+  img[alt="cn-profile-pic"]{
+    margin-left: 150px;
+  }
+
+  div.cn-name button{
     position: absolute;
     top: -70px;
     right: -20px;
@@ -99,19 +105,6 @@ section.channel-main section.channel-head div.edit-cn-detail button {
     border-color: #AAAAAA;
     color: #555555;
     background-color: #FFFFFF;
-  }
-}
-@media screen and (max-width: 768px){
-  div.cn-name button.active{
-    border-color: #AAAAAA;
-    color: #555555;
-    background-color: #4ff779;
-  }
-}
-
-@media screen and (max-width: 768px){
-  img[alt="cn-profile-pic"]{
-    margin-left: 150px;
   }
 }
 

@@ -71,7 +71,6 @@ export default (
         <Route path="myEvent" component={MyEventPage} />
         <Route path="table" component={TablePage} />
         <Route path="calendar" component={CalendarPage} />
-        <Route path="event" component={EditEvent}/>
         <Route path="focuskuy" component={ChannelInfo} />
         <Route path="form" component={FormPage} />
         <Route path="fmkuy" component={ChannelDetail} />

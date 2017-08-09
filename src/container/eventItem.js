@@ -130,10 +130,19 @@ class eventItem extends Component {
                 this.onLoadData(this.props.eventId);
             }, 0);
         }
+
+        if(this.props.isLoad) {
+            setTimeout(() => {
+                this.setState({
+                    ...this.state,
+                    isLoad: true
+                })
+            }, 0);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        if(typeof(nextProps.eventId) === "string" && !this.state.isLoad) {
+        if(typeof(nextProps.eventId) === "string" && !this.state.isLoad || !this.props.isLoad && nextProps.isLoad) {
             this.onLoadData(nextProps.eventId);
         }
     }
@@ -253,7 +262,8 @@ class eventItem extends Component {
 }
 
 eventItem.defaultProps = {
-    'eventId': ''
+    'eventId': '595ef6c7822dbf0014cb821c',
+    'isLoad': true
 }
 
 export default eventItem;

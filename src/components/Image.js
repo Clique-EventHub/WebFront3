@@ -18,6 +18,15 @@ class Image extends Component {
         })
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.src !== this.props.src) {
+            this.setState({
+                ...this.state,
+                'isExist': true
+            })
+        }
+    }
+
     render() {
         return (this.state.isExist) ? (
             <img src={this.props.src} onError={this.onError} className={(this.props.imgClass) ? this.props.imgClass : ''} {...this.props.imgOption} />

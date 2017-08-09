@@ -175,10 +175,11 @@ function updateActivities(dispatch) {
     requestWithAuthorization(`${hostname}user/join`, {
         'method': 'get'
     }).then((res) => {
+        //join: res.data[Object.keys(res.data).filter((key) => key !== "notification")],
         dispatch({
             type: types.UPDATE_USER_EVENTS_INFO_JOIN,
             payload: {
-                join: res.data[Object.keys(res.data).filter((key) => key !== "notification")],
+                join: res.data[Object.keys(res.data).filter((key) => key !== "notification")].map((item) => item[Object.keys(item)].event_id),
                 notification: res.data.notification
             }
         })
@@ -190,7 +191,7 @@ function updateActivities(dispatch) {
         dispatch({
             type: types.UPDATE_USER_EVENTS_INFO_INTEREST,
             payload: {
-                interest: res.data[Object.keys(res.data).filter((key) => key !== "notification")],
+                interest: res.data[Object.keys(res.data).filter((key) => key !== "notification")].map((item) => item[Object.keys(item)].event_id),
                 notification: res.data.notification
             }
         })
@@ -202,7 +203,7 @@ function updateActivities(dispatch) {
         dispatch({
             type: types.UPDATE_USER_EVENTS_INFO_SUBSCRIBE,
             payload: {
-                subscribe: res.data[Object.keys(res.data).filter((key) => key !== "notification")],
+                subscribe: res.data[Object.keys(res.data).filter((key) => key !== "notification")].map((item) => item[Object.keys(item)].channel_id),
                 notification: res.data.notification
             }
         })

@@ -855,7 +855,10 @@ button[role="profile-button"] div {
 }
 
 button[role="profile-button"] img {
-  height: calc(2em - 2px);
+  max-height: calc(2em - 2px);
+  min-height: calc(2em - 2px);
+  max-width: calc(2em - 2px);
+  min-width: calc(2em - 2px);
   margin-left: 12px;
   border-radius: 50%;
   border: 1px solid #000;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import autoBind from '../hoc/autoBind';
 import axios from 'axios';
-import { getCookie, clearAllCookie } from '../actions/common';
+import { getCookie, clearAllCookie, getEvent } from '../actions/common';
 import * as facultyMap from '../actions/facultyMap';
 // import { clearAllCookie } from '../actions/common';
 import './css/profilePopup.css';
@@ -9,24 +9,45 @@ import './css/profilePopup.css';
 import { Link } from 'react-router';
 import { hostname } from '../actions/index';
 import ReactLoading from 'react-loading';
+import _ from 'lodash';
 
 const defaultState = {
   'firstName': '',
   'lastName': '',
   'picture': '',
   'faculty': '',
-  'join_events': '',
-  'notification': '',
+  'join_events': [],
+  'notification': [],
+  'upcoming_events': [],
   'n_noti': '',
-  'event1_title': '',
-  'event1_date_start': '',
-  'event2_title': '',
-  'event2_date_start': '',
-  'event3_title': '',
-  'event3_date_start': '',
   'isLoading': true,
   'login': false
 };
+
+function dateToFormat(date, option) {
+	let nDate = new Date(date).toString();
+    let refDate = new Date(date);
+    if(option === 1) return nDate.slice(0, 3) + ", " + nDate.slice(8, 10) + " " + nDate.slice(4, 7) + " " + nDate.slice(11,15)
+    if(option === 2) return refDate.getDate() + "/" + refDate.getMonth() + "/" + refDate.getFullYear()
+    if(option === 3) return refDate.getDate() + "/" + refDate.getMonth() + "/" + String(refDate.getFullYear()).slice(2,4)
+	return nDate.slice(8, 10) + " " + nDate.slice(4, 7) + " " + nDate.slice(11,15)
+}
+
+function compareDate(date1, date2) {
+    const a = new Date(date1);
+    const b = new Date(date2);
+
+    if(a.getFullYear() === b.getFullYear()) {
+        if(a.getMonth() === b.getMonth()) {
+            if(a.getDate() === b.getDate()) return 0;
+            else if(a.getDate() < b.getDate()) return -1;
+            return 1;
+        }
+        else if(a.getMonth() < b.getMonth()) return -1;
+        return 1;
+    } else if(a.getFullYear() < b.getFullYear()) return -1;
+    return 1;
+}
 
 class profilePopup extends Component {
 
@@ -64,49 +85,31 @@ class profilePopup extends Component {
                     'notification': data.data.notification,
                     'n_noti': data.data.notification.length,
                     'isLoading': false
+                }, () => {
+                    this.state.join_events.forEach((id) => {
+                        getEvent(id, false).then((data) => {
+                            this.setState((prevState) => {
+                                if(compareDate(new Date(data.date_start), new Date()) !== 1 && compareDate(new Date(data.date_end), new Date()) !== -1) {
+                                    return {
+                                        ...prevState,
+                                        'upcoming_events': prevState.upcoming_events.concat([{
+                                            'title': data.title,
+                                            'date_start': data.date_start,
+                                            'date_end': data.date_end,
+                                        }])
+                                    }
+                                }
+                                return {
+                                    ...prevState
+                                }
+                            })
+                        }, (error) => {
+                            console.log("get event error", error);
+                        });
+                    })
                 })
-                _this.getEvent(0);
-                _this.getEvent(1);
-                _this.getEvent(2);
             }, (error) => {
                 console.log(error);
-            });
-        }
-    }
-
-    getEvent(i) {
-        let _this = this;
-
-        if(this.state.join_events.length >= i+1){
-            axios.get(`${hostname}event?id=${this.state.join_events[i]}`).then((data) => {
-                if(i === 0){
-                    _this.setState((prevState) => {
-                        return {
-                            ...prevState,
-                            'event1_title': data.data.title,
-                            'event1_date_start': data.data.date_start,
-                        }
-                    })
-                } else if (i === 1) {
-                    _this.setState((prevState) => {
-                        return {
-                            ...prevState,
-                            'event2_title': data.data.title,
-                            'event2_date_start': data.data.date_start,
-                        }
-                    })
-                } else if (i === 2) {
-                    _this.setState((prevState) => {
-                        return {
-                            ...prevState,
-                            'event3_title': data.data.title,
-                            'event3_date_start': data.data.date_start,
-                        }
-                    })
-                }
-
-            }, (error) => {
-                console.log("get event error", error);
             });
         }
     }
@@ -140,9 +143,6 @@ class profilePopup extends Component {
                         'n_noti': data.data.notification.length,
                         'isLoading': false
                     })
-                    _this.getEvent(0);
-                    _this.getEvent(1);
-                    _this.getEvent(2);
                 }, (error) => {
                     console.log("get user error", error);
                 });
@@ -166,6 +166,8 @@ class profilePopup extends Component {
     render() {
         var noti_list = [];
         var noti = this.state.notification;
+
+        // console.log(this.state);
 
         for(var i = 0; i < this.state.n_noti ; i++){
             noti_list.push(<div className="noti"><img src={noti[i].photo} alt="noti-icon" /><p><strong>{noti[i].source} : </strong>{noti[i].title}</p></div>);
@@ -213,21 +215,17 @@ class profilePopup extends Component {
 
                     <div className="profile-section">
                         <h4>YOUR UPCOMING EVENT</h4>
-                        <div className="my-event1">
-                            {(this.state.join_events.length < 1) ? (<div></div>) : (
-                                <div><div alt="event-icon"/> <p><strong>{this.state.event1_title} : </strong> {this.state.event1_date_start}</p></div>
-                            )}
-                        </div>
-                        <div className="my-event2">
-                            {(this.state.join_events.length < 2) ? (<div></div>) : (
-                                <div><div alt="event-icon"/> <p><strong>{this.state.event2_title} : </strong> {this.state.event2_date_start}</p></div>
-                            )}
-                        </div>
-                        <div className="my-event3">
-                            {(this.state.join_events.length < 3) ? (<div></div>) : (
-                                <div><div alt="event-icon"/> <p><strong>{this.state.event3_title} : </strong> {this.state.event3_date_start}</p></div>
-                            )}
-                        </div>
+                        {
+                            _.get(this.state, 'upcoming_events', []).slice(0,3).map((item, index) => {
+                                return (
+                                    <div className="my-event" key={index}>
+                                        <p><strong>{item.title} : </strong>
+                                        {dateToFormat(item.date_start, 3)} to {dateToFormat(item.date_end, 3)}
+                                        </p>
+                                    </div>
+                                );
+                            })
+                        }
                     </div>
 
                     <div className="profile-section">

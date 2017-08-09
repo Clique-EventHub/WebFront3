@@ -101,6 +101,19 @@ class channelPage extends Component {
 
     render() {
         //<ChannelDetail onToggle={this.props.toggle_pop_item} />
+        const moreInfo = (this.props.isAdmin) ? (
+            <div className="cn-detail" onClick={() => {
+                    this.onItemPopUpClick(<ChannelInfo onToggle={this.props.toggle_pop_item} />)
+                }}>
+                <button>EDIT DETAIL</button>
+            </div>
+        ) : (
+            <div className="cn-detail" onClick={() => {
+                    this.onItemPopUpClick(<ChannelDetail onToggle={this.props.toggle_pop_item} />)
+                }}>
+                <button>MORE DETAIL</button>
+            </div>
+        )
         return (
             <section className="channel-main">
                 <button onClick={() => {this.onItemPopUpClick(<EditEvent key="test"/>)}}>Create Event</button>
@@ -111,11 +124,7 @@ class channelPage extends Component {
                     </div>
                     <img src={this.state.cover_picture} alt="cn-cover-pic"/>
                     <img src={this.state.picture} alt="cn-profile-pic"/>
-                    <div className="cn-detail" onClick={() => {
-                            this.onItemPopUpClick(<ChannelInfo onToggle={this.props.toggle_pop_item} />)
-                        }}>
-                        <button>MORE DETAIL</button>
-                    </div>
+                    {moreInfo}
                     <div className="cn-name">
                         <div><h1>{this.state.name}</h1><p>{this.state.detail}</p></div>
                         {(this.state.isFollow) ? (<button className="active" onClick={this.onClick.bind(this)}>FOLLOWING</button>) : (<button onClick={this.onClick.bind(this)}>FOLLOW</button>)}
@@ -148,5 +157,8 @@ class channelPage extends Component {
     }
 }
 
+channelPage.defaultProps = {
+    isAdmin: false
+}
 
 export default normalPage(pages(channelPage, true));

@@ -18,7 +18,7 @@ import axios from 'axios';
 import { hostname } from '../actions/index';
 import { getCookie } from '../actions/common';
 
-const demo = true;
+const demo = false;
 
 class homePage extends Component {
 
@@ -33,7 +33,13 @@ class homePage extends Component {
             'eventUpcomming': demoId,
             'eventForYou': demoId.slice(0, 4),
             'channelSubscribe': demoId,
-            'tagsLike': []
+            'tagsLike': [],
+            'progress': {
+                'hot': false,
+                'new': false,
+                'upcoming': false,
+                'forYou': false
+            }
         }
     }
 
@@ -76,31 +82,97 @@ class homePage extends Component {
                 this.setState((prevState, props) => {
                     return ({
                         ...this.state,
-                        'eventHot': eventHotId
+                        'eventHot': eventHotId,
+                        'progress': {
+                            ...this.state.progress,
+                            'hot': true
+                        }
+                    })
+                })
+            }).catch((e) => {
+                this.setState((prevState, props) => {
+                    return ({
+                        ...this.state,
+                        'eventHot': [],
+                        'progress': {
+                            ...this.state.progress,
+                            'hot': true
+                        }
                     })
                 })
             })
 
             axios.get(`${hostname}event/new`, config).then((data) => data.data.events).then((res) => {
-                this.setState({
-                    ...this.state,
-                    'eventNew': res.map((item) => item._id)
+                this.setState((prevState, props) => {
+                    return ({
+                        ...this.state,
+                        'eventNew': res.map((item) => item._id),
+                        'progress': {
+                            ...this.state.progress,
+                            'new': true
+                        }
+                    })
+                })
+            }).catch(() => {
+                this.setState((prevState, props) => {
+                    return ({
+                        ...this.state,
+                        'eventNew': [],
+                        'progress': {
+                            ...this.state.progress,
+                            'new': true
+                        }
+                    })
                 })
             })
 
             axios.get(`${hostname}event/upcoming`, config).then((data) => data.data.events).then(
             (res) => {
-                this.setState({
-                    ...this.state,
-                    'eventUpcomming': res.map((item) => item._id)
+                this.setState((prevState, props) => {
+                    return ({
+                        ...this.state,
+                        'eventUpcomming': res.map((item) => item._id),
+                        'progress': {
+                            ...this.state.progress,
+                            'upcoming': true
+                        }
+                    })
+                })
+            }).catch(() => {
+                this.setState((prevState, props) => {
+                    return ({
+                        ...this.state,
+                        'eventUpcomming': [],
+                        'progress': {
+                            ...this.state.progress,
+                            'upcoming': true
+                        }
+                    })
                 })
             });
 
             axios.get(`${hostname}event/foryou`, { ...config, ...authConfig }).then((data) => data.data.events).then(
             (res) => {
-                this.setState({
-                    ...this.state,
-                    'eventForYou': res
+                this.setState((prevState, props) => {
+                    return ({
+                        ...this.state,
+                        'eventForYou': res.map((item) => item._id),
+                        'progress': {
+                            ...this.state.progress,
+                            'forYou': true
+                        }
+                    })
+                })
+            }).catch(() => {
+                this.setState((prevState, props) => {
+                    return ({
+                        ...this.state,
+                        'eventForYou': [],
+                        'progress': {
+                            ...this.state.progress,
+                            'forYou': true
+                        }
+                    })
                 })
             })
         }
@@ -138,7 +210,7 @@ class homePage extends Component {
                             <div style={{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
                                 {
                                     this.state.eventNew.map((id, index) => {
-                                        return (<EventItem key={index} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
+                                        return (<EventItem key={index} isLoad={this.state.progress.new} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
                                     })
                                 }
                             </div>
@@ -154,7 +226,7 @@ class homePage extends Component {
                             <div style={{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
                                 {
                                     this.state.eventForYou.map((id, index) => {
-                                        return (<EventItem key={index} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
+                                        return (<EventItem key={index} isLoad={this.state.progress.forYou} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
                                     })
                                 }
                             </div>
