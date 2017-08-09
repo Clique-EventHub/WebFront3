@@ -630,6 +630,7 @@ class EditEvent extends Component {
             Object.keys(mapKeyword).forEach((key) => {
                 compareSetDiff(key, mapKeyword[key], mapConvertFunc[key])
             })
+            console.log(uploadedObj);
             axios.post(`${hostname}event`, {
                 ...uploadedObj,
                 'channel': this.props.channelId

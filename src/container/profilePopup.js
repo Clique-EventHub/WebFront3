@@ -89,7 +89,7 @@ class profilePopup extends Component {
                     this.state.join_events.forEach((id) => {
                         getEvent(id, false).then((data) => {
                             this.setState((prevState) => {
-                                if(compareDate(new Date(data.date_start), new Date()) !== 1 && compareDate(new Date(data.date_end), new Date()) !== -1) {
+                                if(compareDate(new Date(data.date_end), new Date()) !== -1) {
                                     return {
                                         ...prevState,
                                         'upcoming_events': prevState.upcoming_events.concat([{
