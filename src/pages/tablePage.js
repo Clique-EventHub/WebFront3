@@ -33,7 +33,8 @@ class tablePage extends Component {
             'optionActive': false,
             'tableData': sampleData,
             'filteredDataFlags': sampleData.map(() => true),
-            'filterKeyword': ''
+            'filterKeyword': '',
+            'sentMessage' : '',
         }
 
         this.onHightLight = this.onHightLight.bind(this);
@@ -43,8 +44,20 @@ class tablePage extends Component {
         this.onFilterSearch = this.onFilterSearch.bind(this);
         this.onToggleBoolean = this.onToggleBoolean.bind(this);
         this.checkDisable = this.checkDisable.bind(this);
+        this.onSendMessage = this.onSendMessage.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
         // this.onMouseMove = this.onMouseMove.bind(this);
+        let config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
+            }
+        }
+        axios.get(`${hostname}event/stat?id=${this.props.eventId}`, config).then((data) => {
+            console.log('gtetetetete fmmmm!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            console.log(data.data);
 
+        });
         axios.get(`${hostname}event?id=${this.props.eventId}`, { headers: { 'crossDomain': true }}).then((data) => {
             this.setState({
                 ...this.state,
@@ -55,13 +68,6 @@ class tablePage extends Component {
 
             return data.data.forms[testFormId][Object.keys(data.data.forms[testFormId])[0]];
         }).then((formId) => {
-            let config = {
-                'headers': {
-                    'Authorization': ('JWT ' + getCookie('fb_sever_token')),
-                    'crossDomain': true
-                }
-            }
-
             axios.get(`${hostname}form?id=${formId}&opt=responses`, config).then((data) => {
                 this.setState({
                     ...this.state,
@@ -70,6 +76,7 @@ class tablePage extends Component {
                 });
             })
         });
+
     }
 
     onToggleBoolean(row, col, forcedValue) {
@@ -259,6 +266,29 @@ class tablePage extends Component {
         return (this.state.selectedCell.row === null && this.state.selectedCell.col === null)
     }
 
+    onSendMessage() {
+        this.setState({
+          ...this.state,
+          'sentMessage': this.refs.sent_message.value,
+        });
+    }
+
+    sendMessage() {
+      let config = {
+          'headers': {
+              'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+              'crossDomain': true
+          }
+      }
+      let data = {
+          description: this.state.sentMessage,
+      }
+      axios.post(`${hostname}event/join/message?id=${this.props.eventId}`, data, config).then((data) => {
+          console.log('post ja');
+      });
+    }
+
+
     render() {
         let csvData = [["No.", ...fields]];
         let count = 1;
@@ -350,8 +380,8 @@ class tablePage extends Component {
                                 }}>REJECT</button>
                         </div>
                         <div className="Input-group">
-                            <input type="text" />
-                            <button disabled={this.checkDisable()} className={`${(this.checkDisable()) ? 'cursor-disabled' : ''}`}>SEND MESSAGE</button>
+                            <input type="text" ref="sent_message" value={this.state.sentMessage} onChange={() => this.onSendMessage()} />
+                            <button disabled={this.checkDisable()} className={`${(this.checkDisable()) ? 'cursor-disabled' : ''}`} onClick={() => this.sendMessage()}>SEND MESSAGE</button>
                         </div>
                         <button><CSVLink filename={`Export-[${this.state.eventName}]-(${new Date().toString().slice(0, 10)}).csv`} data={csvData}>EXPORT (CSV)</CSVLink></button>
                     </div>
