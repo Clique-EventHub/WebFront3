@@ -53,14 +53,27 @@ class tablePage extends Component {
                 'crossDomain': true
             }
         }
-        axios.get(`${hostname}event/stat?id=${this.props.eventId}`, config).then((data) => {
-            console.log('gtetetetete fmmmm!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-            console.log(data.data);
 
+        let _this = this;
+
+        axios.get(`${hostname}event/stat?id=${this.props.eventId}`, config).then((data) => {
+            console.log('get stat');
+            console.log(data.data);
+            let joined = data.data.join_data;
+            var allData = [];
+            for(var i = 0; i < joined.length; i++){
+                let row = [false, false, "", joined[i].firstNameTH, joined[i].lastNameTH, joined[i].nick_name, "", joined[i].phone, "", joined[i].firstName+" "joined[i].lastName, "", joined[i].disease];
+                allData.push(row);
+            }
+            _this.setState({
+                ..._this.state,
+                'tableData': allData;
+            })
         });
+
         axios.get(`${hostname}event?id=${this.props.eventId}`, { headers: { 'crossDomain': true }}).then((data) => {
-            this.setState({
-                ...this.state,
+            _this.setState({
+                ..._this.state,
                 'formId': data.data.forms[testFormId][Object.keys(data.data.forms[testFormId])[0]],
                 'formTitle': Object.keys(data.data.forms[testFormId])[0],
                 'eventName': data.data.title
@@ -69,8 +82,8 @@ class tablePage extends Component {
             return data.data.forms[testFormId][Object.keys(data.data.forms[testFormId])[0]];
         }).then((formId) => {
             axios.get(`${hostname}form?id=${formId}&opt=responses`, config).then((data) => {
-                this.setState({
-                    ...this.state,
+                _this.setState({
+                    ..._this.state,
                     'formData': data.data.form,
                     'responses': data.data.form.responses
                 });
@@ -118,6 +131,7 @@ class tablePage extends Component {
     }
 
     onClickCell(row, col) {
+        //console.log("click");
         if(row > 0) {
             const selected_cell = this.refs["main-table"].children[1].children[row-1].children[col];
             if(this.state.selectedCell.row === row && this.state.selectedCell.col === col) {

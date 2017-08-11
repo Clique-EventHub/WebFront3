@@ -86,9 +86,9 @@ class profilePopup extends Component {
                     'n_noti': data.data.notification.length,
                     'isLoading': false
                 }, () => {
-                    this.state.join_events.forEach((id) => {
+                    _this.state.join_events.forEach((id) => {
                         getEvent(id, false).then((data) => {
-                            this.setState((prevState) => {
+                            _this.setState((prevState) => {
                                 if(compareDate(new Date(data.date_end), new Date()) !== -1) {
                                     return {
                                         ...prevState,
