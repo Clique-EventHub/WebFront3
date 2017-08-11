@@ -62,12 +62,12 @@ class tablePage extends Component {
             let joined = data.data.join_data;
             var allData = [];
             for(var i = 0; i < joined.length; i++){
-                let row = [false, false, "", joined[i].firstNameTH, joined[i].lastNameTH, joined[i].nick_name, "", joined[i].phone, "", joined[i].firstName+" "joined[i].lastName, "", joined[i].disease];
+                let row = [false, false, "", joined[i].firstNameTH, joined[i].lastNameTH, joined[i].nick_name, "", joined[i].phone, "", joined[i].firstName+" "+joined[i].lastName, "", joined[i].disease];
                 allData.push(row);
             }
             _this.setState({
                 ..._this.state,
-                'tableData': allData;
+                'tableData': allData
             })
         });
 
