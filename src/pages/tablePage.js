@@ -32,8 +32,9 @@ class tablePage extends Component {
             },
             'optionActive': false,
             'tableData': sampleData,
-            'filteredDataFlags': sampleData.map(() => true),
-            'filterKeyword': ''
+            'filteredDataFlags': sampleData.map(() => true),    //sampleData => this.state.tableData?
+            'filterKeyword': '',
+            'sentMessage' : '',
         }
 
         this.onHightLight = this.onHightLight.bind(this);
@@ -43,11 +44,45 @@ class tablePage extends Component {
         this.onFilterSearch = this.onFilterSearch.bind(this);
         this.onToggleBoolean = this.onToggleBoolean.bind(this);
         this.checkDisable = this.checkDisable.bind(this);
+        this.onSendMessage = this.onSendMessage.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
         // this.onMouseMove = this.onMouseMove.bind(this);
+        let config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
+            }
+        }
+
+        let _this = this;
+
+        axios.get(`${hostname}event/stat?id=${this.props.eventId}`, config).then((data) => {
+            console.log('get stat');
+            console.log(data.data);
+            let joined = data.data.join_data;
+            let keys = new Set();
+            joined.forEach((item) => {
+                Object.keys(item).forEach((key) => keys.add(key))
+            })
+            var allData = [];
+            for(var i = 0; i < joined.length; i++){
+              var row = [false, false];
+                keys.forEach((key) => {
+                    row.push(joined[i][key])
+                })
+                console.log(row);
+                //let row = [false, false, "", joined[i].firstNameTH, joined[i].lastNameTH, joined[i].nick_name, "", joined[i].phone, "", joined[i].firstName+" "+joined[i].lastName, "", joined[i].disease];
+                allData.push(row);
+            }
+            _this.setState({
+                ..._this.state,
+                'tableData': allData
+            })
+        });
 
         axios.get(`${hostname}event?id=${this.props.eventId}`, { headers: { 'crossDomain': true }}).then((data) => {
-            this.setState({
-                ...this.state,
+            _this.setState({
+                ..._this.state,
                 'formId': data.data.forms[testFormId][Object.keys(data.data.forms[testFormId])[0]],
                 'formTitle': Object.keys(data.data.forms[testFormId])[0],
                 'eventName': data.data.title
@@ -55,21 +90,15 @@ class tablePage extends Component {
 
             return data.data.forms[testFormId][Object.keys(data.data.forms[testFormId])[0]];
         }).then((formId) => {
-            let config = {
-                'headers': {
-                    'Authorization': ('JWT ' + getCookie('fb_sever_token')),
-                    'crossDomain': true
-                }
-            }
-
             axios.get(`${hostname}form?id=${formId}&opt=responses`, config).then((data) => {
-                this.setState({
-                    ...this.state,
+                _this.setState({
+                    ..._this.state,
                     'formData': data.data.form,
                     'responses': data.data.form.responses
                 });
             })
         });
+
     }
 
     onToggleBoolean(row, col, forcedValue) {
@@ -111,6 +140,7 @@ class tablePage extends Component {
     }
 
     onClickCell(row, col) {
+        //console.log("click");
         if(row > 0) {
             const selected_cell = this.refs["main-table"].children[1].children[row-1].children[col];
             if(this.state.selectedCell.row === row && this.state.selectedCell.col === col) {
@@ -259,6 +289,29 @@ class tablePage extends Component {
         return (this.state.selectedCell.row === null && this.state.selectedCell.col === null)
     }
 
+    onSendMessage() {
+        this.setState({
+          ...this.state,
+          'sentMessage': this.refs.sent_message.value,
+        });
+    }
+
+    sendMessage() {
+      let config = {
+          'headers': {
+              'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+              'crossDomain': true
+          }
+      }
+      let data = {
+          description: this.state.sentMessage,
+      }
+      axios.post(`${hostname}event/join/message?id=${this.props.eventId}`, data, config).then((data) => {
+          console.log('post ja');
+      });
+    }
+
+
     render() {
         let csvData = [["No.", ...fields]];
         let count = 1;
@@ -350,8 +403,8 @@ class tablePage extends Component {
                                 }}>REJECT</button>
                         </div>
                         <div className="Input-group">
-                            <input type="text" />
-                            <button disabled={this.checkDisable()} className={`${(this.checkDisable()) ? 'cursor-disabled' : ''}`}>SEND MESSAGE</button>
+                            <input type="text" ref="sent_message" value={this.state.sentMessage} onChange={() => this.onSendMessage()} />
+                            <button disabled={this.checkDisable()} className={`${(this.checkDisable()) ? 'cursor-disabled' : ''}`} onClick={() => this.sendMessage()}>SEND MESSAGE</button>
                         </div>
                         <button><CSVLink filename={`Export-[${this.state.eventName}]-(${new Date().toString().slice(0, 10)}).csv`} data={csvData}>EXPORT (CSV)</CSVLink></button>
                     </div>
@@ -362,7 +415,7 @@ class tablePage extends Component {
 }
 
 tablePage.defaultProps = {
-    'eventId': '594bf476e374d100140f04ec'
+    'eventId': '595ef6c7822dbf0014cb821c'
 }
 
 
