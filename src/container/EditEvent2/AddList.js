@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import { hostname } from '../../actions/index';
+import Image from '../../components/Image';
 
 class AddList extends Component {
     constructor(props) {
@@ -208,6 +209,7 @@ class AddList extends Component {
         if(this.props.mode === 2) {
             userInfoArray = this.state.children.map((id) => this.getUserInfoFromMap(id))
         }
+
         return (
             <div className={`AddList ${this.props.className ? this.props.className : ''}`} style={
                     (this.state.mode === 2) ? {
@@ -271,15 +273,25 @@ class AddList extends Component {
                                                 'justifyContent': 'center',
                                                 'alignItems': 'center'
                                             }}>
-                                            <img
+                                            <Image
                                                 src={_.get(userInfoArray[index], 'picture_200px', _.get(userInfoArray[index], 'picture', ''))}
-                                                style={{
-                                                    'height': '50px',
-                                                    'width': '50px',
-                                                    'borderRadius': '50%',
-                                                    'marginRight': '10px'
+                                                imgOption={{
+                                                    'style': {
+                                                        'height': '50px',
+                                                        'width': '50px',
+                                                        'borderRadius': '50%',
+                                                        'marginRight': '10px'
+                                                    }
                                                 }}
-                                                />
+                                                rejectOption={{
+                                                    'style': {
+                                                        'height': '50px',
+                                                        'width': '50px',
+                                                        'borderRadius': '50%',
+                                                        'marginRight': '10px'
+                                                    }
+                                                }}
+                                            />
                                             <div>
                                                 <span>{_.get(userInfoArray[index], 'firstName', '') + " " + _.get(userInfoArray[index], 'lastName', '')}</span>
                                                 <div>[REG ID]</div>

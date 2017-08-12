@@ -392,16 +392,21 @@ class Calendar extends Component {
 
     componentWillMount() {
         this.onSetCalendar(new Date(this.state.refDate));
-        let sortedEvents = [...this.state.events];
-        sortedEvents = sortedEvents.sort((a, b) => {
-            if(a.from < b.from) return -1;
-            else if(a.from > b.from) return 1;
-            return 0;
-        });
-        this.setState({
-            ...(this.state),
-            'events': sortedEvents
-        });
+        this.getEventInfo(this.props).then((events) => {
+            let sortedEvents = events;
+            sortedEvents = sortedEvents.sort((a, b) => {
+                if(a.from < b.from) return -1;
+                else if(a.from > b.from) return 1;
+                return 0;
+            });
+
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
+                    'events': sortedEvents
+                }
+            })
+        })
     }
 
     componentWillReceiveProps(nextProps) {

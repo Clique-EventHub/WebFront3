@@ -118,10 +118,6 @@ class channelPage extends Component {
             <section className="channel-main">
                 <button onClick={() => {this.onItemPopUpClick(<EditEvent key="test"/>)}}>Create Event</button>
                 <section className="channel-head">
-                    <div className="cn-tag">
-                        <Circle parent="tag" />
-                        <Circle parent="tag" />
-                    </div>
                     <img src={this.state.cover_picture} alt="cn-cover-pic"/>
                     <img src={this.state.picture} alt="cn-profile-pic"/>
                     {moreInfo}

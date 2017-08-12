@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './css/channelDetail.css';
 import axios from 'axios';
 import { hostname } from '../actions/index';
-import { getCookie, getChannel } from '../actions/common';
+import { getCookie, getChannel, getTags } from '../actions/common';
 import Image from '../components/Image';
 import Btn from '../components/Btn';
 import PictureUpload from '../components/PictureUpload';
@@ -10,48 +10,6 @@ import _ from 'lodash';
 import ReactLoading from 'react-loading';
 
 const enableTag = false;
-
-const TAG_1 = [
-    "CAMP",
-    "THEATHRE",
-    "TALK",
-    "FIRSTMEET",
-    "RECRUITMENT",
-    "MARKET",
-    "VOLUNTEER",
-    "CONCERT",
-    "FESTIVAL",
-    "OPENING",
-    "CONTEST",
-    "EXHIBITION",
-    "WORKSHOP",
-    "RELIGION",
-    "",
-    "",
-    "",
-    "",
-    ""
-];
-
-const TAG_2 = [
-    "CHARITY",
-    "ACADEMIC",
-    "BUSINESS",
-    "CAREER",
-    "SPORT",
-    "ARTS",
-    "FOOD&DRINK",
-    "EDUCATION",
-    "MUSIC",
-    "TECHNOLOGY",
-    "NATURAL",
-    "HEALTH",
-    "",
-    "",
-    "",
-    "",
-    ""
-]
 
 const defaultText = 'NO INFO';
 
@@ -109,8 +67,6 @@ class channelInfo extends Component {
         super(props);
 
         let tagState = {};
-        TAG_1.filter((item) => item.length > 0).forEach((item) => tagState[item] = false);
-        TAG_2.filter((item) => item.length > 0).forEach((item) => tagState[item] = false);
 
         this.state = {
             'channel_id': "595ef6b8822dbf0014cb821b",
@@ -120,8 +76,28 @@ class channelInfo extends Component {
             'picture_file': [],
             'isLoad': false,
             'tagsState': tagState,
-            'refObj': null
+            'refObj': null,
+            'TAG_1': [],
+            'TAG_2': []
         }
+
+        getTags().then((tags) => {
+            this.setState((prevState) => {
+                let all_tags = [];
+                Object.keys(tags).forEach((key) => {
+                    all_tags = all_tags.concat(tags[key])
+                })
+                let tagState = this.state.tagState;
+                all_tags.filter((item) => item.length > 0).forEach((item) => tagState[item] = false);
+
+                return ({
+                    ...prevState,
+                    TAG_1: tags.Platform,
+                    TAG_2: tags.Content,
+                    tagState: tagState
+                });
+            })
+        })
 
         getChannel(this.state.channel_id, false).then((data) => {
             this.setState((prevState, props) => {
@@ -365,7 +341,7 @@ class channelInfo extends Component {
                             <h1>TAG</h1>
                             <div className="tag-container">
                                 {
-                                    TAG_1.map((key, index) => {
+                                    this.state.TAG_1.map((key, index) => {
                                         return (
                                             <Btn
                                                 key={index}
@@ -382,7 +358,7 @@ class channelInfo extends Component {
                             </div>
                             <div className="tag-container mar-v-10">
                                 {
-                                    TAG_2.map((key, index) => {
+                                    this.state.TAG_2.map((key, index) => {
                                         return (
                                             <Btn
                                                 key={index}

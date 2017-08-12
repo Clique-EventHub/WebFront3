@@ -114,7 +114,7 @@ div.my-noti p {
 }
 
 
-div.my-noti img[alt="noti-icon"] {
+div.my-noti img {
   height: calc(12px);
   width: calc(12px);
   margin-left: 10px;

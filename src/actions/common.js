@@ -2,6 +2,9 @@ import axios from 'axios';
 import { hostname } from './index';
 import { myStore } from '../index';
 import * as actions from './index'
+import _ from 'lodash';
+
+const waitTime = 200;
 
 export function clone(obj) {
     if (null === obj || "object" !== typeof obj) return obj;
@@ -151,8 +154,16 @@ export function getEvent(id, stat) {
                 ).catch((e) => reject(e))
             } else {
                 setTimeout(() => {
-                    resolve(myStore.getState().map.events[id]);
-                }, 200);
+                    if(myStore.getState().map.events[id]) return resolve(myStore.getState().map.events[id]);
+                    else {
+                        axios.get(`${hostname}event?id=${id}&stat=${useStat}`, {
+                            crossDomain: true
+                        }).then(
+                            (data) => resolve(data.data)
+                        ).catch((e) => reject(e))
+                    }
+                    // resolve(myStore.getState().map.events[id]);
+                }, waitTime);
             }
         } else {
             resolve(eventMap[id])
@@ -165,12 +176,67 @@ export function getChannel(id, stat) {
     const useStat = stat ? stat : false;
     return new Promise((resolve, reject) => {
         if(typeof channelMap[id] === "undefined") {
-            actions.checkChannel(id);
-            axios.get(`${hostname}channel?id=${id}&stat=${useStat}`).then(
-                (data) => resolve(data.data)
-            ).catch((e) => reject(e))
+            if(actions.checkChannel(id)) {
+                axios.get(`${hostname}channel?id=${id}&stat=${useStat}`).then(
+                    (data) => resolve(data.data)
+                ).catch((e) => reject(e))
+            } else {
+                setTimeout(() => {
+                    if(myStore.getState().map.channels[id]) return resolve(myStore.getState().map.channels[id]);
+                    else {
+                        axios.get(`${hostname}channel?id=${id}&stat=${useStat}`).then(
+                            (data) => resolve(data.data)
+                        ).catch((e) => reject(e))
+                    }
+                    // resolve(myStore.getState().map.channels[id]);
+                }, waitTime);
+            }
         } else {
             resolve(channelMap[id])
         }
+    })
+}
+
+export function checkIsJoin(eventId) {
+    const userStore = myStore.getState().user;
+    return (_.get(userStore, 'events.general.join', []).indexOf(eventId) !== -1)
+}
+
+export function checkAdmin(id) {
+    const userStore = myStore.getState().user;
+    return (_.get(userStore, 'events.admin.event', []).concat(_.get(userStore, 'events.admin.channel', [])).indexOf(id) !== -1)
+}
+
+export function getTags() {
+    return new Promise((resolve, reject) => {
+        resolve({
+            'Platform': [
+                'CAMP',
+                'WORKSHOP',
+                'TALK',
+                'EXHIBITION',
+                'STAFF-RECRUIT',
+                'VOLUNTEER',
+                'CONTEST',
+                'THEATRE',
+                'FIRSTMEET',
+                'RELIGION',
+                'OPENING'
+            ],
+            'Content': [
+                'ARTS',
+                'MUSIC',
+                'BUSINESS',
+                'TECHNOLOGY',
+                'SPORT',
+                'CHARITY',
+                'ACADEMIN',
+                'CAREER',
+                'EDUCATION',
+                'NATURAL',
+                'HEALTH',
+                'FOOD&DRINK'
+            ]
+        })
     })
 }

@@ -260,6 +260,28 @@
   display: inline-block;
 }
 
+.event-edit .AddList div[data-role=bottom-button] button {
+  border-color: #ccc !important;
+  color: #999 !important;
+  background-color: #fff !important;
+  border: 1.8px solid;
+  padding: 10px 20px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.event-edit .AddList div[data-role=bottom-button]:hover button,
+.event-edit .AddList div[data-role=bottom-button]:active button {
+  background-color: #5E80FF !important;
+  color: #FFF !important;
+  border-color: #EEE !important;
+}
+
+.event-edit .AddList button > img {
+  height: 1em;
+  width: 1em;
+}
+
 .event-edit .AddList.Border {
   border: 1px solid #CCC;
   border-radius: 5px;

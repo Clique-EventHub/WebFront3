@@ -33,6 +33,10 @@ button {
     padding-bottom: 0px;
 }
 
+.cursor-disable {
+    cursor: not-allowed;
+}
+
 .force-smooth {
     -webkit-transform: translate3d(0, 0, 0);
     -moz-transform: translate3d(0, 0, 0);
@@ -726,6 +730,11 @@ section[role="carousel"] {
         }
     }
 
+    .slick-track,
+    .slick-list {
+        height: calc(322/574 * 65vw) !important;
+    }
+
     .slick-slide {
         text-align: center;
         color: #419be0;
@@ -866,7 +875,8 @@ article[role="event-item"]:active {
 
 article[role="event-item"].card-only {
     width: calc(0.621*#{$event-item-height});
-    img[role="main-poster"] {
+    img[role="main-poster"],
+    div[role="main-poster"] {
         border-radius: 5px;
     }
     section[content="detail"] {
@@ -971,6 +981,11 @@ article[role="event-item"] {
         box-sizing: border-box;
         display: inline-block;
 
+        .join-section {
+            position: absolute;
+            top: -10px;
+            right: 15px;
+        }
         .small {
             display: block;
             font-size: calc(0.03157894736842 * #{$event-item-height});
@@ -980,6 +995,7 @@ article[role="event-item"] {
             font-size: calc(0.03947368421053 * #{$event-item-height});
         }
         .big {
+            margin-top: 15px;
             display: block;
             font-weight: 900;
             letter-spacing: 0px;
@@ -1078,6 +1094,26 @@ article.tag-item {
     align-items: center;
     margin-right: 20px;
     margin-top: 20px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    div {
+        color: #FFF;
+        width: 90%;
+        white-space: normal;
+        word-wrap: break-word;
+        text-align: center;
+    }
+
+    .small {
+        font-size: 0.75em;
+    }
+
+    .smaller {
+        font-size: 0.5em;
+    }
 }
 
 article.tag-item:hover,
@@ -1538,6 +1574,10 @@ section[content="event-list"] {
   flex: 2;
   display: inline-block;
   text-align: center;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 section[role="tag-content"] .below-carousel {

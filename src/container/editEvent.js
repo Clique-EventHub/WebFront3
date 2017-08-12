@@ -11,7 +11,7 @@ import CustomRadio from '../components/CustomRadio';
 import PictureUpload from '../components/PictureUpload';
 import MultipleChoice from '../components/MultipleChoice';
 
-import { getCookie, objModStr } from '../actions/common';
+import { getCookie, objModStr, getTags } from '../actions/common';
 import { hostname } from '../actions/index';
 import { getCodeList, findInfoById } from '../actions/facultyMap';
 
@@ -97,8 +97,8 @@ class EditEvent extends Component {
                 'url': []
             },
             'tagsState': {
-                'top': TAG_1.map(() => false),
-                'bottom': TAG_2.map(() => false)
+                'top': [],
+                'bottom': []
             },
             'fieldsState': fieldState,
             'enableQuestion': false,
@@ -142,6 +142,18 @@ class EditEvent extends Component {
         this.onTextAreaChange = this.onTextAreaChange.bind(this);
         this.onChangeValue = this.onChangeValue.bind(this);
         this.onChangeArrayValue = this.onChangeArrayValue.bind(this);
+
+        getTags().then((tags) => {
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    tagsState: {
+                        top: tags.Platform.map(() => false),
+                        bottom: tags.Content.map(() => false)
+                    }
+                })
+            })
+        })
     }
 
     componentWillMount() {
@@ -224,9 +236,9 @@ class EditEvent extends Component {
                 note: item.note
             }
         });
-        new_state.maxJoin = states.joinable_amount;
-        new_state.poster = [states.picture];
-        new_state.picture = states.picture_large;
+        new_state.maxJoin = _.get(states, 'joinable_amount', -1);
+        new_state.poster = [_.get(states, 'picture', '')];
+        new_state.picture = _.get(states, 'picture_large', []);
         new_state.isLoad = true;
         new_state.eventTitle = states.title;
         new_state.eventLocation = states.location;
@@ -297,7 +309,8 @@ class EditEvent extends Component {
             'faculty_require': 'selectedFaculty',
             'year_require': 'selectedYear',
             'joinable_end_time': 'joinableDate',
-            'joinable_start_time': 'joinableDate'
+            'joinable_start_time': 'joinableDate',
+            'about': 'eventDetail'
         }
 
         uploadedObj["notes"] = [];
@@ -326,7 +339,7 @@ class EditEvent extends Component {
 
         const mapConvertFunc = {
             'time_each_day': (res) => _.get(res, 'Dates', []),
-            'about': (res) => _.get(res, '', '').split("\n\n"),
+            'about': (res) => (res || '').split("\n\n"),
             'time_start': (res) => {
                 let start_date = _.get(res, 'Dates[0]', [new Date(new Date().setTime(0))]);
                 if(start_date.constructor === Array) start_date = start_date[0];
@@ -440,8 +453,6 @@ class EditEvent extends Component {
         });
 
         if(this.props.eventId && this.props.eventId.length > 0) {
-            console.log(uploadedObj)
-
             if(refObject.picture !== _.get(this.state, 'poster[0]', '')) {
                 const oldPoster = new Set(refObject.picture);
                 const newPoster = this.state.poster[0];
@@ -522,7 +533,7 @@ class EditEvent extends Component {
                 posterPromises.push(axios.delete(`${hostname}picture`, {
                     ...config,
                     'data': {
-                        'urls': [oldPoster]
+                        'urls': _.get(this.state, 'poster_file', [])
                     }
                 }));
 
@@ -630,7 +641,7 @@ class EditEvent extends Component {
             Object.keys(mapKeyword).forEach((key) => {
                 compareSetDiff(key, mapKeyword[key], mapConvertFunc[key])
             })
-            console.log(uploadedObj);
+            //console.log(uploadedObj);
             axios.post(`${hostname}event`, {
                 ...uploadedObj,
                 'channel': this.props.channelId
@@ -1157,7 +1168,7 @@ class EditEvent extends Component {
 }
 
 EditEvent.defaultProps = {
-    'eventId': "",
+    'eventId': "598aef082aa6c7200c09a8c7",
     'channelId': "595ef6b8822dbf0014cb821b"
 }
 

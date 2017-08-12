@@ -16,7 +16,8 @@ import EventDetailFix from '../container/eventDetail2';
 
 import axios from 'axios';
 import { hostname } from '../actions/index';
-import { getCookie } from '../actions/common';
+import { getCookie, getChannel, getTags } from '../actions/common';
+import _ from 'lodash';
 
 const demo = false;
 
@@ -39,13 +40,59 @@ class homePage extends Component {
                 'new': false,
                 'upcoming': false,
                 'forYou': false
-            }
+            },
+            'channelList': {
+                'list': [],
+                'isLoad': false
+            },
+            'tags': []
         }
     }
 
     onItemPopUpClick(item) {
         this.props.set_pop_up_item(item);
         this.props.toggle_pop_item();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.fb.isLogin && !this.state.channelList.isLoad) {
+            const channelIDs = _.get(nextProps, 'user.events.general.subscribe', []);
+            Promise.all(channelIDs.map((id) => getChannel(id, false).then((data) => {
+                this.setState((prevState) => {
+                    return {
+                        ...prevState,
+                        channelList: {
+                            list: prevState.channelList.list.concat([{
+                                name: data.title,
+                                id: data._id
+                            }]),
+                            isLoad: prevState.channelList.isLoad
+                        }
+                    }
+                })
+                return true;
+            }))).then(() => {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        channelList: {
+                            ...prevState.channelList,
+                            isLoad: true
+                        }
+                    })
+                })
+            }).catch(() => {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        channelList: {
+                            ...prevState.channelList,
+                            isLoad: true
+                        }
+                    })
+                })
+            })
+        }
     }
 
     componentWillMount() {
@@ -74,10 +121,11 @@ class homePage extends Component {
 
         if(!demo) {
             axios.get(`${hostname}event/hot`, config).then((data) => data.data).then((res) => {
-                let eventHotId = [];
-                if(res.first) eventHotId.push(res.first._id);
-                if(res.second) eventHotId.push(res.second._id);
-                if(res.third) eventHotId.push(res.third._id);
+                let eventHotId = res.map((item) => {
+                    return (
+                        item._id
+                    );
+                })
 
                 this.setState((prevState, props) => {
                     return ({
@@ -175,6 +223,27 @@ class homePage extends Component {
                     })
                 })
             })
+
+            getTags().then((tags) => {
+                let new_tag = [];
+                Object.keys(tags).forEach((key) => {
+                    new_tag = new_tag.concat(tags[key]);
+                })
+
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        'tags': new_tag
+                    })
+                })
+            }).catch((e) => {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        'tags': []
+                    })
+                })
+            })
         }
     }
 
@@ -185,25 +254,23 @@ class homePage extends Component {
     }
 
     render() {
-
         //Note: if EventDetail is shown, side-menu should not be pressed -> drastic layout change
-
         return (
             <section role="main-content">
                 <h1 className="display-none">Main body</h1>
                 <section role="carousel">
                     <h2 className="display-none">Carousel</h2>
-                    <SlickCarousel onItemPopUpClick={this.onItemPopUpClick} onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                    <SlickCarousel onItemPopUpClick={this.onItemPopUpClick} onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} isLoad={this.state.progress.hot} eventIds={this.state.eventHot} />
                 </section>
                 <div className="below-carousel">
                     <section content="upcomming">
                         <h2>Upcoming Events</h2>
-                        <CardList eventIds={this.state.eventUpcomming} onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                        <CardList eventIds={this.state.eventUpcomming} isLoad={this.state.progress.upcoming} onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                     </section>
                     <section content="bottom-half">
                         <section content="tag">
                             <h2>Tag</h2>
-                            <CircleList parent="tag" />
+                            <CircleList parent="tag" tags={this.state.tags} />
                         </section>
                         <section content="new">
                             <h2>New</h2>
@@ -219,7 +286,7 @@ class homePage extends Component {
                     <section content="bottom-half">
                         <section content="channel">
                             <h2>Channel</h2>
-                            <ChannelList />
+                            <ChannelList channelList={this.state.channelList.list} />
                         </section>
                         <section content="for-you">
                             <h2>For you</h2>

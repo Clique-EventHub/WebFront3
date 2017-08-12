@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import EventDetail from './eventDetail';
 import EventDetailFix from './eventDetail2';
 import _ from 'lodash';
-import { getRandomShade, getEvent } from '../actions/common';
+import { getRandomShade, getEvent, checkIsJoin } from '../actions/common';
 import { hostname } from '../actions/index';
 
 const defaultState = {
@@ -124,20 +124,18 @@ class eventItem extends Component {
         }
         tmp.isJoined = (typeof(this.props.isJoined) === "boolean") ? this.props.isJoined : (typeof(this.props.isJoined) === "string") ? (this.props.isJoined === "true") : false;
         this.state = tmp;
+    }
 
+    componentWillMount() {
         if(typeof(this.props.eventId) === "string" && !this.state.isLoad) {
-            setTimeout(() => {
-                this.onLoadData(this.props.eventId);
-            }, 0);
+            this.onLoadData(this.props.eventId);
         }
 
         if(this.props.isLoad) {
-            setTimeout(() => {
-                this.setState({
-                    ...this.state,
-                    isLoad: true
-                })
-            }, 0);
+            this.setState({
+                ...this.state,
+                isLoad: true
+            })
         }
     }
 
@@ -149,18 +147,20 @@ class eventItem extends Component {
 
     onLoadData(id) {
         getEvent(id, false).then((res) => {
-            this.setState((prevState) => {
-                return ({
-                    ...prevState,
-                    title: _.get(res, 'title', defaultState.title),
-                    poster: _.get(res, 'picture', defaultState.poster),
-                    channel_name: _.get(res, 'channel_name', defaultState.channel_name),
-                    location: _.get(res, 'location', defaultState.location),
-                    about: _.get(res, 'about[0]', defaultState.about),
-                    isLoad: true,
-                    date_time: _.get(res, 'time_each_day', [])
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        title: _.get(res, 'title', defaultState.title),
+                        poster: _.get(res, 'picture', defaultState.poster),
+                        channel_name: _.get(res, 'channel_name', defaultState.channel_name),
+                        location: _.get(res, 'location', defaultState.location),
+                        about: _.get(res, 'about[0]', defaultState.about),
+                        isLoad: true,
+                        date_time: _.get(res, 'time_each_day', [])
+                    })
                 })
-            })
+            }
         }).catch((e) => {
             console.log(e);
         })
@@ -184,6 +184,14 @@ class eventItem extends Component {
         this.props.onToggle();
     }
 
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     render() {
         let detailShownClass = (this.props["detail-shown"] === "false") ? "card-only" : "";
         detailShownClass += (this.props.noGlow === "true") ? " basic-card-no-glow" : "";
@@ -196,6 +204,7 @@ class eventItem extends Component {
         }
 
         let dateString = '';
+        tmp.isJoined = checkIsJoin(this.props.eventId);
 
         if(tmp.date_time.length > 0) {
             let dateStart = tmp.date_time[0];
@@ -223,13 +232,13 @@ class eventItem extends Component {
                 <DivImg src={replaceIncorrectLink(tmp.poster)} options={{'role': 'main-poster', 'alt': 'main-poster'}} />
                 <div role="overlay" aria-hidden="true"></div>
                 {
-                    (this.state.isJoined) ? (<span className="small top" role="joined"><i className="fa fa-check" aria-hidden="true"></i> Joined</span>) : (<span className="small top" role="joined" style={{'display': 'block', 'height': '1em'}}/>)
+                    (tmp.isJoined) ? (<span className="small top" role="joined"><i className="fa fa-check" aria-hidden="true"></i> Joined</span>) : (<span className="small top" role="joined" style={{'display': 'block', 'height': '1em'}}/>)
                 }
                 <section content="detail">
                     <h4 className="display-none">Info</h4>
                     <header role="top-detail">
                         {
-                            (tmp.isJoined) ? (<span className="small" role="joined"><i className="fa fa-check" aria-hidden="true"></i> Joined</span>) : null
+                            (tmp.isJoined) ? (<span className="small join-section" role="joined"><i className="fa fa-check" aria-hidden="true"></i> Joined</span>) : null
                         }
                         <span className="big">{tmp.title}</span>
                         <span className="medium">by {tmp.channel_name}</span>
@@ -262,8 +271,9 @@ class eventItem extends Component {
 }
 
 eventItem.defaultProps = {
-    'eventId': '595ef6c7822dbf0014cb821c',
-    'isLoad': true
+    'eventId': '',
+    'isLoad': true,
+    'isJoined': false
 }
 
 export default eventItem;

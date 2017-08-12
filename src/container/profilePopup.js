@@ -10,6 +10,7 @@ import { Link } from 'react-router';
 import { hostname } from '../actions/index';
 import ReactLoading from 'react-loading';
 import _ from 'lodash';
+import Image from '../components/Image';
 
 const defaultState = {
   'firstName': '',
@@ -25,28 +26,34 @@ const defaultState = {
 };
 
 function dateToFormat(date, option) {
-	let nDate = new Date(date).toString();
-    let refDate = new Date(date);
-    if(option === 1) return nDate.slice(0, 3) + ", " + nDate.slice(8, 10) + " " + nDate.slice(4, 7) + " " + nDate.slice(11,15)
-    if(option === 2) return refDate.getDate() + "/" + refDate.getMonth() + "/" + refDate.getFullYear()
-    if(option === 3) return refDate.getDate() + "/" + refDate.getMonth() + "/" + String(refDate.getFullYear()).slice(2,4)
-	return nDate.slice(8, 10) + " " + nDate.slice(4, 7) + " " + nDate.slice(11,15)
+    if(date) {
+        let nDate = new Date(date).toString()
+        let refDate = new Date(date)
+        if(option === 1) return nDate.slice(0, 3) + ", " + nDate.slice(8, 10) + " " + nDate.slice(4, 7) + " " + nDate.slice(11,15)
+        if(option === 2) return refDate.getDate() + "/" + (refDate.getMonth() + 1) + "/" + refDate.getFullYear()
+        if(option === 3) return refDate.getDate() + "/" + (refDate.getMonth() + 1) + "/" + String(refDate.getFullYear()).slice(2,4)
+        return nDate.slice(8, 10) + " " + nDate.slice(4, 7) + " " + nDate.slice(11,15)
+    }
+    return "No Info";
 }
 
 function compareDate(date1, date2) {
-    const a = new Date(date1);
-    const b = new Date(date2);
+    if(date1 && date2) {
+        const a = new Date(date1);
+        const b = new Date(date2);
 
-    if(a.getFullYear() === b.getFullYear()) {
-        if(a.getMonth() === b.getMonth()) {
-            if(a.getDate() === b.getDate()) return 0;
-            else if(a.getDate() < b.getDate()) return -1;
+        if(a.getFullYear() === b.getFullYear()) {
+            if(a.getMonth() === b.getMonth()) {
+                if(a.getDate() === b.getDate()) return 0;
+                else if(a.getDate() < b.getDate()) return -1;
+                return 1;
+            }
+            else if(a.getMonth() < b.getMonth()) return -1;
             return 1;
-        }
-        else if(a.getMonth() < b.getMonth()) return -1;
+        } else if(a.getFullYear() < b.getFullYear()) return -1;
         return 1;
-    } else if(a.getFullYear() < b.getFullYear()) return -1;
-    return 1;
+    }
+    return 0;
 }
 
 class profilePopup extends Component {
@@ -89,7 +96,7 @@ class profilePopup extends Component {
                     this.state.join_events.forEach((id) => {
                         getEvent(id, false).then((data) => {
                             this.setState((prevState) => {
-                                if(compareDate(new Date(data.date_end), new Date()) !== -1) {
+                                if(data.date_end && compareDate(new Date(data.date_end), new Date()) !== -1) {
                                     return {
                                         ...prevState,
                                         'upcoming_events': prevState.upcoming_events.concat([{
@@ -164,14 +171,17 @@ class profilePopup extends Component {
     }
 
     render() {
-        var noti_list = [];
-        var noti = this.state.notification;
-
-        // console.log(this.state);
-
-        for(var i = 0; i < this.state.n_noti ; i++){
-            noti_list.push(<div className="noti"><img src={noti[i].photo} alt="noti-icon" /><p><strong>{noti[i].source} : </strong>{noti[i].title}</p></div>);
-        }
+        const noti_list = this.state.notification.map((item, index) => {
+            return (
+                <div key={index} className="noti">
+                    <Image src={item.photo} />
+                    <p><strong>{item.source} : </strong>
+                    {_.truncate(item.title, {
+                        'length': 30
+                    })}</p>
+                </div>
+            );
+        });
 
         return (
           <div>
@@ -220,7 +230,11 @@ class profilePopup extends Component {
                                 return (
                                     <div className="my-event" key={index}>
                                         <p><strong>{item.title} : </strong>
-                                        {dateToFormat(item.date_start, 3)} to {dateToFormat(item.date_end, 3)}
+                                        {
+                                            (compareDate(item.date_start, item.date_end) === 0)
+                                            ? `${dateToFormat(item.date_start, 3)}`
+                                            : `${dateToFormat(item.date_start, 3)} to ${dateToFormat(item.date_end, 3)}`
+                                        }
                                         </p>
                                     </div>
                                 );

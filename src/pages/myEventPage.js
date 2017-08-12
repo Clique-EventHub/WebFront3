@@ -181,7 +181,7 @@ class myEventPage extends Component {
                       <img src="../../resource/icon/icon12.svg" alt="med"/> <p>{this.state.disease}</p>
                   </div>
                   <div className="profile-right">
-                      <p>MY point</p>
+                      <p>Completed</p>
                       <h1>{this.state.n_completed}</h1>
                   </div>
                 </section>
@@ -192,12 +192,16 @@ class myEventPage extends Component {
                 <p className={`join-${this.state.showJoin}`}></p>
                 <p className={`join-${!this.state.showJoin} l160`}></p>
                 <hr />
+                <div className="flex" style={{'flexWrap': 'wrap'}}>
                     {(this.state.showJoin) ? join_events : intr_events}
+                </div>
                 </section>
                 <section className="my-event-buttom">
                     <h2>Completed Event</h2>
                     <hr />
-                    {completed_events}
+                    <div className="flex" style={{'flexWrap': 'wrap'}}>
+                        {completed_events}
+                    </div>
                 </section>
             </section>
         );

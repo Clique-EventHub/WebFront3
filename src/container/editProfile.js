@@ -8,6 +8,89 @@ import * as facultyMap from '../actions/facultyMap';
 let useCls = " toggle-vis";
 import { hostname } from '../actions/index';
 
+// class BirthDayText extends Component {
+//     constructor(props) {
+//         super(props);
+//         this.state = {
+//             'day': '',
+//             'month': '',
+//             'year': ''
+//         }
+//         this.onKeyPress = this.onKeyPress.bind(this);
+//     }
+//
+//     onKeyPress(event, modifiers) {
+//         const keyCode = event.keyCode || event.which;
+//         const keyValue = String.fromCharCode(keyCode);
+//         if(this._isMounted) {
+//             console.log(event.target.value);
+//             this.setState((prevState) => {
+//                 let new_state = { ...prevState };
+//                 new_state[modifiers] = event.target.value;
+//                 return (new_state)
+//             })
+//         }
+//     }
+//
+//     componentDidMount() {
+//         this._isMounted = true;
+//     }
+//
+//     componentWillUnmount() {
+//         this._isMounted = false;
+//     }
+//
+//     render() {
+//         return (
+//             <div style={{
+//                     'display': 'flex',
+//                     'alignItems': 'baseline'
+//                 }}>
+//                 <input
+//                     placeholder="DD"
+//                     ref={(day) => {if(typeof this.props.refD === "function") return this.props.refD(day)}}
+//                     style={{
+//                             'flex': '1 1',
+//                             'textAlign': 'center'
+//                         }}
+//                     maxLength="2"
+//                     type="text"
+//                     onKeyPress={(e) => this.onKeyPress(e, "day")}
+//                     value={this.state.day}
+//                 />
+//                 <span>/</span>
+//                 <input
+//                     placeholder="MM"
+//                     ref={(month) => {if(typeof this.props.refM === "function") return this.props.refM(month)}}
+//                     style={{
+//                             'flex': '1 1',
+//                             'marginLeft': '0px',
+//                             'textAlign': 'center'
+//                         }}
+//                     maxLength="2"
+//                     type="text"
+//                     onKeyPress={(e) => this.onKeyPress(e, "month")}
+//                     value={this.state.month}
+//                 />
+//                 <span>/</span>
+//                 <input
+//                     placeholder="YYYY"
+//                     ref={(year) => {if(typeof this.props.refY === "function") return this.props.refY(year)}}
+//                     style={{
+//                             'flex': '1 1',
+//                             'marginLeft': '0px',
+//                             'textAlign': 'center'
+//                         }}
+//                     maxLength="4"
+//                     type="text"
+//                     onKeyPress={(e) => this.onKeyPress(e, "year")}
+//                     value={this.state.year}
+//                 />
+//             </div>
+//         );
+//     }
+// }
+
 class editProfile extends Component {
 
     constructor(props) {
@@ -65,9 +148,6 @@ class editProfile extends Component {
         let _this = this;
 
         axios.get(`${hostname}user`, config).then((data) => {
-            console.log("get!!!");
-            console.log(JSON.stringify(data.data.firstName));
-            console.log(data.data);
             _this.setState({
                 ..._this.state,
                 'firstName': data.data.firstName,
@@ -245,13 +325,14 @@ class editProfile extends Component {
                                 <div className="my-tag">
                                     <p>YOUR INTERESTED TAG</p>
                                     <section>
-                                        <Circle parent="tag" />
-                                        <Circle parent="tag" />
-                                        <Circle parent="tag" />
-                                        <Circle parent="tag" />
-                                        <Circle parent="tag" />
-                                        <Circle parent="tag" />
-                                        <Circle parent="tag" />
+                                        <Circle parent="tag" tagName="test" />
+                                        <Circle parent="tag" tagName="test" />
+                                        <Circle parent="tag" tagName="test" />
+                                        <Circle parent="tag" tagName="test" />
+                                        <Circle parent="tag" tagName="test" />
+                                        <Circle parent="tag" tagName="test" />
+                                        <Circle parent="tag" tagName="test" />
+                                        <Circle parent="tag" tagName="test" />
                                     </section>
                                     <div><button>EDIT</button></div>
                                 </div>

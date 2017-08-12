@@ -271,8 +271,8 @@ function init_user_info(dispatch) {
         dispatch({
             type: types.UPDATE_USER_ADMIN_INFO,
             payload: {
-                channel: results[0].data.channels,
-                event: results[1].data.event_info
+                channel: _.get(results[0], 'data.channels', []).map((item) => item.channel_id),
+                event: _.get(results[1], 'data.event_info', []).map((item) => item.event_id)
             }
         })
     })

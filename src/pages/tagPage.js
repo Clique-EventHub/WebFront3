@@ -18,27 +18,37 @@ class tagPage extends Component {
         super(props);
         this.state = {
             listOfEvents: [],
-            like_state: true
+            like_state: false
         };
     }
 
-    setLikeState(target, isActive) {
+    setLikeState(target, isActive, isPut) {
         let isChange = false;
         let isAdd = false;
         if(isActive) {
             if(target.className.indexOf(" active") === -1) {
-                target.className = target.className.concat(" active");
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        like_state: true
+                    })
+                })
                 isChange = true;
                 isAdd = true;
             }
         } else {
             if(target.className.indexOf(" active") !== -1) {
-                target.className = target.className.replace(" active", "");
                 isChange = true;
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        like_state: false
+                    })
+                })
             }
         }
 
-        if(isChange) {
+        if(isChange && isPut) {
             if(getCookie('fb_sever_token')) {
                 let config = {
                     'headers': {
@@ -80,20 +90,25 @@ class tagPage extends Component {
                     }
                 }
 
-                Promise.all([
-                    axios.get(`${hostname}user`, config),
-                    axios.get(`${hostname}tags/search?keywords=${keyword}`)
-                ]).then((datas) => {
+                axios.get(`${hostname}tags/search?keywords=${keyword}`).then((data) => {
                     this.setState((prevState) => {
                         return ({
                             ...prevState,
-                            like_state: (_.get(datas[0], 'data.tag_like', []).indexOf(keyword) !== -1),
-                            listOfEvents: datas[1].data.events
+                            listOfEvents: data.data.events
+                        });
+                    });
+                }).catch(() => {})
+
+                axios.get(`${hostname}user`, config).then((data) => {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            like_state: (_.get(data, 'data.tag_like', []).indexOf(keyword) !== -1),
                         });
                     }, () => {
-                        this.setLikeState.bind(this)(this.likeButton, this.state.like_state);
+                        this.setLikeState.bind(this)(this.likeButton, this.state.like_state, false);
                     });
-                })
+                }).catch(() => {})
             }
         }
     }
@@ -108,9 +123,12 @@ class tagPage extends Component {
                     <div className="tag-info-container">
                         <Image src="" imgClass="photo" rejectClass="photo" />
                         <div className="tag-name"><h2>{keyword}</h2></div>
-                        <div ref={(div) => this.likeButton = div} className="like-button" onClick={(e) => {
-                                this.setLikeState.bind(this)(e.target, (e.target.className.indexOf(" active") === -1))
-                            }}>LIKE</div>
+                        <div ref={(div) => this.likeButton = div} className={`like-button ${!this.props.fb.isLogin ? 'cursor-disable' : ''} ${this.state.like_state ? 'active' : ''}`} onClick={(e) => {
+                                if(this.props.fb.isLogin) {
+                                    this.setLikeState.bind(this)(e.target, (e.target.className.indexOf(" active") === -1), true)
+                                }
+                            }}>LIKE
+                        </div>
                     </div>
                 </article>
                 <section content="event-list" className="margin-auto">

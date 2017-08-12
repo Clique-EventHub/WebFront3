@@ -11,7 +11,7 @@ const cardList = (props) => {
             {
                 itemIds.map((id, index) => {
                     return (
-                        <EventItem key={index} detail-shown="false" {...props} />
+                        <EventItem key={index} detail-shown="false" eventId={id} {...props} />
                     );
                 })
             }

@@ -30,7 +30,7 @@ class circle extends Component {
         return (
             <Link to={`/tagpage?keyword=${this.props.tagName}`}>
                 <article className={`${props.parent}-item ${this.state.shade}`}>
-                    <h3 className="display-none">Tag Name</h3>
+                    <div className={this.props.tagName.length > 7 ? 'smaller' : this.props.tagName.length > 5 ? 'small' : ''}>{this.props.tagName}</div>
                 </article>
             </Link>
         );

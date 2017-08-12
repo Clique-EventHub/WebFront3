@@ -3,7 +3,7 @@ import './css/eventDetail2.css'
 import * as facultyMap from '../actions/facultyMap';
 import axios from 'axios';
 import { hostname, urlName } from '../actions/index';
-import { getCookie, getChannel } from '../actions/common';
+import { getCookie, getChannel, checkAdmin } from '../actions/common';
 import ReactLoading from 'react-loading';
 import { Link } from 'react-router';
 import Image from '../components/Image';
@@ -280,7 +280,7 @@ class eventDetailFix extends Component {
             </div>
         );
 
-        const isAdmin = (this.props.isAdmin) ? this.props.isAdmin : false;
+        const isAdmin = checkAdmin(this.props.eventId);
         let adminComponent = (
             <div>
                 <div className="flex">
@@ -299,11 +299,15 @@ class eventDetailFix extends Component {
                     </div>
                     <div className="event-poster-fix">
                         <Image src={replaceIncorrectLink(this.state.picture)} imgOption={{'alt': 'main-poster'}} rejectClass="flex-1 min-height-400" />
-                        <div className="tags-container">
-                            <div data-icon="tag" />
-                            <div data-icon="tag" />
-                            <div data-icon="tag" />
-                        </div>
+                        {
+                            (isImplement) ? (
+                                <div className="tags-container">
+                                    <div data-icon="tag" />
+                                    <div data-icon="tag" />
+                                    <div data-icon="tag" />
+                                </div>
+                            ) : null
+                        }
                     </div>
                     <div className="column">
                         <div className="toggle-not">
@@ -313,7 +317,7 @@ class eventDetailFix extends Component {
                             <div className="share-interest-join" aria-hidden="true">
                                 <div className="float-left" onClick={() => {this.onBtnClick("share-popup")}}><i className="fa fa-share-square-o" aria-hidden="true"></i> SHARE</div>
                                 <div className="to-right" >
-                                    <button alt="btn-interest" ref={(btn) => this.interestBtn = btn} onClick={this.onClickInterest.bind(this)}>INTEREST</button>
+                                    <button alt="btn-interest" className="cursor-disable" ref={(btn) => this.interestBtn = btn} onClick={this.onClickInterest.bind(this)}>INTEREST</button>
                                     <button alt="btn-join" ref={(btn) => this.joinBtn = btn} onClick={() => {
                                             if(this.joinBtn.className.indexOf(" active") === -1)
                                                 this.onBtnClick("warning-popup")
@@ -383,8 +387,11 @@ class eventDetailFix extends Component {
                             </div>
                             <div className="number-join">
                                 <p className="hr"></p>
-                                250 people join this
-                                <p className="hr"></p>
+                                {
+                                    (isImplement) ? (
+                                        ["250 people join this", <p className="hr" />]
+                                    ) : null
+                                }
                             </div>
                             <div className="sub-detail">
                                 <div className="only-fac">

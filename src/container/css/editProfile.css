@@ -73,7 +73,7 @@ div.edit-profile section.edit-pro-left img {
   margin-left: 5px;
 }
 
-div.edit-profile section.edit-pro-left input[type="text"] {
+div.edit-profile section.edit-pro-left input {
   padding:8px;
   display:block;
   border:none;
@@ -163,7 +163,6 @@ div.edit-profile section.edit-pro-right div.my-tag article.tag-item {
 }
 
 div.edit-profile section.edit-pro-right div.my-tag div {
-  margin-top: 10px;
   text-align: center;
 }
 
