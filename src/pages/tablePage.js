@@ -32,7 +32,7 @@ class tablePage extends Component {
             },
             'optionActive': false,
             'tableData': sampleData,
-            'filteredDataFlags': sampleData.map(() => true),
+            'filteredDataFlags': sampleData.map(() => true),    //sampleData => this.state.tableData?
             'filterKeyword': '',
             'sentMessage' : '',
         }
@@ -60,9 +60,18 @@ class tablePage extends Component {
             console.log('get stat');
             console.log(data.data);
             let joined = data.data.join_data;
+            let keys = new Set();
+            joined.forEach((item) => {
+                Object.keys(item).forEach((key) => keys.add(key))
+            })
             var allData = [];
             for(var i = 0; i < joined.length; i++){
-                let row = [false, false, "", joined[i].firstNameTH, joined[i].lastNameTH, joined[i].nick_name, "", joined[i].phone, "", joined[i].firstName+" "+joined[i].lastName, "", joined[i].disease];
+              var row = [false, false];
+                keys.forEach((key) => {
+                    row.push(joined[i][key])
+                })
+                console.log(row);
+                //let row = [false, false, "", joined[i].firstNameTH, joined[i].lastNameTH, joined[i].nick_name, "", joined[i].phone, "", joined[i].firstName+" "+joined[i].lastName, "", joined[i].disease];
                 allData.push(row);
             }
             _this.setState({
@@ -406,7 +415,7 @@ class tablePage extends Component {
 }
 
 tablePage.defaultProps = {
-    'eventId': '594bf476e374d100140f04ec'
+    'eventId': '595ef6c7822dbf0014cb821c'
 }
 
 
