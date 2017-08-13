@@ -2,12 +2,17 @@
 
 import React , { Component } from 'react';
 import $ from 'jquery';
+import { Link } from 'react-router';
 
 class sideMenu extends Component {
 
     // constructor(props) {
     //     super(props);
     // }
+
+    //How to Link, <Link to="ชื่อ path ตรงนี้">{Text}</Link>
+    //พอใช้ Link จะถูก render เป็น <a> แต่ถ้าใช้ <a> โดยตรง app จะพัง
+    //css ใช้ a tag selector ได้ แค่นี้แหละที่จะบอก ไปแต่งมาหน่อย
 
     onClose() {
         $(".content-move-active").removeClass("content-move-active").addClass("content-move-inactive");
