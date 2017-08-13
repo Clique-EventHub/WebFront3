@@ -1,10 +1,80 @@
 import axios from 'axios';
 import { hostname } from './index';
-import { myStore } from '../index';
+import { myStore, googleAPI } from '../index';
 import * as actions from './index'
 import _ from 'lodash';
+import { getCodeList, findInfoById } from './facultyMap';
 
-const waitTime = 200;
+const intervalTime = 200;
+
+export const fieldsToIconFiles = {
+    "firstName" : "icon.svg",
+    "lastName" : "icon.svg",
+    "firstNameTH" : "icon.svg",
+    "lastNameTH": "icon.svg",
+    "nick_name" : "icon.svg",
+    "gender" : "icon.svg",
+    "email": "icon.svg",
+    "birth_day" : "icon6.svg",
+    "major" : "icon5.svg",
+    "regId" : "icon3.svg",
+    "shirt_size" : "icon11.svg",
+    "allergy" : "icon13.svg",
+    "disease" : "icon12.svg",
+    "lineId" : "icon8.svg",
+    "twitterUsername": "icon.svg",
+    "phone" : "icon10.svg",
+    "dorm_room" : "icon14.svg",
+    "dorm_building" : "icon14.svg",
+    "dorm_bed" : "icon14.svg",
+    "picture" : "icon2.svg",
+    "picture_200px" : "icon2.svg"
+}
+
+export const ServerToClientFields = {
+    "firstName" : "FIRSTNAME (EN)",
+    "lastName" : "LASTNAME (EN)",
+    "firstNameTH" : "FIRSTNAME (TH)",
+    "lastNameTH": "LASTNAME (TH)",
+    "nick_name" : "NICKNAME",
+    "gender" : "GENDER",
+    "email": "E-MAIL",
+    "birth_day" : "BIRTHDAY",
+    "major" : "MAJOR",
+    "regId" : "REG ID",
+    "shirt_size" : "T-SHIRT SIZE",
+    "allergy" : "FOOD ALLERGIES",
+    "disease" : "MEDICAL PROBLEM",
+    "lineId" : "LINE ID",
+    "twitterUsername": "TWITTER ID",
+    "phone" : "MOBILE NUMBER",
+    "dorm_room" : "DORM ROOM",
+    "dorm_building" : "DORM BUILDING",
+    "dorm_bed" : "DORM BED",
+    "picture" : "PICTURE (SMALL)",
+    "picture_200px" : "PICTURE (LARGE)"
+}
+
+export const ClientToServerFields = {}
+Object.keys(ServerToClientFields).forEach((key) => {
+    ClientToServerFields[ServerToClientFields[key]] = key;
+})
+
+export const optionYear = [
+    "ALL",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+]
+
+export const optionFaculty = getCodeList().map((item) => {
+    return findInfoById(item).FullName
+});
 
 export function clone(obj) {
     if (null === obj || "object" !== typeof obj) return obj;
@@ -153,17 +223,12 @@ export function getEvent(id, stat) {
                     (data) => resolve(data.data)
                 ).catch((e) => reject(e))
             } else {
-                setTimeout(() => {
-                    if(myStore.getState().map.events[id]) return resolve(myStore.getState().map.events[id]);
-                    else {
-                        axios.get(`${hostname}event?id=${id}&stat=${useStat}`, {
-                            crossDomain: true
-                        }).then(
-                            (data) => resolve(data.data)
-                        ).catch((e) => reject(e))
+                const checkAvalible = setInterval(() => {
+                    if(myStore.getState().map.events[id]) {
+                        clearInterval(checkAvalible);
+                        return resolve(myStore.getState().map.events[id]);
                     }
-                    // resolve(myStore.getState().map.events[id]);
-                }, waitTime);
+                }, intervalTime)
             }
         } else {
             resolve(eventMap[id])
@@ -181,19 +246,46 @@ export function getChannel(id, stat) {
                     (data) => resolve(data.data)
                 ).catch((e) => reject(e))
             } else {
-                setTimeout(() => {
-                    if(myStore.getState().map.channels[id]) return resolve(myStore.getState().map.channels[id]);
-                    else {
-                        axios.get(`${hostname}channel?id=${id}&stat=${useStat}`).then(
-                            (data) => resolve(data.data)
-                        ).catch((e) => reject(e))
+                const checkAvalible = setInterval(() => {
+                    if(myStore.getState().map.events[id]) {
+                        clearInterval(checkAvalible);
+                        return resolve(myStore.getState().map.channels[id]);
                     }
-                    // resolve(myStore.getState().map.channels[id]);
-                }, waitTime);
+                }, intervalTime)
             }
         } else {
             resolve(channelMap[id])
         }
+    })
+}
+
+export function getUserInfo() {
+    const userStore = myStore.getState().user;
+    const serverToken = getCookie("fb_sever_token");
+    return new Promise((resolve, reject) => {
+        if(userStore.refObj !== null) resolve(userStore.refObj);
+        const checkToken = setInterval(() => {
+            if(getCookie("fb_sever_token") !== "") {
+                clearInterval(checkToken);
+
+                const config = {
+                    'headers': {
+                        'Authorization': ('JWT ' + getCookie("fb_sever_token")),
+                        'crossDomain': true,
+                    }
+                }
+
+                if(userStore.refObj === null) {
+                    axios.get(`${hostname}user`, config).then((data) => {
+                        return resolve(data.data);
+                    }).catch((e) => {
+                        return reject(e);
+                    });
+                } else {
+                    return resolve(userStore.refObj);
+                }
+            }
+        }, intervalTime);
     })
 }
 
@@ -230,7 +322,7 @@ export function getTags() {
                 'TECHNOLOGY',
                 'SPORT',
                 'CHARITY',
-                'ACADEMIN',
+                'ACADEMIC',
                 'CAREER',
                 'EDUCATION',
                 'NATURAL',
@@ -239,4 +331,47 @@ export function getTags() {
             ]
         })
     })
+}
+
+export function dateToFormat(date, option) {
+    if(date) {
+        let nDate = new Date(date).toString()
+        let refDate = new Date(date)
+        if(option === 1) return nDate.slice(0, 3) + ", " + nDate.slice(8, 10) + " " + nDate.slice(4, 7) + " " + nDate.slice(11,15)
+        if(option === 2) return refDate.getDate() + "/" + (refDate.getMonth() + 1) + "/" + refDate.getFullYear()
+        if(option === 3) return refDate.getDate() + "/" + (refDate.getMonth() + 1) + "/" + String(refDate.getFullYear()).slice(2,4)
+        return nDate.slice(8, 10) + " " + nDate.slice(4, 7) + " " + nDate.slice(11,15)
+    }
+    return "No Info";
+}
+
+export function toNormString(date) {
+    date = new Date(date);
+    return date.toString().slice(8, 10) + ' ' + date.toString().slice(4,7) + ' ' + date.toString().slice(11,15);
+}
+
+export function shortenRangeDate(date1, date2) {
+    if(date1 && date2 && new Date(date1).toString() !== "Invalid Date" && new Date(date2).toString() !== "Invalid Date") {
+
+        let dateStart = (new Date(date1) <= new Date(date2)) ? new Date(date1) : new Date(date2);
+        let dateEnd = (new Date(date2) > new Date(date1)) ? new Date(date2) : new Date(date1);
+        let dateString = '';
+
+        if(dateStart.toISOString().slice(0,10) === dateEnd.toISOString().slice(0,10)) dateString = toNormString(dateStart);
+        else if(dateStart.getMonth() === dateEnd.getMonth() && dateStart.getFullYear() === dateEnd.getFullYear()) dateString = dateStart.toString().slice(8, 10) + ' - ' + toNormString(dateEnd);
+        else if(dateStart.getFullYear() === dateEnd.getFullYear()) dateString = toNormString(dateStart).slice(0, 6) + ' - ' + toNormString(dateEnd);
+        else dateString = toNormString(dateStart) + ' - ' + toNormString(dateEnd);
+
+        return dateString;
+    }
+    return ''
+}
+
+export function checkYoutubeUrl(youtubeId) {
+    return axios.get(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${youtubeId}&key=${googleAPI}`).then(
+        (data) => {
+            return parseInt(data.data.pageInfo.totalResults, 10) > 0
+        }).catch(() => {
+            return false;
+        });
 }

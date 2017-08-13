@@ -327,6 +327,7 @@ article.event-detail-fix div .box div[data-role="topic"] {
 
 article.event-detail-fix div .box div:not([data-role="topic"]) {
   font-size: 0.9em;
+  padding-left: 10px;
 }
 
 article.event-detail-fix div .event-other {

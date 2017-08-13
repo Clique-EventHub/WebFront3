@@ -11,7 +11,7 @@ import CustomRadio from '../components/CustomRadio';
 import PictureUpload from '../components/PictureUpload';
 import MultipleChoice from '../components/MultipleChoice';
 
-import { getCookie, objModStr, getTags } from '../actions/common';
+import { getCookie, objModStr, getTags, ServerToClientFields, ClientToServerFields, optionYear, optionFaculty, getEvent } from '../actions/common';
 import { hostname } from '../actions/index';
 import { getCodeList, findInfoById } from '../actions/facultyMap';
 
@@ -100,6 +100,7 @@ class EditEvent extends Component {
                 'top': [],
                 'bottom': []
             },
+            'tags': {},
             'fieldsState': fieldState,
             'enableQuestion': false,
             'isLoad': false,
@@ -150,6 +151,10 @@ class EditEvent extends Component {
                     tagsState: {
                         top: tags.Platform.map(() => false),
                         bottom: tags.Content.map(() => false)
+                    },
+                    tags: {
+                        Platform: tags.Platform.concat(["", "", "", "", ""]),
+                        Content: tags.Content.concat(["", "", "", "", ""])
                     }
                 })
             })
@@ -158,7 +163,7 @@ class EditEvent extends Component {
 
     componentWillMount() {
         if(this.props.eventId && this.props.eventId.length > 0) {
-            axios.get(`${hostname}event?id=${this.props.eventId}`).then((data) => data.data).then(
+            getEvent(this.props.eventId).then(
                 (data) => {
                     console.log(data);
                     this.onSetValues.bind(this)(data);
@@ -207,8 +212,8 @@ class EditEvent extends Component {
             }
         }
         new_state.tagsState = {
-            top: TAG_1.map((item) => (states.tags.indexOf(item) !== -1)),
-            bottom: TAG_2.map((item) => (states.tags.indexOf(item) !== -1))
+            top: new_state.tags.Platform.map((item) => (states.tags.indexOf(item) !== -1)),
+            bottom: new_state.tags.Content.map((item) => (states.tags.indexOf(item) !== -1))
         }
         const refs = _.get(states, 'refs', []);
         new_state.refs = {
@@ -426,10 +431,10 @@ class EditEvent extends Component {
             'tags': (res) => {
                 let rTags = [];
                 res.top.forEach((value, index) => {
-                    if(value) rTags.push(TAG_1[index])
+                    if(value) rTags.push(this.state.tags.Platform[index])
                 })
                 res.bottom.forEach((value, index) => {
-                    if(value) rTags.push(TAG_2[index])
+                    if(value) rTags.push(this.state.tags.Content[index])
                 })
                 return rTags;
             },
@@ -721,8 +726,8 @@ class EditEvent extends Component {
     }
 
     render () {
-        console.log(this.state);
-        const TAG_TOP = TAG_1.map((key, index) => {
+
+        const TAG_TOP = _.get(this.state, 'tags.Platform', []).map((key, index) => {
             return (
                 <Btn
                     key={index}
@@ -734,7 +739,7 @@ class EditEvent extends Component {
                     callback={(isActive) => {this.onChangeArrayValue('tagsState.top', index, isActive);}}
                 />);
         });
-        const TAG_BOTTOM = TAG_2.map((key, index) => {
+        const TAG_BOTTOM = _.get(this.state, 'tags.Content', []).map((key, index) => {
             return (
                 <Btn
                     key={index}
@@ -1168,8 +1173,8 @@ class EditEvent extends Component {
 }
 
 EditEvent.defaultProps = {
-    'eventId': "598aef082aa6c7200c09a8c7",
-    'channelId': "595ef6b8822dbf0014cb821b"
+    'eventId': "",
+    'channelId': ""
 }
 
 //event 595ef6c7822dbf0014cb821c
@@ -1201,48 +1206,6 @@ function checkPicturesUrl(url) {
     return false;
 }
 
-const TAG_1 = [
-    "CAMP",
-    "THEATHRE",
-    "TALK",
-    "FIRSTMEET",
-    "RECRUITMENT",
-    "MARKET",
-    "VOLUNTEER",
-    "CONCERT",
-    "FESTIVAL",
-    "OPENING",
-    "CONTEST",
-    "EXHIBITION",
-    "WORKSHOP",
-    "RELIGION",
-    "",
-    "",
-    "",
-    "",
-    ""
-];
-
-const TAG_2 = [
-    "CHARITY",
-    "ACADEMIC",
-    "BUSINESS",
-    "CAREER",
-    "SPORT",
-    "ARTS",
-    "FOOD&DRINK",
-    "EDUCATION",
-    "MUSIC",
-    "TECHNOLOGY",
-    "NATURAL",
-    "HEALTH",
-    "",
-    "",
-    "",
-    "",
-    ""
-]
-
 const state = [{
         'type': 'none',
         'value': 'none'
@@ -1261,51 +1224,6 @@ const BulletState = [{
     'type': 'circle',
     'value': 'true'
 }];
-
-const ServerToClientFields = {
-    "firstName" : "FIRSTNAME (EN)",
-    "lastName" : "LASTNAME (EN)",
-    "firstNameTH" : "FIRSTNAME (TH)",
-    "lastNameTH": "LASTNAME (TH)",
-    "nick_name" : "NICKNAME",
-    "gender" : "GENDER",
-    "email": "E-MAIL",
-    "birth_day" : "BIRTHDAY",
-    "major" : "MAJOR",
-    "regId" : "REG ID",
-    "shirt_size" : "T-SHIRT SIZE",
-    "allergy" : "FOOD ALLERGIES",
-    "disease" : "MEDICAL PROBLEM",
-    "lineId" : "LINE ID",
-    "twitterUsername": "TWITTER ID",
-    "phone" : "MOBILE NUMBER",
-    "dorm_room" : "DORM ROOM",
-    "dorm_building" : "DORM BUILDING",
-    "dorm_bed" : "DORM BED",
-    "picture" : "PICTURE (SMALL)",
-    "picture_200px" : "PICTURE (LARGE)"
-}
-
-const ClientToServerFields = {}
-Object.keys(ServerToClientFields).forEach((key) => {
-    ClientToServerFields[ServerToClientFields[key]] = key;
-})
-
-const optionYear = [
-    "ALL",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8"
-]
-
-const optionFaculty = getCodeList().map((item) => {
-    return findInfoById(item).FullName
-});
 
 const FieldsName = Object.keys(ServerToClientFields).map((key) => ServerToClientFields[key]).concat(["", "", ""]);
 

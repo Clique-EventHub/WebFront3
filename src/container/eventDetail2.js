@@ -3,12 +3,15 @@ import './css/eventDetail2.css'
 import * as facultyMap from '../actions/facultyMap';
 import axios from 'axios';
 import { hostname, urlName } from '../actions/index';
-import { getCookie, getChannel, checkAdmin } from '../actions/common';
+import { getCookie, getChannel, checkAdmin, dateToFormat, shortenRangeDate, fieldsToIconFiles, ServerToClientFields } from '../actions/common';
 import ReactLoading from 'react-loading';
 import { Link } from 'react-router';
 import Image from '../components/Image';
 import autoBind from '../hoc/autoBind';
 import _ from 'lodash';
+import VideoIframe from '../components/VideoIframe';
+import ErrorPopUp from '../components/ErrorPopUp';
+import EditEvent from './editEvent';
 
 //https://codepen.io/bh/pen/JBlCc
 let useCls = " toggle-vis";
@@ -35,7 +38,8 @@ const defaultState = {
     'isLoading': true,
     'error': null,
     'require_field': [],
-    'optional_field': []
+    'optional_field': [],
+    'refObj': null
 }
 
 function replaceIncorrectLink(str) {
@@ -48,6 +52,8 @@ function replaceIncorrectLink(str) {
     return null;
 }
 
+
+
 class PopupButton extends Component {
     constructor(props) {
         super(props);
@@ -58,10 +64,14 @@ class PopupButton extends Component {
     }
 
     toggleState() {
-        this.setState({
-            ...this.state,
-            isEnable: !this.state.isEnable
-        })
+        if(this._isMounted) {
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    isEnable: !this.state.isEnable
+                });
+            })
+        }
     }
 
     render() {
@@ -99,8 +109,8 @@ class eventDetailFix extends Component {
         this.onBtnClick = this.onBtnClick.bind(this);
         this.onResetPopup = this.onResetPopup.bind(this);
         this.onGetInfo = this.onGetInfo.bind(this);
+        this.onSetError = this.onSetError.bind(this);
         this.state = defaultState;
-        console.log("Hello")
     }
 
     onExit() {
@@ -109,6 +119,11 @@ class eventDetailFix extends Component {
 
     componentWillMount() {
         this.onGetInfo();
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     componentDidMount() {
@@ -128,59 +143,75 @@ class eventDetailFix extends Component {
 
     componentWillReceiveProps(nextProps) {
         if(nextProps.eventId !== this.props.eventId) {
-            this.setState((prevState, props) => {
-                this.onGetInfo(nextProps.eventId);
-                return defaultState;
-            });
+            if(this._isMounted) {
+                this.setState((prevState, props) => {
+                    this.onGetInfo(nextProps.eventId);
+                    return defaultState;
+                });
+            }
         }
     }
 
     onGetInfo(overrideId) {
-        this.setState({
-            ...this.state,
-            'isLoading': true
-        });
+        if(this._isMounted) {
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    'isLoading': true
+                })
+            });
+        }
 
         const id = overrideId || this.props.eventId;
 
         axios.get(`${hostname}event?id=${id}`, { headers: { 'crossDomain': true }}).then((data) => {
-            this.setState((prevState) => {
-                return ({
-                    ...defaultState,
-                    ...data.data,
-                    isLoading: false
-                })
-            }, () => {
-                if(_.get(this.props, 'user.events.general.interest', []).indexOf(id) !== -1) {
-                    if(this.interestBtn.className.indexOf(" active") === -1) this.interestBtn.className += " active";
-                } else {
-                    if(this.interestBtn.className.indexOf(" active") !== -1) this.interestBtn.className.replace(" active", "");
-                }
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    return ({
+                        ...defaultState,
+                        ...data.data,
+                        'refObj': data.data,
+                        isLoading: false
+                    })
+                }, () => {
+                    if(_.get(this.props, 'user.events.general.interest', []).indexOf(id) !== -1) {
+                        if(this.interestBtn.className.indexOf(" active") === -1) this.interestBtn.className += " active";
+                    } else {
+                        if(this.interestBtn.className.indexOf(" active") !== -1) this.interestBtn.className.replace(" active", "");
+                    }
 
-                if(_.get(this.props, 'user.events.general.join', []).indexOf(id) !== -1) {
-                    if(this.joinBtn.className.indexOf(" active") === -1) this.joinBtn.className += " active";
-                } else {
-                    if(this.joinBtn.className.indexOf(" active") !== -1) this.joinBtn.className.replace(" active", "");
-                }
+                    if(_.get(this.props, 'user.events.general.join', []).indexOf(id) !== -1) {
+                        if(this.joinBtn.className.indexOf(" active") === -1) this.joinBtn.className += " active";
+                    } else {
+                        if(this.joinBtn.className.indexOf(" active") !== -1) this.joinBtn.className.replace(" active", "");
+                    }
 
-            });
+                });
+            }
             this.onResetPopup();
             return data.data;
         }).then((event) => {
             getChannel(event.channel, false).then((res) => {
-                this.setState({
-                    ...this.state,
-                    'channel': res
-                });
+                if(this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            'channel': res
+                        });
+                    });
+                }
                 this.onResetPopup();
             })
         }).catch((error) => {
-            console.log(error.response);
-            this.setState({
-                ...this.state,
-                'error': 'Oh! Ow! Something went wrong. Please check your internet connection',
-                'isLoading': false
-            });
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        'error': 'Oh! Ow! Something went wrong. Please check your internet connection',
+                        'isLoading': false
+                    });
+                });
+            }
         })
     }
 
@@ -212,6 +243,16 @@ class eventDetailFix extends Component {
         })
     }
 
+    onSetError(error) {
+        this.props.blur_bg();
+        if(error.response) {
+            this.props.set_pop_up_item(<ErrorPopUp onExit={this.props.toggle_pop_item} errorMsg={`Oh! Ow! something went wrong!`} errorDetail={`Got Error code: ${error.response.status} with message "${error.response.data.msg}"`} />);
+        } else {
+            this.props.set_pop_up_item(<ErrorPopUp onExit={this.props.toggle_pop_item} errorMsg={`Oh! Ow! something went wrong!`} errorDetail="Please check your internet connection" />);
+        }
+        this.props.display_pop_item();
+    }
+
     onClickJoin() {
         const config = {
             'headers': {
@@ -219,7 +260,7 @@ class eventDetailFix extends Component {
             }
         }
 
-        new Promise((gg) => {
+        new Promise((gg, bg) => {
             let fields = {
                 'require_field': {},
                 'optional_field': {}
@@ -253,19 +294,29 @@ class eventDetailFix extends Component {
 
             axios.put(`${hostname}user/join?id=${this.props.eventId}`, fields, config).then((data) => {
                 gg(data);
-            }).catch((e) => {
-                gg(e);
+            }).catch((error) => {
+                bg(error);
             })
 
         }).then((whatever) => {
-            console.log(whatever);
-            // this.props.context.router.push(`/form?id=${'596c561c15cd7b3235449c42'}`);
+            if(_.get(this.state.refObj, 'forms', []).length > 0) {
+                this.props.context.router.push(`/form?id=${_.get(this.state.refObj, 'forms', [])[0]}`);
+            } else {
+                this.onBtnClick("warning-popup");
+            }
+        }).catch((e) => {
+            this.onSetError(e);
         })
-
     }
 
-    componentDidUpdate() {
-        console.log(this.state);
+    onRedirectTable() {
+        this.props.context.router.push(`/table?eid=${_.get(this.props, 'eventId', '')}`);
+    }
+
+    onClickEdit() {
+        this.props.blur_bg();
+        this.props.set_pop_up_item(<EditEvent eventId={_.get(this.props, 'eventId', '')} channelId={_.get(this.state, 'refObj.channel', '')} />);
+        this.props.display_pop_item();
     }
 
     render() {
@@ -284,12 +335,78 @@ class eventDetailFix extends Component {
         let adminComponent = (
             <div>
                 <div className="flex">
-                    <div className="btn-top">EDIT</div>
-                    <div className="btn-top">PARTICIPANTS LIST</div>
+                    <div className="btn-top" onClick={this.onClickEdit.bind(this)}>EDIT</div>
+                    <div className="btn-top" onClick={this.onRedirectTable.bind(this)}>PARTICIPANTS LIST</div>
                 </div>
                 <p className="hr" />
             </div>
         )
+
+        const notes = _.get(this.state, 'notes', []);
+
+        let firstMeetDate = ''
+        if(notes.length === 2 && new Date(_.get(notes, '[0].content.dates[0]')).toString() !== "Invalid Date") {
+            firstMeetDate = `${_.get(notes, '[0].content.time')} | ${shortenRangeDate(new Date(_.get(notes, '[0].content.dates[0]')), new Date(_.get(notes, '[0].content.dates[0]')))}`;
+        } else {
+            firstMeetDate = ''
+        }
+
+        let recruitmentDate = ''
+        const recruitmentDateArray = _.get(notes, '[1].content', []);
+
+        const startDate = _.get(recruitmentDateArray, '[0][0]');
+        const endDateArray = _.get(recruitmentDateArray, `[${recruitmentDateArray.length-1}]`, []);
+        const endDate = _.get(endDateArray, `[${endDateArray.length-1}]`);
+
+        if(notes.length === 2 && new Date(startDate).toString() !== "Invalid Date" && new Date(endDate).toString() !== "Invalid Date") {
+            recruitmentDate = `${shortenRangeDate(new Date(startDate), new Date(endDate))}`;
+        } else {
+            recruitmentDate = ''
+        }
+
+        const boxes = (notes.length === 2) ? [
+            <div className="box" key="0">
+                <div data-role="topic">{_.get(notes, '[0].title', '')}</div>
+                <div data-role="detail">
+                    <p data-role="time">{firstMeetDate}</p>
+                    <p data-role="location">{_.get(notes, '[0].content.location', '')}</p>
+                </div>
+                {
+                    (_.get(notes, '[0].note', '').length > 0) ? (
+                        <div data-role="note">{_.get(notes, '[0].note', '')}</div>
+                    ) : null
+                }
+            </div>,
+            <div className="box" key="1">
+                <div data-role="topic">{_.get(notes, '[1].title', '')}</div>
+                <div data-role="detail">
+                    <p data-role="time">{recruitmentDate}</p>
+                </div>
+            </div>
+        ] : [];
+
+        const timeString = ((new Date(_.get(this.state.refObj, 'time_start')).toString() !== "Invalid Date") && (new Date(_.get(this.state.refObj, 'time_end')).toString() !== "Invalid Date")) ? (
+            `${new Date(_.get(this.state.refObj, 'time_start')).toString().slice(16,21)} - ${new Date(_.get(this.state.refObj, 'time_end')).toString().slice(16,21)}`
+        ) : '';
+        const dateString = ((new Date(_.get(this.state.refObj, 'date_start')).toString() !== "Invalid Date") && (new Date(_.get(this.state.refObj, 'date_end')).toString() !== "Invalid Date")) ? (
+            `${shortenRangeDate(new Date(_.get(this.state.refObj, 'date_start')), new Date(_.get(this.state.refObj, 'date_end')))}`
+        ) : '';
+
+        const dateTimeString = (timeString.length > 0 || dateString.length > 0) ? `${timeString} | ${dateString}` : '';
+
+        const contactObj = JSON.parse(_.get(this.state.refObj, 'contact_information', '[]'));
+        let contactChunk = (contactObj.length > 0) ? [<hr className="thin" key={0} />,
+        <ul key={1}>
+            {
+                contactObj.map((info, index) => {
+                    return (
+                        <li key={index}>
+                            {info.name}<br />{info.info}
+                        </li>
+                    );
+                })
+            }
+        </ul>] : [];
 
         let content = (
             <div>
@@ -365,18 +482,27 @@ class eventDetailFix extends Component {
                                 </div>
                                 <div className={`warning-pop-up basic-card-no-glow ${useCls}`} data-role="warn-popup" ref="warning-popup">
                                     <div className="Warning">
-                                        Are you sure that you will register to this event? Your information will sent to event creator.
+                                        Are you sure that you will register to this event? Your information will sent to event creator. Once user is joined, cannot be unjoined.
                                     </div>
                                     <div className="field-show-container">
                                         <div className="field-show">
-                                            <div className="item"><span className="icon fa fa-user" />Name - Surname</div>
-                                            <div className="item"><span className="icon fa fa-user" />Nickname</div>
-                                            <div className="item"><span className="icon"><strong>ID</strong></span>Student ID</div>
-                                            <div className="item"><span className="icon t-shirt" />T-Shirt Size</div>
+                                            {
+                                                _.get(this.state.refObj, 'optional_field', []).concat(_.get(this.state.refObj, 'require_field', [])).map((field, index) => {
+                                                    return (
+                                                        <div className="item flex alignsItem" key={index}>
+                                                            <img src={`./resource/icon/${fieldsToIconFiles[field]}`} style={{
+                                                                    'display': 'inline-block',
+                                                                    'width': '1.5em',
+                                                                    'height': '1.5em',
+                                                                    'marginRight': '5px',
+                                                                }}/>{ServerToClientFields[field]}</div>
+                                                    );
+                                                })
+                                            }
                                         </div>
                                     </div>
                                     <div className="Bottom">
-                                        <div className="btn-round shade-red">
+                                        <div className="btn-round shade-red" onClick={() => this.onBtnClick("warning-popup")}>
                                             DISAPPROVE
                                         </div>
                                         <div className="btn-round shade-green" onClick={this.onClickJoin.bind(this)}>
@@ -398,26 +524,16 @@ class eventDetailFix extends Component {
                                     For <strong>Engineering student</strong> only
                                 </div>
                                 <div className="time">
-                                    16:00 - 20:00 | 30 - 31 January 2017
+                                    {dateTimeString}
                                 </div>
-                                <div className="location">
-                                    Sala Prakeaw
-                                </div>
-                                <div className="box">
-                                    <div data-role="topic">FIRST MEET</div>
-                                    <div data-role="detail">
-                                        <p data-role="time">16:00 | 15 JAN 2017</p>
-                                        <p data-role="location">Chulachakrabong Bld.</p>
-                                    </div>
-                                    <div data-role="note">Please bring your stident card to firstmeet</div>
-                                </div>
-                                <div className="box">
-                                    <div data-role="topic">REGISTERATION DURATION</div>
-                                    <div data-role="detail">
-                                        <p data-role="time">1 JAN 2017 - 10 JAN 2017</p>
-                                        <p data-role="location">Chulachakrabong Bld.</p>
-                                    </div>
-                                </div>
+                                {
+                                    (_.get(this.state, 'refObj.location', '').length > 0) ? (
+                                        <div className="location">
+                                            {_.get(this.state, 'location', '')}
+                                        </div>
+                                    ) : null
+                                }
+                                {boxes}
                             </div>
 
                         </div>
@@ -444,20 +560,69 @@ class eventDetailFix extends Component {
                         })
                     }
                 </div>
-                <p className="hr"></p>
+                <p className="hr" />
+                <VideoIframe src={_.get(this.state, 'refObj.video', '')} afterRender={[<p className="hr" key={0}/>]} />
                 <div className="event-other">
-                    <div className="box" data-role="contact">
-                        <div data-role="topic">Contact</div>
-                        <div data-role="content">Hello Content</div>
-                    </div>
-                    <div className="box">
-                        <div data-role="topic">Hello</div>
-                        <div data-role="content">Hello Content</div>
-                    </div>
-                    <div className="box">
-                        <div data-role="topic">Hello</div>
-                        <div data-role="content">Hello Content</div>
-                    </div>
+                    {(contactObj.length > 0) ? (
+                        <div className="box" data-role="contact">
+                            <div data-role="topic">CONTACT</div>
+                            {contactChunk}
+                        </div>
+                    ) : null }
+                    {
+                        (_.get(this.state.refObj, 'refs', []).filter((item) => item.note === "file").length > 0) ? (
+                            <div className="box">
+                                <div data-role="topic">FILES</div>
+                                    <hr className="thin" />
+                                    <ul>
+                                        {
+                                            _.get(this.state.refObj, 'refs', []).filter(
+                                                (item) => item.note === "file"
+                                            ).map(
+                                                (item, index) => {
+                                                    return (
+                                                        <li key={`file-${index}`}>>
+                                                            <a href={item.content}>
+                                                                {_.truncate(item.title, {
+                                                                    'length': 15
+                                                                })}
+                                                            </a>
+                                                        </li>
+                                                    );
+                                                }
+                                            )
+                                        }
+                                    </ul>
+                            </div>
+                        ) : null
+                    }
+                    {
+                        (_.get(this.state.refObj, 'refs', []).filter((item) => item.note === "url").length > 0) ? (
+                            <div className="box">
+                                <div data-role="topic">LINKS</div>
+                                    <hr className="thin"/>
+                                    <ul>
+                                        {
+                                            _.get(this.state.refObj, 'refs', []).filter(
+                                                (item) => item.note === "url"
+                                            ).map(
+                                                (item, index) => {
+                                                    return (
+                                                        <li key={`url-${index}`}>
+                                                            <a href={item.content}>
+                                                                {_.truncate(item.content, {
+                                                                    'length': 15
+                                                                })}
+                                                            </a>
+                                                        </li>
+                                                    );
+                                                }
+                                            )
+                                        }
+                                    </ul>
+                            </div>
+                        ) : null
+                    }
                 </div>
             </div>
         )

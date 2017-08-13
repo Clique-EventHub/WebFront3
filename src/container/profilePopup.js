@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import autoBind from '../hoc/autoBind';
 import axios from 'axios';
-import { getCookie, clearAllCookie, getEvent } from '../actions/common';
+import { getCookie, clearAllCookie, getEvent, getUserInfo, dateToFormat } from '../actions/common';
 import * as facultyMap from '../actions/facultyMap';
 // import { clearAllCookie } from '../actions/common';
 import './css/profilePopup.css';
@@ -24,18 +24,6 @@ const defaultState = {
   'isLoading': true,
   'login': false
 };
-
-function dateToFormat(date, option) {
-    if(date) {
-        let nDate = new Date(date).toString()
-        let refDate = new Date(date)
-        if(option === 1) return nDate.slice(0, 3) + ", " + nDate.slice(8, 10) + " " + nDate.slice(4, 7) + " " + nDate.slice(11,15)
-        if(option === 2) return refDate.getDate() + "/" + (refDate.getMonth() + 1) + "/" + refDate.getFullYear()
-        if(option === 3) return refDate.getDate() + "/" + (refDate.getMonth() + 1) + "/" + String(refDate.getFullYear()).slice(2,4)
-        return nDate.slice(8, 10) + " " + nDate.slice(4, 7) + " " + nDate.slice(11,15)
-    }
-    return "No Info";
-}
 
 function compareDate(date1, date2) {
     if(date1 && date2) {
@@ -64,57 +52,63 @@ class profilePopup extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({updated: nextProps.updated});
+        if(this._isMounted) {
+            this.setState({updated: nextProps.updated});
+        }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     componentWillMount() {
+        this._isMounted = true;
         if(getCookie('fb_sever_token') !== "") {
-            this.setState({
-                ...this.state,
-                'login': true
-            })
-            let config = {
-                'headers': {
-                    'Authorization': ('JWT ' + getCookie('fb_sever_token'))
-                }
+            if(this._isMounted) {
+                this.setState({
+                    ...this.state,
+                    'login': true
+                })
             }
 
             let _this = this;
 
-            axios.get(`${hostname}user`, config).then((data) => {
-                _this.setState({
-                    ..._this.state,
-                    'firstName': data.data.firstName,
-                    'lastName': data.data.lastName,
-                    'picture': data.data.picture_200px,
-                    'faculty': (data.data.regId === null)? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                    'join_events': data.data.join_events,
-                    'notification': data.data.notification,
-                    'n_noti': data.data.notification.length,
-                    'isLoading': false
-                }, () => {
-                    this.state.join_events.forEach((id) => {
-                        getEvent(id, false).then((data) => {
-                            this.setState((prevState) => {
-                                if(data.date_end && compareDate(new Date(data.date_end), new Date()) !== -1) {
-                                    return {
-                                        ...prevState,
-                                        'upcoming_events': prevState.upcoming_events.concat([{
-                                            'title': data.title,
-                                            'date_start': data.date_start,
-                                            'date_end': data.date_end,
-                                        }])
+            getUserInfo().then((data) => {
+                if(this._isMounted) {
+                    _this.setState({
+                        ..._this.state,
+                        'firstName': data.firstName,
+                        'lastName': data.lastName,
+                        'picture': data.picture_200px,
+                        'faculty': (data.regId === null)? '99': JSON.stringify(data.regId).substring(9, 11),
+                        'join_events': data.join_events,
+                        'notification': data.notification,
+                        'n_noti': data.notification.length,
+                        'isLoading': false
+                    }, () => {
+                        this.state.join_events.forEach((id) => {
+                            getEvent(id, false).then((data) => {
+                                this.setState((prevState) => {
+                                    if(data.date_end && compareDate(new Date(data.date_end), new Date()) !== -1) {
+                                        return {
+                                            ...prevState,
+                                            'upcoming_events': prevState.upcoming_events.concat([{
+                                                'title': data.title,
+                                                'date_start': data.date_start,
+                                                'date_end': data.date_end,
+                                            }])
+                                        }
                                     }
-                                }
-                                return {
-                                    ...prevState
-                                }
-                            })
-                        }, (error) => {
-                            console.log("get event error", error);
-                        });
+                                    return {
+                                        ...prevState
+                                    }
+                                })
+                            }, (error) => {
+                                console.log("get event error", error);
+                            });
+                        })
                     })
-                })
+                }
             }, (error) => {
                 console.log(error);
             });
@@ -126,42 +120,43 @@ class profilePopup extends Component {
 
         setTimeout(() => {
             if(this.props.pages.FB !== null) {
-                this.setState({
-                    ...this.state,
-                    'login': true
-                });
-                let config = {
-                    'headers': {
-                        'Authorization': ('JWT ' + getCookie('fb_sever_token'))
-                    }
+                if(this._isMounted) {
+                    this.setState({
+                        ...this.state,
+                        'login': true
+                    });
                 }
 
                 let _this = this;
 
-                axios.get(`${hostname}user`, config).then((data) => {
-                    _this.setState({
-                        ..._this.state,
-                        'firstName': data.data.firstName,
-                        'lastName': data.data.lastName,
-                        'picture': data.data.picture_200px,
-                        'faculty': (data.data.regId === null)? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                        'join_events': data.data.join_events,
-                        'notification': data.data.notification,
-                        'n_noti': data.data.notification.length,
-                        'isLoading': false
-                    })
+                getUserInfo().then((data) => {
+                    if(this._isMounted) {
+                        _this.setState({
+                            ..._this.state,
+                            'firstName': data.firstName,
+                            'lastName': data.lastName,
+                            'picture': data.picture_200px,
+                            'faculty': (data.regId === null)? '99': JSON.stringify(data.regId).substring(9, 11),
+                            'join_events': data.join_events,
+                            'notification': data.notification,
+                            'n_noti': data.notification.length,
+                            'isLoading': false
+                        })
+                    }
                 }, (error) => {
                     console.log("get user error", error);
                 });
 
                 if(typeof(this.props.onLogin) === "function") this.props.onLogin(true);
             }
-        }, 2000);
+        }, 0);
     }
 
     onLogout() {
         this.props.fbLogout();
-        this.setState(defaultState)
+        if(this._isMounted) {
+            this.setState(defaultState)
+        }
         if(typeof(this.props.onLogin) === "function") this.props.onLogin(false);
         clearAllCookie();
     }

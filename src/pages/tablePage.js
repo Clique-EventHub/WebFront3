@@ -4,18 +4,11 @@ import normalPage from '../hoc/normPage';
 import './css/tablePage.css';
 import axios from 'axios';
 import { hostname } from '../actions/index';
-import { getRandomShade, getCookie } from '../actions/common';
+import { getRandomShade, getCookie, getEvent } from '../actions/common';
+import ErrorPopUp from '../components/ErrorPopUp';
 import ReactLoading from 'react-loading';
 import { CSVLink } from 'react-csv';
-
-const testFormId = 2;
-
-const fields = ["approved" ,"check in", "student id", "name", "surname", "nickname", "faculty", "tel", "line id", "facebook", "email", "MEDICAL PROBLEM"];
-const sampleFields = [true, true, "5830129021", "Sam", "Saeddht", "Samy", "Engineering", "0899809988", "sam_sdt", "Sam Saeddht", "sam_sdt@gmail.com", "กินของราคาถูกไม่เป็น"]
-const sampleFields_2 = [true, false, "5830130021", "Catherine", "Potlocker", "Amy", "Engineering", "0817446291", "Amy_Chan", "Kitty", "amy_kitty@gmail.com", ""]
-const sampleFields_3 = [false, false, "5831033021", "Json", "Blue", "Jack", "Engineering", "0818348602", "Jackkyyy", "", "jack10384y@gmail.com", "nuts"]
-
-const sampleData = [sampleFields, sampleFields_2, sampleFields_3];
+import _ from 'lodash';
 
 class tablePage extends Component {
 
@@ -30,11 +23,13 @@ class tablePage extends Component {
                 'row': null,
                 'col': null
             },
-            'optionActive': false,
-            'tableData': sampleData,
-            'filteredDataFlags': sampleData.map(() => true),    //sampleData => this.state.tableData?
+            'selectedRows': new Set(),
+            'tableData': [],
+            'filteredDataFlags': [],    //sampleData => this.state.tableData?
             'filterKeyword': '',
             'sentMessage' : '',
+            'keys': [],
+            'eventId': _.get(this.props, 'location.query.eid', '')
         }
 
         this.onHightLight = this.onHightLight.bind(this);
@@ -46,104 +41,96 @@ class tablePage extends Component {
         this.checkDisable = this.checkDisable.bind(this);
         this.onSendMessage = this.onSendMessage.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
+        this.onSetError = this.onSetError.bind(this);
+
         // this.onMouseMove = this.onMouseMove.bind(this);
-        let config = {
-            'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
-                'crossDomain': true
-            }
+    }
+
+    onSetError(error) {
+        this.props.blur_bg();
+        if(error.response) {
+            this.props.set_pop_up_item(<ErrorPopUp onExit={this.props.toggle_pop_item} errorMsg={`Oh! Ow! something went wrong!`} errorDetail={`Got Error code: ${error.response.status} with message "${error.response.data.err}"`} />);
+        } else {
+            this.props.set_pop_up_item(<ErrorPopUp onExit={this.props.toggle_pop_item} errorMsg={`Oh! Ow! something went wrong!`} errorDetail="Please check your internet connection" />);
         }
-
-        let _this = this;
-
-        axios.get(`${hostname}event/stat?id=${this.props.eventId}`, config).then((data) => {
-            console.log('get stat');
-            console.log(data.data);
-            let joined = data.data.join_data;
-            let keys = new Set();
-            joined.forEach((item) => {
-                Object.keys(item).forEach((key) => keys.add(key))
-            })
-            var allData = [];
-            for(var i = 0; i < joined.length; i++){
-              var row = [false, false];
-                keys.forEach((key) => {
-                    row.push(joined[i][key])
-                })
-                console.log(row);
-                //let row = [false, false, "", joined[i].firstNameTH, joined[i].lastNameTH, joined[i].nick_name, "", joined[i].phone, "", joined[i].firstName+" "+joined[i].lastName, "", joined[i].disease];
-                allData.push(row);
-            }
-            _this.setState({
-                ..._this.state,
-                'tableData': allData
-            })
-        });
-
-        axios.get(`${hostname}event?id=${this.props.eventId}`, { headers: { 'crossDomain': true }}).then((data) => {
-            _this.setState({
-                ..._this.state,
-                'formId': data.data.forms[testFormId][Object.keys(data.data.forms[testFormId])[0]],
-                'formTitle': Object.keys(data.data.forms[testFormId])[0],
-                'eventName': data.data.title
-            })
-
-            return data.data.forms[testFormId][Object.keys(data.data.forms[testFormId])[0]];
-        }).then((formId) => {
-            axios.get(`${hostname}form?id=${formId}&opt=responses`, config).then((data) => {
-                _this.setState({
-                    ..._this.state,
-                    'formData': data.data.form,
-                    'responses': data.data.form.responses
-                });
-            })
-        });
-
+        this.props.display_pop_item();
     }
 
     onToggleBoolean(row, col, forcedValue) {
         if(row === null || col === null) return;
-        if(fields[col-1].toUpperCase() === "APPROVED") {
+        if(_.get(this.state, 'keys', [])[col-1].toUpperCase() === "APPROVED") {
             if(typeof(this.state.tableData[row-1][col-1]) === "boolean") {
                 let new_tableData = [...this.state.tableData];
                 new_tableData[row-1][col-1] = (typeof(forcedValue) === "boolean") ? forcedValue : !new_tableData[row-1][col-1];
                 if(!new_tableData[row-1][col-1]) {
-                    new_tableData[row-1][(fields.map((key) => key.toUpperCase())).indexOf("CHECK IN")] = false;
+                    new_tableData[row-1][(_.get(this.state,'keys',[]).map((key) => key.toUpperCase())).indexOf("CHECK IN")] = false;
                 }
-                this.setState({
-                    ...this.state,
-                    'tableData': new_tableData
-                })
+                if(this._isMounted) {
+                    this.setState({
+                        ...this.state,
+                        'tableData': new_tableData
+                    })
+                }
                 //make ajax call
             }
         }
-        else if(fields[col-1].toUpperCase() === "CHECK IN") {
-            const isApproved = this.state.tableData[row-1][(fields.map((key) => key.toUpperCase())).indexOf("APPROVED")];
+        else if(_.get(this.state, 'keys[col-1]', '').toUpperCase() === "CHECK IN") {
+            const isApproved = this.state.tableData[row-1][(_.get(this.state, 'keys', []).map((key) => key.toUpperCase())).indexOf("APPROVED")];
 
             if(typeof(this.state.tableData[row-1][col-1]) === "boolean" && isApproved) {
                 let new_tableData = [...this.state.tableData];
                 new_tableData[row-1][col-1] = (typeof(forcedValue) === "boolean") ? forcedValue : !new_tableData[row-1][col-1];
-                this.setState({
-                    ...this.state,
-                    'tableData': new_tableData
-                })
+                if(this._isMounted) {
+                    this.setState({
+                        ...this.state,
+                        'tableData': new_tableData
+                    })
+                }
                 //make ajax call
             } else {
                 let new_tableData = [...this.state.tableData];
                 new_tableData[row-1][col-1] = false;
-                this.setState({
-                    ...this.state,
-                    'tableData': new_tableData
-                });
+                if(this._isMounted) {
+                    this.setState({
+                        ...this.state,
+                        'tableData': new_tableData
+                    });
+                }
             }
         }
     }
 
     onClickCell(row, col) {
         //console.log("click");
+        if(this.state.selectedRows.has(row)) {
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    let new_rows = prevState.selectedRows
+                    new_rows.delete(row);
+
+                    return ({
+                        ...prevState,
+                        'selectedRows': new_rows
+                    });
+                })
+            }
+        } else {
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    let new_rows = prevState.selectedRows;
+                    new_rows.add(row);
+                    return ({
+                        ...prevState,
+                        'selectedRows': new_rows
+                    });
+                })
+            }
+        }
+
         if(row > 0) {
             const selected_cell = this.refs["main-table"].children[1].children[row-1].children[col];
-            if(this.state.selectedCell.row === row && this.state.selectedCell.col === col) {
+            if(this.state.selectedCell.row === row && this.state.selectedCell.col === col)
+            {
                 const optionsWidth = 120;
                 const optionHeight = 100
                 const options = this.refs["options"];
@@ -151,7 +138,7 @@ class tablePage extends Component {
                 options.style.height = `${optionHeight}px`;
                 options.style.width = `${optionsWidth}px`;
 
-                const nextOptionState = !this.state.optionActive;
+                const nextOptionState = false;
 
                 let countFiltered = 0;
                 this.state.filteredDataFlags.forEach((item) => {
@@ -172,20 +159,18 @@ class tablePage extends Component {
                     options.style.top = top;
                     options.style.display = (nextOptionState) ? 'block' : 'none';
                 }
-
-                this.setState({
-                    ...this.state,
-                    'optionActive': nextOptionState
-                });
             } else {
-                this.setState({
-                    ...this.state,
-                    'selectedCell': {
-                        'row': row,
-                        'col': col
-                    },
-                    'optionActive': false
-                });
+                if(this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            'selectedCell': {
+                                'row': row,
+                                'col': col
+                            }
+                        });
+                    })
+                }
 
                 const sc = this.refs["sc"];
                 const sr = this.refs["sr"];
@@ -236,37 +221,124 @@ class tablePage extends Component {
 
     componentDidMount() {
         document.addEventListener('keydown', this.onKeyPress);
+        this._isMounted = true;
     }
 
     compnentWillUnMount() {
         document.removeEventListener('keydown', this.onKeyPress);
+        this._isMounted = false;
     }
 
     componentWillMount() {
         document.title = "Event Hub | Table";
+
+        let config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
+            }
+        }
+
+        let _this = this;
+
+        axios.get(`${hostname}event/stat?id=${this.state.eventId}`, config).then((data) => {
+            let joined = data.data.join_data;
+            let keys = new Set();
+            let keysArray = [];
+            joined.forEach((item) => {
+                Object.keys(item).forEach((key) => keys.add(key))
+            })
+
+            keysArray = ["approved", "check in"].concat(Array.from(keys)).filter((item) => item !== "_id");
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    return {
+                        ...prevState,
+                        keys: keysArray
+                    }
+                })
+            }
+            let allData = [];
+            for(let i = 0; i < joined.length; i++){
+              var row = [false, false];
+                keysArray.forEach((key, index) => {
+                    if(index > 1) {
+                        row.push(joined[i][key])
+                    }
+                })
+                //let row = [false, false, "", joined[i].firstNameTH, joined[i].lastNameTH, joined[i].nick_name, "", joined[i].phone, "", joined[i].firstName+" "+joined[i].lastName, "", joined[i].disease];
+                allData.push(row);
+                allData.push(row);
+                allData.push(row);
+            }
+            if(this._isMounted) {
+                _this.setState({
+                    ..._this.state,
+                    'tableData': allData,
+                    'filteredDataFlags': allData.map(() => true)
+                })
+            }
+        }).catch((e) => {
+            this.onSetError(e);
+        });
+
+        getEvent(this.state.eventId).then((data) => {
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        'formId': _.get(data, `forms[0][${Object.keys(_.get(data, 'forms[0]', ''))}[0]]`, ''),
+                        'formTitle': _.get(Object.keys(_.get(data, 'forms[0]', {})), '[0]', ''),
+                        'eventName': _.get(data, 'title', '')
+                    })
+                })
+            }
+
+            return _.get(data, `forms[0][${Object.keys(_.get(data, 'forms[0]', ''))}[0]]`, '');
+        }).then((formId) => {
+            axios.get(`${hostname}form?id=${formId}&opt=responses`, config).then((data) => {
+                if(this._isMounted) {
+                    _this.setState({
+                        ..._this.state,
+                        'formData': data.data.form,
+                        'responses': data.data.form.responses
+                    });
+                }
+            })
+        }).catch((e) => {
+            console.log(e);
+            this.onSetError(e);
+        });
+    }
+
+    componentDidUpdate() {
+        console.log(this.state);
     }
 
     onKeyPress(e) {
         e = e || window.event;
         if(e.keyCode === 27) {
-            this.setState({
-                ...this.state,
-                'selectedCell': {
-                    'row': null,
-                    'col': null
-                }
-            });
+            if(this._isMounted) {
+                this.setState({
+                    ...this.state,
+                    'selectedCell': {
+                        'row': null,
+                        'col': null
+                    }
+                });
 
-            this.refs["sr"].style.display = "none";
-            this.refs["sc"].style.display = "none";
-            this.refs["options"].style.display = "none";
+                this.refs["sr"].style.display = "none";
+                this.refs["sc"].style.display = "none";
+                this.refs["options"].style.display = "none";
+            }
         }
     }
 
     filter(arrayOfFields, key) {
         let isFound = false;
         for(let i = 0; i < arrayOfFields.length && !isFound; i++) {
-            if(arrayOfFields[i].toString().toUpperCase().includes(key.toUpperCase())) { isFound = true; }
+            const Item = arrayOfFields[i] || '';
+            if(Item.toString().toUpperCase().includes(key.toUpperCase())) { isFound = true; }
         }
         return isFound;
     }
@@ -274,11 +346,13 @@ class tablePage extends Component {
     onFilterSearch() {
         const keyword = this.refs.filterSearch.value;
 
-        this.setState({
-            ...this.state,
-            'filterKeyword': keyword,
-            'filteredDataFlags': this.state.tableData.map((item) => this.filter(item, keyword))
-        });
+        if(this._isMounted) {
+            this.setState({
+                ...this.state,
+                'filterKeyword': keyword,
+                'filteredDataFlags': this.state.tableData.map((item) => this.filter(item, keyword))
+            });
+        }
     }
 
     // componentDidUpdate() {
@@ -290,10 +364,12 @@ class tablePage extends Component {
     }
 
     onSendMessage() {
-        this.setState({
-          ...this.state,
-          'sentMessage': this.refs.sent_message.value,
-        });
+        if(this._isMounted) {
+            this.setState({
+                ...this.state,
+                'sentMessage': this.refs.sent_message.value,
+            });
+        }
     }
 
     sendMessage() {
@@ -306,14 +382,14 @@ class tablePage extends Component {
       let data = {
           description: this.state.sentMessage,
       }
-      axios.post(`${hostname}event/join/message?id=${this.props.eventId}`, data, config).then((data) => {
+      axios.post(`${hostname}event/join/message?id=${this.state.eventId}`, data, config).then((data) => {
           console.log('post ja');
       });
     }
 
 
     render() {
-        let csvData = [["No.", ...fields]];
+        let csvData = [["No.", ..._.get(this.state, 'keys', [])]];
         let count = 1;
         this.state.tableData.forEach((person, index) => {
             if(this.state.filteredDataFlags[index]) csvData.push([count++, ...person]);
@@ -340,8 +416,8 @@ class tablePage extends Component {
                             <div className="thead">
                                 <div className="th" onMouseEnter={() => {this.onHightLight(0, 0)}} >No.</div>
                                 {
-                                    fields.map((field, index) => {
-                                        return <div key={index+1} className="th" onMouseEnter={() => {this.onHightLight(0, index+1)}}>{field}</div>
+                                    _.get(this.state,'keys', []).map((field, index) => {
+                                        return <div key={index+1} className="th" onMouseEnter={() => {this.onHightLight(0, index+1)}}>{field.replace("_", " ")}</div>
                                     })
                                 }
                             </div>
@@ -352,7 +428,7 @@ class tablePage extends Component {
                                         count += 1;
                                         let c = count;
                                         return (
-                                            <div className="tr" key={count-1}>
+                                            <div className={`tr ${_.get(this.state, 'selectedRows', new Set()).has(c) ? 'selected' : ''}`} key={count-1}>
                                                 <div className="td" onMouseEnter={() => {this.onHightLight(c, 0)}} onClick={() => {this.onClickCell(c, 0)}}>{c}</div>
                                                 {
                                                     person.map((sample, col) => {
@@ -398,6 +474,7 @@ class tablePage extends Component {
                             <button className="Btn-green" onClick={() => {
                                     this.onToggleBoolean(this.state.selectedCell.row, 1, true);
                                 }}>APPROVE</button>
+                            <button className="Btn-green">CHECK IN</button>
                             <button className="Btn-red" onClick={() => {
                                     this.onToggleBoolean(this.state.selectedCell.row, 1, false);
                                 }}>REJECT</button>
@@ -413,10 +490,5 @@ class tablePage extends Component {
         );
     }
 }
-
-tablePage.defaultProps = {
-    'eventId': '595ef6c7822dbf0014cb821c'
-}
-
 
 export default normalPage(pages(tablePage, true));

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './css/channelDetail.css';
 import Image from '../components/Image';
+import VideoIframe from '../components/VideoIframe';
 import axios from 'axios';
 import { hostname } from '../actions/index';
 import ReactLoading from 'react-loading';
@@ -17,10 +18,7 @@ class channelDetail extends Component {
             'picture_large': [],
             'isLoad': false,
             'url': '',
-            'video': {
-                'url': '',
-                'isExist': false
-            }
+            'video': ''
         }
     }
 
@@ -35,28 +33,9 @@ class channelDetail extends Component {
                     ],
                 'picture_large': _.get(data, 'data.picture_large', []),
                 'url': _.get(data, 'data.url', ''),
-                'video': {
-                    'url': 'https://www.youtube.com/embed/XGSy3_Czz8k',//_.get(data, 'data.video', ''),
-                    'isExist': true
-                },
+                'video': _.get(data, 'data.video', ''),
                 'isLoad': true
-            }, () => {
-                const url = this.state.video.url;
-                console.log("Hi")
-                axios.get(url).catch((e) => {
-                    if(e.response.status === 404) {
-                        this.setState((prevState) => {
-                            return {
-                                ...prevState,
-                                'video': {
-                                    'url': prevState.video.url,
-                                    'isExist': false
-                                }
-                            }
-                        })
-                    }
-                })
-            });
+            })
         }, (error) => {
             console.log("get channel error");
         });
@@ -94,24 +73,7 @@ class channelDetail extends Component {
                         }
                     </div>
                     <hr className="thin" />
-                    {
-                        (this.state.video.isExist) ? (
-                            <div style={{
-                                    'position': 'relative',
-                                    'width': '100%',
-                                    'height': '0px',
-                                    'paddingBottom': '51%'
-                                }}>
-                                    <iframe style={{
-                                        'position': 'absolute',
-                                        'width': '100%',
-                                        'height': '100%',
-                                        'left': '0px',
-                                        'top': '0px'
-                                    }} src={this.state.video.url} />
-                            </div>
-                        ) : null
-                    }
+                    <VideoIframe src={this.state.video} />
                     <a href={this.state.url} className="box">
                         LINK
                         <div>{this.state.url}</div>

@@ -8,7 +8,7 @@ export default function(ComposedComponent) {
         // if(getCookie("fb_server_token") !== "") {
         //     return <ComposedComponent />
         // }
-        if(props.fb.isLogin) return <ComposedComponent />
+        if(props.fb.isLogin) return <ComposedComponent {...props} />
         return <FallbackPage />;
     }
 

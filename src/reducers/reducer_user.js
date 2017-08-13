@@ -18,6 +18,7 @@ export const inMeta = [
     ]
 
 const initalState = {
+    'refObj': null,
     'meta': {
         'id': null,
         "facebookId": null,
@@ -115,7 +116,8 @@ export default ( state = initalState, action ) => {
                 'info': {
                     ...state.info,
                     ...info
-                }
+                },
+                'refObj': action.payload
             });
         case UPDATE_USER_EVENTS_INFO_JOIN:
             //Expected to update all three fields

@@ -5,7 +5,6 @@ import ProfilePopUp from './profilePopup';
 import { Link } from 'react-router';
 import SearchResult from './searchResult';
 import autoBind from '../hoc/autoBind';
-import axios from 'axios';
 import { getCookie } from '../actions/common';
 import { hostname } from '../actions/index';
 import $ from 'jquery';
@@ -46,46 +45,54 @@ class topNavBar extends Component {
 
     componentWillMount() {
         if(getCookie("fb_is_login")) {
-            this.setState((prevState, props) => {
-                if(!prevState.isLogin) return {
-                    ...prevState,
-                    isLogin: true,
-                    name: props.user.meta.firstName,
-                    picture: props.user.meta.picture_200px
-                };
-                return prevState;
-            })
+            if(this._isMounted) {
+                this.setState((prevState, props) => {
+                    if(!prevState.isLogin) return {
+                        ...prevState,
+                        isLogin: true,
+                        name: props.user.meta.firstName,
+                        picture: props.user.meta.picture_200px
+                    };
+                    return prevState;
+                })
+            }
         }
     }
 
     componentDidMount() {
         window.addEventListener("resize", this.onWindowResize);
         this.onWindowResize();
+        this._isMounted = true;
 
         if(getCookie("fb_is_login")) {
-            this.setState((prevState, props) => {
-                if(!prevState.isLogin) return {
-                    ...prevState,
-                    isLogin: true,
-                    name: props.user.meta.firstName,
-                    picture: props.user.meta.picture_200px
-                };
-                return prevState;
-            })
+            if(this._isMounted) {
+                this.setState((prevState, props) => {
+                    if(!prevState.isLogin) return {
+                        ...prevState,
+                        isLogin: true,
+                        name: props.user.meta.firstName,
+                        picture: props.user.meta.picture_200px
+                    };
+                    return prevState;
+                })
+            }
         }
     }
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.onWindowResize);
+        this._isMounted = false;
     }
 
     componentWillReceiveProps(nextProps) {
         if(nextProps.user.meta.firstName !== this.props.user.meta.firstName && nextProps.user.meta.picture_200px !== this.props.user.meta.picture_200px) {
-            this.setState({
-                ...this.state,
-                'name': nextProps.user.meta.firstName,
-                'picture': nextProps.user.meta.picture_200px
-            })
+            if(this._isMounted) {
+                this.setState({
+                    ...this.state,
+                    'name': nextProps.user.meta.firstName,
+                    'picture': nextProps.user.meta.picture_200px
+                })
+            }
         }
     }
 
@@ -111,10 +118,12 @@ class topNavBar extends Component {
         if(tmp) $('.search-box-container').fadeIn(200);
         else $('.search-box-container').fadeOut(200);
 
-        this.setState({
-            ...this.state,
-            isSearchActive: tmp
-        });
+        if(this._isMounted) {
+            this.setState({
+                ...this.state,
+                isSearchActive: tmp
+            });
+        }
     }
 
     blurModal() {
@@ -137,10 +146,13 @@ class topNavBar extends Component {
             this.onSearchToggleState(true);
         }
 
-        this.setState({
-            ...(this.state),
-            'searchTerm': term
-        });
+        if(this._isMounted) {
+            this.setState({
+                ...(this.state),
+                'searchTerm': term
+            });
+        }
+
     }
 
     onButtonToggle() {
@@ -182,11 +194,13 @@ class topNavBar extends Component {
         if(this.state.isSearchActive) {
             this.props.display_pop_item();
             // if(!this.props.pages.is_blur) this.props.blur_bg();
-            this.setState({
-                ...this.state,
-                'isSearchActive': false,
-                searchTerm: ''
-            })
+            if(this._isMounted) {
+                this.setState({
+                    ...this.state,
+                    'isSearchActive': false,
+                    searchTerm: ''
+                })
+            }
         } else {
             this.props.toggle_pop_item();
             this.props.forced_fix_bg();
@@ -201,10 +215,12 @@ class topNavBar extends Component {
     onKeyPress(e) {
         if(e.key === "Escape") {
             if(!this.props.pages.is_item_shown) this.props.unblur_bg();
-            this.setState({
-                ...this.state,
-                'isSearchActive': false
-            });
+            if(this._isMounted) {
+                this.setState({
+                    ...this.state,
+                    'isSearchActive': false
+                });
+            }
         }
     }
 
@@ -222,20 +238,24 @@ class topNavBar extends Component {
 
     onLogin(isLogin) {
         if(this.props.user.meta.firstName !== null && this.props.user.meta.picture_200px !== null && isLogin) {
-            this.setState({
-                ...this.state,
-                'name': this.props.user.meta.firstName,
-                'picture': this.props.user.meta.picture_200px,
-                'isLogin': isLogin
-            })
+            if(this._isMounted) {
+                this.setState({
+                    ...this.state,
+                    'name': this.props.user.meta.firstName,
+                    'picture': this.props.user.meta.picture_200px,
+                    'isLogin': isLogin
+                })
+            }
         }
         else {
-            this.setState({
-                ...this.state,
-                'name': "Sign in / Sign up",
-                'picture': "../../resource/images/dummyProfile.png",
-                'isLogin': isLogin
-            })
+            if(this._isMounted) {
+                this.setState({
+                    ...this.state,
+                    'name': "Sign in / Sign up",
+                    'picture': "../../resource/images/dummyProfile.png",
+                    'isLogin': isLogin
+                })
+            }
         }
     }
 

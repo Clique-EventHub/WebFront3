@@ -25,6 +25,8 @@ let middlewares = [DEBUG && logger, thunk].filter(Boolean);
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 export const myStore = createStoreWithMiddleware(rootReducer);
 
+export const googleAPI = "AIzaSyBcn61d-EPA4tNRXTftPDucutQ2EHzLh9Q";
+
 ReactDOM.render(
     <Provider store={myStore}>
         <Router history={hashHistory} routes={routes} />

@@ -145,6 +145,7 @@ section.table-center table {
     text-align: center;
     overflow-y: hidden;
     border-collapse: collapse;
+    border-spacing: 0px;
     position: relative;
 }
 
@@ -175,8 +176,21 @@ section.table-center table {
     display: table-row;
 }
 
+
 .table .tr:nth-child(odd) {
     background-color: #f5f5f5;
+}
+
+.table .tr.selected {
+    background: rgba(0, 255, 75, 0.1);
+}
+
+.table .tr.selected .td,
+.table .tr.selected .th {
+    border-color: #333;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    box-sizing: border-box;
 }
 
 .table .td,
@@ -184,7 +198,7 @@ section.table-center table {
     display: table-cell;
     text-align: center;
     border: 1px solid #AAAAAA;
-    border-bottom: 1px solid #F0F0F0;
+    border-bottom: 0px solid #F0F0F0;
 }
 
 .table .td {
