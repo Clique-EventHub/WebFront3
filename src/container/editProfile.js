@@ -116,6 +116,9 @@ class editProfile extends Component {
           'tag_like': [],
 
           'new_birth_day': '',
+          'new_bd_day': '',
+          'new_bd_month': '',
+          'new_bd_year': '',
           'new_nick_name': '',
           'new_lineId': '',
           'new_email': '',
@@ -169,6 +172,9 @@ class editProfile extends Component {
                 'tag_like': data.data.tag_like,
 
                 'new_birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
+                'new_bd_day': (new Date(data.data.birth_day)).getDate(),
+                'new_bd_month': (new Date(data.data.birth_day)).getMonth()+1,
+                'new_bd_year': (new Date(data.data.birth_day)).getFullYear(),
                 'new_nick_name': data.data.nick_name,
                 'new_lineId': data.data.lineId,
                 'new_email': data.data.email,
@@ -190,7 +196,10 @@ class editProfile extends Component {
     onKeyPressed() {
         const newState = {
             ...this.state,
-            'new_birth_day': this.refs.birth.value,
+            'new_birth_day': new Date(this.refs.bd_day.value,this.refs.bd_month.value-1,this.refs.bd_year.value),
+            'new_bd_day': this.refs.bd_day.value,
+            'new_bd_month': this.refs.bd_month.value,
+            'new_bd_year': this.refs.bd_year.value,
             'new_nick_name': this.refs.nick_name.value,
             'new_lineId': this.refs.line.value,
             'new_email': this.refs.email.value,
@@ -209,7 +218,7 @@ class editProfile extends Component {
     save() {
         const newState = {
             ...this.state,
-            'birth_day': this.refs.birth.value,
+            'birth_day': new Date(this.refs.bd_year.value,this.refs.bd_month.value-1,this.refs.bd_day.value),
             'nick_name': this.refs.nick_name.value,
             'lineId': this.refs.line.value,
             'email': this.refs.email.value,
@@ -297,7 +306,12 @@ class editProfile extends Component {
                         <div className="flex flex-sp">
                             <section className="edit-pro-left">
                                 <img src="../../resource/icon/icon3.svg" alt="id"/> <p>{this.state.regId}</p>
-                                <img src="../../resource/icon/icon6.svg" alt="birth"/> <input ref="birth" type="text" placeholder="Birthdate" value={this.state.new_birth_day} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon6.svg" alt="birth"/>
+                                <div className="flex">
+                                    <input className="w45" ref="bd_day" type="text" placeholder="dd" value={this.state.new_bd_day} onChange={this.onKeyPressed}/>
+                                    <input className="w45 m15" ref="bd_month" type="text" placeholder="mm" value={this.state.new_bd_month} onChange={this.onKeyPressed}/>
+                                    <input className="w110 m15" ref="bd_year" type="text" placeholder="yyyy (CE)" value={this.state.new_bd_year} onChange={this.onKeyPressed}/>
+                                </div>
                                 <img src="../../resource/icon/icon2.svg" alt="nickname"/> <input ref="nick_name" type="text" placeholder="Nickname" value={this.state.new_nick_name} onChange={this.onKeyPressed}/>
                                 <img src="../../resource/icon/icon8.svg" alt="line"/> <input ref="line" type="text" placeholder="Line ID" value={this.state.new_lineId} onChange={this.onKeyPressed}/>
                                 <img src="../../resource/icon/icon9.svg" alt="email"/> <input ref="email" type="text" placeholder="Email" value={this.state.new_email} onChange={this.onKeyPressed}/>
@@ -308,8 +322,8 @@ class editProfile extends Component {
                                 <img src="../../resource/icon/icon14.svg" alt="dorm"/>
                                 <div className="flex">
                                     <input className="w110" ref="dorm_building" type="text" placeholder="Dorm Building" value={this.state.new_dorm_building} onChange={this.onKeyPressed}/>
-                                    <input className="w45" ref="dorm_room" type="text" placeholder="Room" value={this.state.new_dorm_room} onChange={this.onKeyPressed}/>
-                                    <input className="w45" ref="dorm_bed" type="text" placeholder="Bed" value={this.state.new_dorm_bed} onChange={this.onKeyPressed}/>
+                                    <input className="w45 m15" ref="dorm_room" type="text" placeholder="Room" value={this.state.new_dorm_room} onChange={this.onKeyPressed}/>
+                                    <input className="w45 m15" ref="dorm_bed" type="text" placeholder="Bed" value={this.state.new_dorm_bed} onChange={this.onKeyPressed}/>
                                 </div>
                             </section>
                             <p className="sec-line"></p>

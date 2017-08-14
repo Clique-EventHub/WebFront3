@@ -79,7 +79,7 @@ div.edit-profile section.edit-pro-left input {
   border:none;
   border-bottom:1px solid #ccc;
   margin-left: 45px;
-  width: calc(100% - 70px);
+  width: calc(100% - 60px);
   z-index: 560;
   font-family:inherit;
   font-size: 1em;
@@ -93,8 +93,11 @@ div.edit-profile section.edit-pro-left input.w110 {
 
 div.edit-profile section.edit-pro-left input.w45 {
   /*width: 45px;*/
-  margin-left: 15px;
   flex: 1 1 25%;
+}
+
+div.edit-profile section.edit-pro-left input.m15 {
+  margin-left: 15px;
 }
 
 div.edit-profile section.edit-pro-left div {

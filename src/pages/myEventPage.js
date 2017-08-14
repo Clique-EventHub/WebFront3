@@ -117,7 +117,7 @@ class myEventPage extends Component {
         this.setState({
           ...this.state,
           'nick_name': val.nick_name,
-          'birth_day': val.birth_day,
+          'birth_day': val.birth_day.toString().slice(0,15),
           'shirt_size': val.shirt_size,
           'disease': val.disease,
         });
