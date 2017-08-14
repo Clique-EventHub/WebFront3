@@ -165,7 +165,6 @@ class EditEvent extends Component {
         if(this.props.eventId && this.props.eventId.length > 0) {
             getEvent(this.props.eventId).then(
                 (data) => {
-                    console.log(data);
                     this.onSetValues.bind(this)(data);
                 }
             ).catch((error) => {
@@ -646,12 +645,11 @@ class EditEvent extends Component {
             Object.keys(mapKeyword).forEach((key) => {
                 compareSetDiff(key, mapKeyword[key], mapConvertFunc[key])
             })
-            //console.log(uploadedObj);
             axios.post(`${hostname}event`, {
                 ...uploadedObj,
                 'channel': this.props.channelId
             }, config).then((data) => {
-                console.log("COMPLETED!!! ", data)
+                //console.log("COMPLETED!!! ", data)
             }).catch((e) => {
                 console.log(e);
             })
@@ -721,7 +719,6 @@ class EditEvent extends Component {
     //"a[1].b[2].c[3].d[4]".split(/\[[0-9]+]\.*/g).filter((item) => item.length !== 0)
 
     componentDidUpdate() {
-        // console.log(this.state);
         this.onTextAreaChange();
     }
 

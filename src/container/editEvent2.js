@@ -336,7 +336,6 @@ class EditEvent extends Component {
                 if(item.constructor === Array) return ([new Date(item[0]), new Date(item[1])]);
                 return new Date(item);
             })
-            console.log(data);
             let new_option = { ...this.state.option }
             if(data.notes.length  > 0) {
                 new_option = {
@@ -384,13 +383,13 @@ class EditEvent extends Component {
             })
             this.resizeTextArea("about");
         }, (error) => {
-            console.log("get event error");
+            //console.log("get event error");
         });
     }
 
-    componentDidUpdate() {
-        console.log(this.state);
-    }
+    // componentDidUpdate() {
+    //     console.log(this.state);
+    // }
 
     onClickField(obj) {
         let new_field = [...this.state.option.fields]
@@ -501,10 +500,6 @@ class EditEvent extends Component {
             'picture': this.state.new.picture,
             'picture_large': this.state.new.picture_large
         }
-
-        console.log(responseBody);
-        console.log(JSON.stringify(responseBody));
-
         /*Picture Process --- must happen sometime after upload form to server complete*/
         let _this = this;
 
@@ -530,8 +525,8 @@ class EditEvent extends Component {
                     onUploadProgress: (progressEvent) => {
                         process_inner = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
                         overall_process[processIndex] = process_inner;
-                        console.log(progressEvent.target.requestURL)
-                        console.log([...overall_process]);
+                        //console.log(progressEvent.target.requestURL)
+                        //console.log([...overall_process]);
                     }
                 }
 
@@ -543,9 +538,9 @@ class EditEvent extends Component {
                         data.append('pictures', files[i]);
                     }
                     axios.post(`${hostname}picture?field=event&size=${size}&id=${id}`, data, configs).then((res) => {
-                        console.log(res);
+                        //console.log(res);
                     }).catch((err) => {
-                        console.error(err);
+                        //console.error(err);
                     })
                 }
             }

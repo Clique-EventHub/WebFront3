@@ -85,7 +85,7 @@ class myEventPage extends Component {
                 'showJoin': true
             })
         }, (error) => {
-            console.log("get user error", error);
+            //console.log("get user error", error);
         });
     }
 
@@ -112,8 +112,6 @@ class myEventPage extends Component {
     }
 
     onChildSave(val) {
-        console.log("val : " + val);
-
         this.setState({
           ...this.state,
           'nick_name': val.nick_name,
@@ -147,7 +145,6 @@ class myEventPage extends Component {
             intr_events.push(<p key={id_intr++} className="warn">You don't have any Interested Events.</p>)
         }
         for(i = 0; i < this.state.n_intr; i++){
-            console.log(this.state.interest_events[Number(i)]);
             intr_events.push(<EventItem key={id_intr++} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} eventId={this.state.interest_events[Number(i)]}/>);
         }
 

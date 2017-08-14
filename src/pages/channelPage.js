@@ -39,13 +39,12 @@ class channelPage extends Component {
             const channel_id = this.props.params.id;
 
             axios.put(`${hostname}user/subscribe?id=${channel_id}`, config).then((response) => {
-                console.log("followed!!!");
                 this.setState({
                     ...this.state,
                     'isFollow': true
                 });
             }, (error) => {
-                console.log("follow error", error);
+                //console.log("follow error", error);
             });
         }
 
@@ -79,22 +78,17 @@ class channelPage extends Component {
                 'events': data.data.events,
             })
         }, (error) => {
-            console.log("get channel error", error);
+            //console.log("get channel error", error);
         });
 
         axios.get(`${hostname}user/subscribe`, config).then((data) => {
-            console.log("get subscribe!!!");
-
             if(data.data.hasOwnProperty(_this.state.name)){
-                console.log("isFollowing");
                 _this.setState({
                     'isFollow': true,
                 })
-            } else {
-                console.log("Not follow");
             }
         }, (error) => {
-            console.log("get subscribe error");
+            //console.log("get subscribe error");
         });
 
     }

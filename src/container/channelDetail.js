@@ -37,7 +37,7 @@ class channelDetail extends Component {
                 'isLoad': true
             })
         }, (error) => {
-            console.log("get channel error");
+            //console.log("get channel error");
         });
     }
 
@@ -46,7 +46,6 @@ class channelDetail extends Component {
     }
 
     render () {
-        // console.log(this.state.picture_large);
         const content = (this.state.isLoad) ? (
             <section>
                 <div className="flex">

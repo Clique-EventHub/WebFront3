@@ -30,9 +30,6 @@ class formPage extends Component {
                 'isAdmin': (typeof(this.props.location.query.state) === "undefined") ? this.props.isAdmin : (this.props.location.query.state === "0")
             }
         }
-
-        console.log(this.state);
-
         this.onStart = this.onStart.bind(this);
         this.onSent = this.onSent.bind(this);
         this.onSave = this.onSave.bind(this);
@@ -89,7 +86,6 @@ class formPage extends Component {
 
                 return true;
             }, (error) => {
-                // console.log(error);
                 this.onPopUpError(error);
                 return false;
             });
@@ -113,10 +109,6 @@ class formPage extends Component {
             this.onPopUpError(error);
         }
     }
-
-    // componentDidUpdate() {
-    //     console.log(this.state);
-    // }
 
     onSent(responses) {
         //User
@@ -161,7 +153,6 @@ class formPage extends Component {
                 this.props.context.router.push('/');
             });
         }, (error) => {
-            console.log(error.response)
             this.onPopUpError(error);
         });
     }

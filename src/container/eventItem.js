@@ -162,7 +162,7 @@ class eventItem extends Component {
                 })
             }
         }).catch((e) => {
-            console.log(e);
+            //console.log(e);
         })
 
         // this.setState((prevState) => {

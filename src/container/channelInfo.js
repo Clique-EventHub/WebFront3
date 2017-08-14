@@ -171,9 +171,9 @@ class channelInfo extends Component {
                 );
             }
             Promise.all(posterPromises).then((datas) => {
-                console.log(datas);
+                //console.log(datas);
             }).catch((e) => {
-                console.log(e);
+                //console.log(e);
             })
         }
 
@@ -199,16 +199,12 @@ class channelInfo extends Component {
                 picturePromises.push(
                     new Promise((good, bad) => {
                         axios.delete(`${hostname}picture`, configs).then((data) => {
-                            console.log(data);
                             return good(true);
                         }).catch((error) => {
-                            console.log(error);
                             return bad(error);
                         })
                     })
                 )
-            } else {
-                console.log("No data to delete");
             }
 
             const picture_file = _.get(this.state, 'picture_file', []);
@@ -234,10 +230,8 @@ class channelInfo extends Component {
         ])
 
         Promise.all(savePromises).then((results) => {
-            console.log(results);
             alert("Done");
         }).catch((e) => {
-            console.log(e);
             alert("Something went wrong");
         })
 
@@ -263,9 +257,9 @@ class channelInfo extends Component {
         this.props.onToggle();
     }
 
-    componentDidUpdate() {
-        console.log(this.state);
-    }
+    // componentDidUpdate() {
+    //     console.log(this.state);
+    // }
 
     onChangeTagState(tagName, value) {
         if(typeof this.state.tagsState[tagName] === "boolean") {

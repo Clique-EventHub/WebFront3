@@ -189,7 +189,7 @@ class editProfile extends Component {
                 'isLoading': false
             })
         }, (error) => {
-            console.log("get user error");
+            //console.log("get user error");
         });
     }
 
@@ -242,11 +242,8 @@ class editProfile extends Component {
         axios.put(`${hostname}user`, newState, config).then((response) => {
             var msg = response.msg;
             var code = response.code;
-            console.log(msg);
-            console.log("code = "+code);
             return true;
         }, (error) => {
-            console.log("save error");
             return false;
         })
 

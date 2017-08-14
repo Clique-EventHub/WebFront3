@@ -101,7 +101,6 @@ class tablePage extends Component {
     }
 
     onClickCell(row, col) {
-        //console.log("click");
         if(this.state.selectedRows.has(row)) {
             if(this._isMounted) {
                 this.setState((prevState) => {
@@ -306,13 +305,8 @@ class tablePage extends Component {
                 }
             })
         }).catch((e) => {
-            console.log(e);
             this.onSetError(e);
         });
-    }
-
-    componentDidUpdate() {
-        console.log(this.state);
     }
 
     onKeyPress(e) {
@@ -383,7 +377,7 @@ class tablePage extends Component {
           description: this.state.sentMessage,
       }
       axios.post(`${hostname}event/join/message?id=${this.state.eventId}`, data, config).then((data) => {
-          console.log('post ja');
+          //console.log('post ja');
       });
     }
 
