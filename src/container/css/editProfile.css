@@ -88,7 +88,7 @@ div.edit-profile section.edit-pro-left input {
 
 div.edit-profile section.edit-pro-left input.w110 {
   /*width: 110px;*/
-  flex: 1 1 50%;
+  flex: 1 1 40%;
 }
 
 div.edit-profile section.edit-pro-left input.w45 {
@@ -97,7 +97,7 @@ div.edit-profile section.edit-pro-left input.w45 {
 }
 
 div.edit-profile section.edit-pro-left input.m15 {
-  margin-left: 15px;
+  margin-left: 10px;
 }
 
 div.edit-profile section.edit-pro-left div {

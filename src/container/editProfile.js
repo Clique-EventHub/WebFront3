@@ -261,6 +261,9 @@ class editProfile extends Component {
         const newState = {
             ...this.state,
             'new_birth_day': this.state.birth_day,
+            'new_bd_day': (new Date(this.state.birth_day)).getDate(),
+            'new_bd_month': (new Date(this.state.birth_day)).getMonth()+1,
+            'new_bd_year': (new Date(this.state.birth_day)).getFullYear(),
             'new_nick_name': this.state.nick_name,
             'new_lineId': this.state.lineId,
             'new_email': this.state.email,
@@ -321,7 +324,7 @@ class editProfile extends Component {
                                 <img src="../../resource/icon/icon13.svg" alt="food"/> <input ref="food" type="text" placeholder="Food Allergy" value={this.state.new_allergy} onChange={this.onKeyPressed}/>
                                 <img src="../../resource/icon/icon14.svg" alt="dorm"/>
                                 <div className="flex">
-                                    <input className="w110" ref="dorm_building" type="text" placeholder="Dorm Building" value={this.state.new_dorm_building} onChange={this.onKeyPressed}/>
+                                    <input className="w110" ref="dorm_building" type="text" placeholder="Dorm Bd." value={this.state.new_dorm_building} onChange={this.onKeyPressed}/>
                                     <input className="w45 m15" ref="dorm_room" type="text" placeholder="Room" value={this.state.new_dorm_room} onChange={this.onKeyPressed}/>
                                     <input className="w45 m15" ref="dorm_bed" type="text" placeholder="Bed" value={this.state.new_dorm_bed} onChange={this.onKeyPressed}/>
                                 </div>
