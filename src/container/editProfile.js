@@ -91,6 +91,65 @@ import { hostname } from '../actions/index';
 //     }
 // }
 
+class InputReg extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            'message': ''
+        }
+		this.onSent = this.onSent.bind(this);
+    }
+
+    onSent() {
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            }
+        }
+        axios.put(`${hostname}user/reg`, {
+            'username': this.reg_id.value,
+            'password': this.reg_password.value
+        }, config).then((data) => {
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    message: 'Success'
+                });
+            })
+            this.reg_id.value = '';
+            this.reg_password.value = '';
+        }).catch((e) => {
+            this.setState((prevState) => {
+                if(e.response && e.response.status) {
+                    return ({
+                        ...prevState,
+                        message: `Error happened with code ${e.response.data}`
+                    });
+                }
+                return ({
+                    ...prevState,
+                    message: 'Error happened'
+                })
+            })
+        })
+    }
+
+    render() {
+        return (
+            <div>
+                <input placeholder="REG ID" type="text" ref={(input) => this.reg_id = input} />
+                <input placeholder="PASSWORD" type="password" ref={(input) => this.reg_password = input} />
+                <button onClick={this.onSent} >Submit</button>
+                {
+                    (this.state.message.length > 0) ? (
+                        <span>{this.state.message}</span>
+                    ) : null
+                }
+            </div>
+        );
+    }
+}
+
 class editProfile extends Component {
 
     constructor(props) {
@@ -100,7 +159,7 @@ class editProfile extends Component {
           'firstName': '',
           'lastName': '',
           'picture': '',
-          'regId': '',
+          'regId': 'Not Linked',
           'faculty': '99',
           'birth_day': '',
           'nick_name': '',
@@ -130,7 +189,10 @@ class editProfile extends Component {
           'new_dorm_room': '',
           'new_dorm_bed': '',
           'new_tag_like': [],
-          'isLoading': true
+          'isLoading': true,
+          'message': '',
+          'reg_id': '',
+          'reg_password': ''
         };
 
         this.onKeyPressed = this.onKeyPressed.bind(this);
@@ -156,7 +218,7 @@ class editProfile extends Component {
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
-                'regId': (data.data.regId == null) ? 'Not Found' : data.data.regId,
+                'regId': (data.data.regId !== null) ? 'Not Found' : data.data.regId,
                 'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
                 'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
                 'nick_name': data.data.nick_name,
@@ -210,6 +272,8 @@ class editProfile extends Component {
             'new_dorm_building': this.refs.dorm_building.value,
             'new_dorm_room': this.refs.dorm_room.value,
             'new_dorm_bed': this.refs.dorm_bed.value,
+            'reg_id': this.refs.reg_id.value,
+            'reg_password': this.refs.reg_password.value
             // 'new_tag_like': data.data.tag_like,
         };
         this.setState(newState);
@@ -277,6 +341,49 @@ class editProfile extends Component {
         this.props.toggle_pop_item();
     }
 
+    onLoginReg() {
+        this.setState({
+            ...this.state,
+            'message': ''
+        })
+
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            }
+        }
+        axios.put(`${hostname}user/reg`, {
+            'username': this.refs.reg_id.value,
+            'password': this.refs.reg_password.value
+        }, config).then((data) => {
+
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    message: 'Success'
+                });
+            })
+            this.state.reg_id.value = '';
+            this.state.reg_password.value = '';
+        }).catch((e) => {
+          console.log("error reg");
+          console.log(this.state.reg_id);
+          console.log(this.state.reg_password);
+            this.setState((prevState) => {
+                if(e.response && e.response.status) {
+                    return ({
+                        ...prevState,
+                        message: `Invalid username/password`
+                    });
+                }
+                return ({
+                    ...prevState,
+                    message: 'Error happened'
+                })
+            })
+        })
+    }
+
     onSaveTag() {
 
     }
@@ -330,11 +437,23 @@ class editProfile extends Component {
                             <section className="edit-pro-right">
                                 <div className="fb-link">
                                     <img src="../../resource/icon/icon7.svg" alt="fb-link"/> <p>{this.state.firstName+" "+this.state.lastName}</p>
-                                    <button className="unlink">Unlink</button>
                                 </div>
                                 <div className="cu-link">
-                                    <img src="../../resource/icon/icon.svg" alt="cu-link"/> <p>{this.state.regId}</p>
-                                    <button className="unlink">Unlink</button>
+                                <img src="../../resource/icon/icon.svg" alt="cu-link"/>
+                                    {(this.state.regId === 'Not Found') ? (
+                                        <div className="regCU">
+                                            <div>
+                                              <input className="bottom-outline-1 border-focus-blue border-transition" placeholder="REG ID" type="text" ref="reg_id" value={this.state.reg_id} onChange={this.onKeyPressed}/>
+                                              <input className="bottom-outline-1 border-focus-blue border-transition" placeholder="PASSWORD" type="password" ref="reg_password" value={this.state.reg_password} onChange={this.onKeyPressed}/>
+                                            </div>
+                                            <button className="unlink" onClick={this.onLoginReg.bind(this)}>Link to Reg Chula</button>
+                                            {
+                                                (this.state.message.length > 0) ? (
+                                                    <p>{this.state.message}</p>
+                                                ) : null
+                                            }
+                                        </div>
+                                    ) : (<p>{this.state.regId}</p>)}
                                 </div>
                                 <div className="my-tag">
                                     <p>YOUR INTERESTED TAG</p>
