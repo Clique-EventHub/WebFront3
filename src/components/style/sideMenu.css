@@ -1,4 +1,9 @@
-a {
+aside.side-menu {
   font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
   color: #222222;
+}
+
+aside.side-menu div[content="name"] {
+    font-size: 1.3em;
+    margin-bottom: 30px;
 }

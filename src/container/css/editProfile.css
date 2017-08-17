@@ -130,6 +130,10 @@ div.edit-profile section.edit-pro-right img {
   margin-top: -6px;
 }
 
+div.edit-profile section.edit-pro-right img.mt {
+  margin-top: 4px;
+}
+
 div.edit-profile section.edit-pro-right button.unlink {
   border: 1.5px solid;
   border-radius: 20px;
@@ -256,8 +260,21 @@ div.edit-profile p.sec-line {
     }
 }
 
+div.regCU {
+    margin-top: 15px;
+}
+
 div.regCU input {
-    margin: 3px 0 5px 40px;
+    padding:8px;
+    display:block;
+    border:none;
+    border-bottom:1px solid #ccc;
+    margin-left: 45px;
+    width: calc(100% - 90px);
+    z-index: 560;
+    font-family:inherit;
+    font-size: 0.9em;
+    margin-bottom: 5px;
 }
 
 div.regCU p {
