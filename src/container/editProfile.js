@@ -91,6 +91,65 @@ import { hostname } from '../actions/index';
 //     }
 // }
 
+class InputReg extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            'message': ''
+        }
+		this.onSent = this.onSent.bind(this);
+    }
+
+    onSent() {
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            }
+        }
+        axios.put(`${hostname}user/reg`, {
+            'username': this.reg_id.value,
+            'password': this.reg_password.value
+        }, config).then((data) => {
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    message: 'Success'
+                });
+            })
+            this.reg_id.value = '';
+            this.reg_password.value = '';
+        }).catch((e) => {
+            this.setState((prevState) => {
+                if(e.response && e.response.status) {
+                    return ({
+                        ...prevState,
+                        message: `Error happened with code ${e.response.data}`
+                    });
+                }
+                return ({
+                    ...prevState,
+                    message: 'Error happened'
+                })
+            })
+        })
+    }
+
+    render() {
+        return (
+            <div>
+                <input placeholder="REG ID" type="text" ref={(input) => this.reg_id = input} />
+                <input placeholder="PASSWORD" type="password" ref={(input) => this.reg_password = input} />
+                <button onClick={this.onSent} >Submit</button>
+                {
+                    (this.state.message.length > 0) ? (
+                        <span>{this.state.message}</span>
+                    ) : null
+                }
+            </div>
+        );
+    }
+}
+
 class editProfile extends Component {
 
     constructor(props) {
@@ -100,7 +159,7 @@ class editProfile extends Component {
           'firstName': '',
           'lastName': '',
           'picture': '',
-          'regId': '',
+          'regId': 'Not Linked',
           'faculty': '99',
           'birth_day': '',
           'nick_name': '',
@@ -116,6 +175,9 @@ class editProfile extends Component {
           'tag_like': [],
 
           'new_birth_day': '',
+          'new_bd_day': '',
+          'new_bd_month': '',
+          'new_bd_year': '',
           'new_nick_name': '',
           'new_lineId': '',
           'new_email': '',
@@ -127,7 +189,10 @@ class editProfile extends Component {
           'new_dorm_room': '',
           'new_dorm_bed': '',
           'new_tag_like': [],
-          'isLoading': true
+          'isLoading': true,
+          'message': '',
+          'reg_id': '',
+          'reg_password': ''
         };
 
         this.onKeyPressed = this.onKeyPressed.bind(this);
@@ -153,7 +218,7 @@ class editProfile extends Component {
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
-                'regId': (data.data.regId == null) ? 'Not Found' : data.data.regId,
+                'regId': (data.data.regId !== null) ? 'Not Found' : data.data.regId,
                 'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
                 'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
                 'nick_name': data.data.nick_name,
@@ -169,6 +234,9 @@ class editProfile extends Component {
                 'tag_like': data.data.tag_like,
 
                 'new_birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
+                'new_bd_day': (new Date(data.data.birth_day)).getDate(),
+                'new_bd_month': (new Date(data.data.birth_day)).getMonth()+1,
+                'new_bd_year': (new Date(data.data.birth_day)).getFullYear(),
                 'new_nick_name': data.data.nick_name,
                 'new_lineId': data.data.lineId,
                 'new_email': data.data.email,
@@ -183,14 +251,17 @@ class editProfile extends Component {
                 'isLoading': false
             })
         }, (error) => {
-            console.log("get user error");
+            //console.log("get user error");
         });
     }
 
     onKeyPressed() {
         const newState = {
             ...this.state,
-            'new_birth_day': this.refs.birth.value,
+            'new_birth_day': new Date(this.refs.bd_day.value,this.refs.bd_month.value-1,this.refs.bd_year.value),
+            'new_bd_day': this.refs.bd_day.value,
+            'new_bd_month': this.refs.bd_month.value,
+            'new_bd_year': this.refs.bd_year.value,
             'new_nick_name': this.refs.nick_name.value,
             'new_lineId': this.refs.line.value,
             'new_email': this.refs.email.value,
@@ -201,6 +272,8 @@ class editProfile extends Component {
             'new_dorm_building': this.refs.dorm_building.value,
             'new_dorm_room': this.refs.dorm_room.value,
             'new_dorm_bed': this.refs.dorm_bed.value,
+            'reg_id': this.refs.reg_id.value,
+            'reg_password': this.refs.reg_password.value
             // 'new_tag_like': data.data.tag_like,
         };
         this.setState(newState);
@@ -209,7 +282,7 @@ class editProfile extends Component {
     save() {
         const newState = {
             ...this.state,
-            'birth_day': this.refs.birth.value,
+            'birth_day': new Date(this.refs.bd_year.value,this.refs.bd_month.value-1,this.refs.bd_day.value),
             'nick_name': this.refs.nick_name.value,
             'lineId': this.refs.line.value,
             'email': this.refs.email.value,
@@ -233,11 +306,8 @@ class editProfile extends Component {
         axios.put(`${hostname}user`, newState, config).then((response) => {
             var msg = response.msg;
             var code = response.code;
-            console.log(msg);
-            console.log("code = "+code);
             return true;
         }, (error) => {
-            console.log("save error");
             return false;
         })
 
@@ -252,6 +322,9 @@ class editProfile extends Component {
         const newState = {
             ...this.state,
             'new_birth_day': this.state.birth_day,
+            'new_bd_day': (new Date(this.state.birth_day)).getDate(),
+            'new_bd_month': (new Date(this.state.birth_day)).getMonth()+1,
+            'new_bd_year': (new Date(this.state.birth_day)).getFullYear(),
             'new_nick_name': this.state.nick_name,
             'new_lineId': this.state.lineId,
             'new_email': this.state.email,
@@ -266,6 +339,49 @@ class editProfile extends Component {
         };
         this.setState(newState);
         this.props.toggle_pop_item();
+    }
+
+    onLoginReg() {
+        this.setState({
+            ...this.state,
+            'message': ''
+        })
+
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token'))
+            }
+        }
+        axios.put(`${hostname}user/reg`, {
+            'username': this.refs.reg_id.value,
+            'password': this.refs.reg_password.value
+        }, config).then((data) => {
+
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    message: 'Success'
+                });
+            })
+            this.state.reg_id.value = '';
+            this.state.reg_password.value = '';
+        }).catch((e) => {
+          console.log("error reg");
+          console.log(this.state.reg_id);
+          console.log(this.state.reg_password);
+            this.setState((prevState) => {
+                if(e.response && e.response.status) {
+                    return ({
+                        ...prevState,
+                        message: `Invalid username/password`
+                    });
+                }
+                return ({
+                    ...prevState,
+                    message: 'Error happened'
+                })
+            })
+        })
     }
 
     onSaveTag() {
@@ -297,7 +413,12 @@ class editProfile extends Component {
                         <div className="flex flex-sp">
                             <section className="edit-pro-left">
                                 <img src="../../resource/icon/icon3.svg" alt="id"/> <p>{this.state.regId}</p>
-                                <img src="../../resource/icon/icon6.svg" alt="birth"/> <input ref="birth" type="text" placeholder="Birthdate" value={this.state.new_birth_day} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon6.svg" alt="birth"/>
+                                <div className="flex">
+                                    <input className="w45" ref="bd_day" type="text" placeholder="dd" value={this.state.new_bd_day} onChange={this.onKeyPressed}/>
+                                    <input className="w45 m15" ref="bd_month" type="text" placeholder="mm" value={this.state.new_bd_month} onChange={this.onKeyPressed}/>
+                                    <input className="w110 m15" ref="bd_year" type="text" placeholder="yyyy (CE)" value={this.state.new_bd_year} onChange={this.onKeyPressed}/>
+                                </div>
                                 <img src="../../resource/icon/icon2.svg" alt="nickname"/> <input ref="nick_name" type="text" placeholder="Nickname" value={this.state.new_nick_name} onChange={this.onKeyPressed}/>
                                 <img src="../../resource/icon/icon8.svg" alt="line"/> <input ref="line" type="text" placeholder="Line ID" value={this.state.new_lineId} onChange={this.onKeyPressed}/>
                                 <img src="../../resource/icon/icon9.svg" alt="email"/> <input ref="email" type="text" placeholder="Email" value={this.state.new_email} onChange={this.onKeyPressed}/>
@@ -307,20 +428,32 @@ class editProfile extends Component {
                                 <img src="../../resource/icon/icon13.svg" alt="food"/> <input ref="food" type="text" placeholder="Food Allergy" value={this.state.new_allergy} onChange={this.onKeyPressed}/>
                                 <img src="../../resource/icon/icon14.svg" alt="dorm"/>
                                 <div className="flex">
-                                    <input className="w110" ref="dorm_building" type="text" placeholder="Dorm Building" value={this.state.new_dorm_building} onChange={this.onKeyPressed}/>
-                                    <input className="w45" ref="dorm_room" type="text" placeholder="Room" value={this.state.new_dorm_room} onChange={this.onKeyPressed}/>
-                                    <input className="w45" ref="dorm_bed" type="text" placeholder="Bed" value={this.state.new_dorm_bed} onChange={this.onKeyPressed}/>
+                                    <input className="w110" ref="dorm_building" type="text" placeholder="Dorm Bd." value={this.state.new_dorm_building} onChange={this.onKeyPressed}/>
+                                    <input className="w45 m15" ref="dorm_room" type="text" placeholder="Room" value={this.state.new_dorm_room} onChange={this.onKeyPressed}/>
+                                    <input className="w45 m15" ref="dorm_bed" type="text" placeholder="Bed" value={this.state.new_dorm_bed} onChange={this.onKeyPressed}/>
                                 </div>
                             </section>
                             <p className="sec-line"></p>
                             <section className="edit-pro-right">
                                 <div className="fb-link">
                                     <img src="../../resource/icon/icon7.svg" alt="fb-link"/> <p>{this.state.firstName+" "+this.state.lastName}</p>
-                                    <button className="unlink">Unlink</button>
                                 </div>
                                 <div className="cu-link">
-                                    <img src="../../resource/icon/icon.svg" alt="cu-link"/> <p>{this.state.regId}</p>
-                                    <button className="unlink">Unlink</button>
+                                <img src="../../resource/icon/icon.svg" alt="cu-link"/>
+                                    {(this.state.regId === 'Not Found') ? (
+                                        <div className="regCU">
+                                            <div>
+                                              <input className="bottom-outline-1 border-focus-blue border-transition" placeholder="REG ID" type="text" ref="reg_id" value={this.state.reg_id} onChange={this.onKeyPressed}/>
+                                              <input className="bottom-outline-1 border-focus-blue border-transition" placeholder="PASSWORD" type="password" ref="reg_password" value={this.state.reg_password} onChange={this.onKeyPressed}/>
+                                            </div>
+                                            <button className="unlink" onClick={this.onLoginReg.bind(this)}>Link to Reg Chula</button>
+                                            {
+                                                (this.state.message.length > 0) ? (
+                                                    <p>{this.state.message}</p>
+                                                ) : null
+                                            }
+                                        </div>
+                                    ) : (<p>{this.state.regId}</p>)}
                                 </div>
                                 <div className="my-tag">
                                     <p>YOUR INTERESTED TAG</p>

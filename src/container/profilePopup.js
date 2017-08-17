@@ -104,13 +104,13 @@ class profilePopup extends Component {
                                     }
                                 })
                             }, (error) => {
-                                console.log("get event error", error);
+                                //console.log("get event error", error);
                             });
                         })
                     })
                 }
             }, (error) => {
-                console.log(error);
+                //console.log(error);
             });
         }
     }
@@ -144,7 +144,7 @@ class profilePopup extends Component {
                         })
                     }
                 }, (error) => {
-                    console.log("get user error", error);
+                    //console.log("get user error", error);
                 });
 
                 if(typeof(this.props.onLogin) === "function") this.props.onLogin(true);

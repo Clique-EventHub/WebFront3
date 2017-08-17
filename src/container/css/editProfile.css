@@ -79,7 +79,7 @@ div.edit-profile section.edit-pro-left input {
   border:none;
   border-bottom:1px solid #ccc;
   margin-left: 45px;
-  width: calc(100% - 70px);
+  width: calc(100% - 60px);
   z-index: 560;
   font-family:inherit;
   font-size: 1em;
@@ -88,13 +88,16 @@ div.edit-profile section.edit-pro-left input {
 
 div.edit-profile section.edit-pro-left input.w110 {
   /*width: 110px;*/
-  flex: 1 1 50%;
+  flex: 1 1 40%;
 }
 
 div.edit-profile section.edit-pro-left input.w45 {
   /*width: 45px;*/
-  margin-left: 15px;
   flex: 1 1 25%;
+}
+
+div.edit-profile section.edit-pro-left input.m15 {
+  margin-left: 10px;
 }
 
 div.edit-profile section.edit-pro-left div {
@@ -130,12 +133,19 @@ div.edit-profile section.edit-pro-right img {
 div.edit-profile section.edit-pro-right button.unlink {
   border: 1.5px solid;
   border-radius: 20px;
-  width: 55px;
-  height: 18px;
+  width: 120px;
+  height: 25px;
   font-size: 0.7em;
-  border-color: #FF1111;
-  color: #FF1111;
+  border-color: #00BFF0;
+  color: #00BFF0;
   background-color: #FFFFFF;
+  margin: 5px 0 0 35px;
+}
+
+div.edit-profile section.edit-pro-right button.unlink:hover {
+  border-color: #00BFF0;
+  color: #FFFFFF;
+  background-color: #00BFF0;
 }
 
 div.edit-profile section.edit-pro-right div.my-tag {
@@ -244,4 +254,14 @@ div.edit-profile p.sec-line {
     div.edit-profile .edit-pro-right {
         flex-basis: 100% !important;
     }
+}
+
+div.regCU input {
+    margin: 3px 0 5px 40px;
+}
+
+div.regCU p {
+    font-size: 0.8em;
+    color: #FF0000;
+    margin-top: 5px;
 }
