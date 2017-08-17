@@ -87,7 +87,7 @@ class channelInfo extends Component {
                 Object.keys(tags).forEach((key) => {
                     all_tags = all_tags.concat(tags[key])
                 })
-                let tagState = this.state.tagState;
+                let tagState = this.state.tagState || {};
                 all_tags.filter((item) => item.length > 0).forEach((item) => tagState[item] = false);
 
                 return ({
@@ -113,6 +113,8 @@ class channelInfo extends Component {
                 this.channelVideo.value = _.get(data, 'video', defaultText);
                 this.channelLink.value = _.get(data, 'url', defaultText);
                 this.detail.value = _.get(data, 'detail', [defaultText]).join("\n\n");
+
+                onTextareaResize(this.detail);
             })
         }, (error) => {
             this.setState((prevState) => {
@@ -141,7 +143,7 @@ class channelInfo extends Component {
 
         let responseBody = {
             'name': this.channelName.value,
-            'about': this.detail.value.split("\n\n"),
+            'detail': this.detail.value.split("\n\n"),
             'video': this.channelVideo.value,
             'url': this.channelLink.value,
         };
@@ -171,9 +173,9 @@ class channelInfo extends Component {
                 );
             }
             Promise.all(posterPromises).then((datas) => {
-                console.log(datas);
+                // console.log(datas);
             }).catch((e) => {
-                console.log(e);
+                // console.log(e);
             })
         }
 
@@ -199,16 +201,16 @@ class channelInfo extends Component {
                 picturePromises.push(
                     new Promise((good, bad) => {
                         axios.delete(`${hostname}picture`, configs).then((data) => {
-                            console.log(data);
+                            // console.log(data);
                             return good(true);
                         }).catch((error) => {
-                            console.log(error);
+                            // console.log(error);
                             return bad(error);
                         })
                     })
                 )
             } else {
-                console.log("No data to delete");
+                // console.log("No data to delete");
             }
 
             const picture_file = _.get(this.state, 'picture_file', []);
@@ -229,15 +231,17 @@ class channelInfo extends Component {
             }
         }
 
+        // console.log(responseBody);
+
         const savePromises = [].concat(picturePromises).concat(posterPromises).concat([
             axios.put(`${hostname}channel?id=${this.state.channel_id}`, responseBody, config)
         ])
 
         Promise.all(savePromises).then((results) => {
-            console.log(results);
+            // console.log(results);
             alert("Done");
         }).catch((e) => {
-            console.log(e);
+            // console.log(e);
             alert("Something went wrong");
         })
 
@@ -263,9 +267,9 @@ class channelInfo extends Component {
         this.props.onToggle();
     }
 
-    componentDidUpdate() {
-        console.log(this.state);
-    }
+    // componentDidUpdate() {
+    //     console.log(this.state);
+    // }
 
     onChangeTagState(tagName, value) {
         if(typeof this.state.tagsState[tagName] === "boolean") {

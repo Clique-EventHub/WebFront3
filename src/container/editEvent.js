@@ -80,65 +80,71 @@ const DateDefault = {
     }
 }
 
+const defaultState = {
+    'eventDate': { ...DateDefault },
+    'firstMeetDate': { ...DateDefault },
+    'recruitmentDate': { ...DateDefault },
+    'joinableDate': { ...DateDefault },
+    'contact': [],
+    'notes': [],
+    'refs': {
+        'files': [],
+        'url': []
+    },
+    'tagsState': {
+        'top': [],
+        'bottom': []
+    },
+    'tags': {},
+    'fieldsState': {},
+    'enableQuestion': false,
+    'isLoad': false,
+    'enableRecruitment': false,
+    'maxJoin': -1,
+    'poster': [],
+    'picture': [],
+    'poster_file': [],
+    'picture_file': [],
+    'eventTitle': '',
+    'eventLocation': '',
+    'eventDetail': '',
+    'outsiderAccessible': false,
+    'admins': [],
+    'selectedFaculty': {},
+    'selectedYear': {},
+    'refObject': {},
+    'chooseJoin': false,
+    'firstMeetTime': {
+        'Start': '',
+        'End': ''
+    },
+    'video': '',
+    'uploadProgress': {
+        'isUploading': false,
+        'uploadStatus': {
+            'detail': false,
+            'pictures': {
+                'add': false,
+                'delete': false
+            },
+            'poster': false,
+            'admins': {
+                'add': false,
+                'delete': false
+            }
+        }
+    }
+};
+
 class EditEvent extends Component {
     constructor(props) {
         super(props);
         const fieldState = {};
         FieldsName.forEach((item) => fieldState[item] = state[0].value);
         this.state = {
-            'eventDate': { ...DateDefault },
-            'firstMeetDate': { ...DateDefault },
-            'recruitmentDate': { ...DateDefault },
-            'joinableDate': { ...DateDefault },
-            'contact': [],
-            'notes': [],
-            'refs': {
-                'files': [],
-                'url': []
-            },
-            'tagsState': {
-                'top': [],
-                'bottom': []
-            },
-            'tags': {},
-            'fieldsState': fieldState,
-            'enableQuestion': false,
-            'isLoad': false,
-            'enableRecruitment': false,
-            'maxJoin': -1,
-            'poster': [],
-            'picture': [],
-            'poster_file': [],
-            'picture_file': [],
-            'eventTitle': '',
-            'eventLocation': '',
-            'eventDetail': '',
-            'outsiderAccessible': false,
-            'admins': [],
-            'selectedFaculty': {},
-            'selectedYear': {},
-            'refObject': {},
-            'firstMeetTime': {
-                'Start': '',
-                'End': ''
-            },
-            'video': '',
-            'uploadProgress': {
-                'isUploading': false,
-                'uploadStatus': {
-                    'detail': false,
-                    'pictures': {
-                        'add': false,
-                        'delete': false
-                    },
-                    'poster': false,
-                    'admins': {
-                        'add': false,
-                        'delete': false
-                    }
-                }
-            }
-        }
+            ...defaultState,
+            fieldsState: fieldState
+        };
         this.resizeTextArea = this.resizeTextArea.bind(this);
         this.onTextAreaChange = this.onTextAreaChange.bind(this);
         this.onChangeValue = this.onChangeValue.bind(this);
@@ -165,11 +171,11 @@ class EditEvent extends Component {
         if(this.props.eventId && this.props.eventId.length > 0) {
             getEvent(this.props.eventId).then(
                 (data) => {
-                    console.log(data);
+                    // console.log(data);
                     this.onSetValues.bind(this)(data);
                 }
             ).catch((error) => {
-                console.log(error);
+                // console.log(error);
                 this.setState({
                     ...this.state,
                     'isLoad': true
@@ -250,6 +256,7 @@ class EditEvent extends Component {
         new_state.eventDetail = _.get(states, 'about', []).join("\n\n");
         new_state.admins = _.get(states, 'admins', []);
         new_state.outsiderAccessible = _.get(states, 'outsider_accessible', false);
+
         const fmTime = _.get(states, 'notes[0].content.time', '').split(' - ');
         new_state.firstMeetTime = {
             Start: fmTime[0],
@@ -279,6 +286,35 @@ class EditEvent extends Component {
         this.firstMeet_Location.value = _.get(states, 'notes[0].content.location', '');
 
         this.setState(new_state);
+    }
+
+    onDelete() {
+        const config = {
+            'headers' : {
+                'Authorization': ('JWT ' + getCookie("fb_sever_token"))
+            }
+        }
+
+        axios.delete(`${hostname}event?id=${this.props.eventId}`, config).then((data) => {
+            alert("Delete Complete");
+            return true;
+        }).then(() => this.props.toggle_pop_item()).catch((e) => {
+            alert("Delete Error");
+        })
+    }
+
+    onCancel() {
+        this.props.toggle_pop_item();
+        this.setState((prevState) => {
+            const fieldState = {};
+            FieldsName.forEach((item) => fieldState[item] = state[0].value);
+
+            return ({
+                ...defaultState,
+                fieldsState: fieldState,
+                isLoad: true
+            });
+        });
     }
 
     onSave() {
@@ -315,7 +351,8 @@ class EditEvent extends Component {
             'year_require': 'selectedYear',
             'joinable_end_time': 'joinableDate',
             'joinable_start_time': 'joinableDate',
-            'about': 'eventDetail'
+            'about': 'eventDetail',
+            'choose_joins': 'chooseJoin'
         }
 
         uploadedObj["notes"] = [];
@@ -453,11 +490,11 @@ class EditEvent extends Component {
             compareSetDiff(key, mapKeyword[key], mapConvertFunc[key])
         })
 
-        Object.keys(refObject).forEach((key) => {
+        Object.keys(mapKeyword).concat(Object.keys(refObject)).forEach((key) => {
             compareSetDiff(key, mapKeyword[key], mapConvertFunc[key])
         });
 
-        if(this.props.eventId && this.props.eventId.length > 0) {
+        function pictureProcess() {
             if(refObject.picture !== _.get(this.state, 'poster[0]', '')) {
                 const oldPoster = new Set(refObject.picture);
                 const newPoster = this.state.poster[0];
@@ -492,7 +529,7 @@ class EditEvent extends Component {
                                 this.onChangeValue('uploadProgress.uploadStatus.pictures.delete', true);
                                 return good(true);
                             }).catch((error) => {
-                                console.log(error);
+                                // console.log(error);
                                 return bad(error);
                             })
                         })
@@ -556,68 +593,91 @@ class EditEvent extends Component {
                         this.onChangeValue('uploadProgress.uploadStatus.poster', true);
                         good(true);
                     }).catch((e) => {
-                        console.log(e);
+                        // console.log(e);
                         bad(e);
                     })
                 }))
             }
+        }
 
+        function adminProcess(eid) {
             //Admin Process
-            const oldAdmin = _.get(refObject, 'admins', []);
-            const newAdmin = _.get(this.state, 'admins', []);
+            return new Promise((resolve, reject) => {
+                const oldAdmin = _.get(refObject, 'admins', []);
+                const newAdmin = _.get(this.state, 'admins', []);
 
-            if(!oldAdmin.equals(newAdmin)) {
-                const deleteAdmins = oldAdmin.filter(function(x) { return newAdmin.indexOf(x) < 0 });
-                const addAdmins = newAdmin.filter(function(x) { return oldAdmin.indexOf(x) < 0 });
+                if(!oldAdmin.equals(newAdmin)) {
+                    const deleteAdmins = oldAdmin.filter(function(x) { return newAdmin.indexOf(x) < 0 });
+                    const addAdmins = newAdmin.filter(function(x) { return oldAdmin.indexOf(x) < 0 });
 
-                if(deleteAdmins.length > 0) {
-                    let deleteAdminPromises = []
-                    deleteAdmins.forEach((item) => {
-                        deleteAdminPromises.push(axios.delete(`${hostname}admin/event/delete?id=${this.props.eventId}`,
-                        {
-                            ...config,
-                            params: {
-                                user: item
-                            }
+                    if(deleteAdmins.length > 0) {
+                        let deleteAdminPromises = []
+                        deleteAdmins.forEach((item) => {
+                            deleteAdminPromises.push(axios.delete(`${hostname}admin/event/delete?id=${eid}`,
+                            {
+                                ...config,
+                                params: {
+                                    user: item
+                                }
+                            }))
+                        })
+                        uploadPromises.push(new Promise((good, bad) => {
+                            Promise.all(deleteAdminPromises).then((result) => {
+                                this.onChangeValue('uploadProgress.uploadStatus.admins.delete', true);
+                                resolve(true);
+                                good(true);
+                            }).catch((error) => {
+                                // console.log(error);
+                                reject(false);
+                                bad(error)
+                            })
                         }))
-                    })
-                    uploadPromises.push(new Promise((good, bad) => {
-                        Promise.all(deleteAdminPromises).then((result) => {
-                            this.onChangeValue('uploadProgress.uploadStatus.admins.delete', true);
-                            good(true);
-                        }).catch((error) => {
-                            console.log(error);
-                            bad(error)
+                    } else {
+                        this.onChangeValue('uploadProgress.uploadStatus.admins.delete', true);
+                        resolve(true);
+                    }
+
+                    if(addAdmins.length > 0) {
+
+                        let addAdminPromises = []
+
+                        //REG_ID
+                        addAdmins.forEach((item) => {
+                            addAdminPromises.push(axios.put(`${hostname}admin/event/add?id=${eid}`, {
+                                user: item
+                            }, config))
                         })
-                    }))
+
+                        uploadPromises.push(new Promise((good, bad) => {
+                            Promise.all(addAdminPromises).then((result) => {
+                                this.onChangeValue('uploadProgress.uploadStatus.admins.add', true);
+                                resolve(true);
+                                good(true);
+                            }).catch((error) => {
+                                // console.log(error);
+                                reject(error);
+                                bad(error);
+                            })
+                        }))
+                    }
                 } else {
-                    this.onChangeValue('uploadProgress.uploadStatus.admins.delete', true);
+                    this.onChangeValue('uploadProgress.uploadStatus.admins.add', true);
+                    resolve(true);
                 }
+            })
+        }
 
-                if(addAdmins.length > 0) {
+        if(this.props.eventId && this.props.eventId.length > 0) {
+            pictureProcess.bind(this)();
+            adminProcess.bind(this)(this.props.eventId);
+            uploadPromises.push(axios.put(`${hostname}event?id=${this.props.eventId}`, uploadedObj, config));
 
-                    let addAdminPromises = []
-
-                    //REG_ID
-                    addAdmins.forEach((item) => {
-                        addAdminPromises.push(axios.put(`${hostname}admin/event/add?id=${this.props.eventId}`, {
-                            user: item
-                        }, config))
-                    })
-
-                    uploadPromises.push(new Promise((good, bad) => {
-                        Promise.all(addAdminPromises).then((result) => {
-                            this.onChangeValue('uploadProgress.uploadStatus.admins.add', true);
-                            good(true);
-                        }).catch((error) => {
-                            console.log(error);
-                            bad(error);
-                        })
-                    }))
-                }
-            } else {
-                this.onChangeValue('uploadProgress.uploadStatus.admins.add', true);
-            }
+            Promise.all(uploadPromises).then(() => {
+                alert("Uploaded Completed");
+            }).catch((e) => {
+                // console.log(e);
+                alert("Some error happened");
+            })
 
             /*Fields that need to use external api
                 - poster
@@ -635,13 +695,8 @@ class EditEvent extends Component {
                         - Need to find the deleted admin and use api to remove old admin
                         - Need tp find the added admin and use api to include new admin
             */
-            uploadPromises.push(axios.put(`${hostname}event?id=${this.props.eventId}`, uploadedObj, config));
 
-            Promise.all(uploadPromises).then(() => {
-                alert("Uploaded Completed");
-            }).catch((e) => {
-                console.log(e);
-            })
+
         } else {
             Object.keys(mapKeyword).forEach((key) => {
                 compareSetDiff(key, mapKeyword[key], mapConvertFunc[key])
@@ -650,10 +705,17 @@ class EditEvent extends Component {
             axios.post(`${hostname}event`, {
                 ...uploadedObj,
                 'channel': this.props.channelId
-            }, config).then((data) => {
-                console.log("COMPLETED!!! ", data)
-            }).catch((e) => {
-                console.log(e);
+            }, config).then(
+                (data) => data.data
+            ).then(
+                (data) => {
+                    if(typeof data.id === "string" && data.id.length > 0) {
+                        adminProcess.bind(this)(data.id);
+                        pictureProcess.bind(this)();
+                    }
+                }
+            ).catch((e) => {
+                // console.log(e);
             })
         }
 
@@ -706,6 +768,19 @@ class EditEvent extends Component {
         })
     }
 
+    onClickForm() {
+        if(_.get(this.state, 'refObj.forms', []).length > 0) {
+            this.props.context.router.push(`/form?id=${_.get(this.state.refObj, 'forms', [])[0]}&state=0&eid=${this.props.eventId}&cid=${this.props.channelId}`);
+        } else {
+            let cid = this.props.channelId;
+            if(cid.length === 0 && _.get(this.state, 'refObj.channel', '').length > 0) {
+                cid = _.get(this.state, 'refObj.channel', '');
+            }
+
+            this.props.context.router.push(`/form?state=0&eid=${this.props.eventId}&cid=${cid}`);
+        }
+    }
+
     onChangeArrayValue(pathToArray, index, value) {
         this.setState((prevState) => {
             let new_state = {...prevState};
@@ -721,7 +796,7 @@ class EditEvent extends Component {
     //"a[1].b[2].c[3].d[4]".split(/\[[0-9]+]\.*/g).filter((item) => item.length !== 0)
 
     componentDidUpdate() {
-        // console.log(this.state);
+        console.log(this.state);
         this.onTextAreaChange();
     }
 
@@ -837,10 +912,9 @@ class EditEvent extends Component {
                                         controlEnable={false}
                                         enableTime={false}
                                     />
-
                                 </div>
                                 <div className="right flex-order-2 flex-half">
-                                    <div style={{'height': '100%', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}>
+                                    <div style={{'height': '100%', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'flexDirection': 'column'}}>
                                         <PictureUpload
                                             text="UPLOAD POSTER"
                                             isInit={this.state.isLoad}
@@ -860,6 +934,20 @@ class EditEvent extends Component {
                                             }}
                                             style={{'width': '100%'}}
                                         />
+                                        {
+                                            (this.props.eventId) ? (null) : (
+                                                <Btn
+                                                    key={0}
+                                                    text={`CHOOSE JOIN`}
+                                                    isInit={true}
+                                                    initialState={false}
+                                                    classNameOn={`Btn tag Btn-active tag`}
+                                                    classNameOff={`Btn tag`}
+                                                    callback={(isActive) => {this.onChangeValue('chooseJoin', isActive);}}
+                                                    style={{'flex': 'none'}}
+                                                />
+                                            )
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -1129,7 +1217,7 @@ class EditEvent extends Component {
                                     this.onChangeValue("enableQuestion", isActive);
                                 }} />
                             {
-                                (this.state.enableQuestion) ? (<button className="Btn Btn-Primary">CREATE/EDIT FORM ></button>) : null
+                                (this.state.enableQuestion) ? (<button className="Btn Btn-Primary" onClick={this.onClickForm.bind(this)}>CREATE/EDIT FORM ></button>) : null
                             }
                         </div>
                         <hr className={(EnableRecruitment) ? "fullwidth moveUp-50" : "fullwidth"} />
@@ -1159,10 +1247,15 @@ class EditEvent extends Component {
                             />
                         </div>
                         <hr className="fullwidth" />
+                        {
+                            (this.props.eventId) ? (
+                                <button className="Btn Btn-Primary" onClick={this.onDelete.bind(this)}><i className="fa fa-trash-o" aria-hidden="true" />&nbsp;Delete Event</button>
+                            ) : (null)
+                        }
+                        <hr className="fullwidth" />
                         <footer>
-                            <button className="bt">CANCEL</button>
-                            <button className="bt" onClick={this.onSave.bind(this)}>SAVE</button>
-                            <button className="bt blue">PUBLIC</button>
+                            <button className="bt" onClick={this.onCancel.bind(this)}>CANCEL</button>
+                            <button className="bt blue" onClick={this.onSave.bind(this)}>SAVE</button>
                         </footer>
                     </div>
                 </article>

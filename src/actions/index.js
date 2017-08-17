@@ -200,10 +200,12 @@ function updateActivities(dispatch) {
     requestWithAuthorization(`${hostname}user/subscribe`, {
         'method': 'get'
     }).then((res) => {
+        console.log(res.data);
+        console.log();
         dispatch({
             type: types.UPDATE_USER_EVENTS_INFO_SUBSCRIBE,
             payload: {
-                subscribe: (res.data[Object.keys(res.data).filter((key) => key !== "notification")] || []).map((item) => item[Object.keys(item)].channel_id),
+                subscribe: Object.keys(res.data).filter((key) => key !== "notification").map((key) => res.data[key].channel_id),
                 notification: res.data.notification
             }
         })

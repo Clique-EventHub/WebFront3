@@ -117,6 +117,18 @@ export default ( state = initalState, action ) => {
                     ...state.info,
                     ...info
                 },
+                'events': {
+                    ...state.events,
+                    'general': {
+                        ...state.events.general,
+                        'join': action.payload.join_events,
+                    },
+                    'admin': {
+                        ...state.events.admin,
+                        'channel': action.payload.admin_channels,
+                        'event': action.payload.admin_events
+                    }
+                },
                 'refObj': action.payload
             });
         case UPDATE_USER_EVENTS_INFO_JOIN:

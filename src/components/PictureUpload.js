@@ -53,7 +53,7 @@ class PictureUpload extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps);
+        // console.log(nextProps);
         if(this.state.isInit !== nextProps.isInit && nextProps.isInit === true) {
             this.setState((prevState) => {
                 return {
@@ -156,7 +156,7 @@ class PictureUpload extends Component {
             for(let i = 0; i < nextState.mapPictures.length && isSame; i++) {
                 isSame = nextState.mapPictures[keys[Number(i)]].pic.slice(0, 200) === this.state.mapPictures[keys[Number(i)]].pic.slice(0, 200);
             }
-            console.log(!isSame);
+            // console.log(!isSame);
             return !isSame
         }
         return true;

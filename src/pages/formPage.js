@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import pages from '../hoc/pages';
 import normalPage from '../hoc/normPage';
 import QuestionForm from '../components/questionForm';
-import { getRandomShade, getCookie, getEventThumbnail, getChannelThumbnail } from '../actions/common';
+import { getRandomShade, getCookie, getEvent, getChannel } from '../actions/common';
 import ReactLoading from 'react-loading';
 import { hostname } from '../actions/index';
 import axios from 'axios';
@@ -23,10 +23,11 @@ class formPage extends Component {
             'channel': null,
             'isError': false,
             'error': null,
+            'isLoad': false,
             'meta': {
                 'formId': (this.props.location.query.id) ? this.props.location.query.id : this.props.formId,
-                'eventId': null,
-                'channelId': null,
+                'eventId': (this.props.location.query.eid) ? this.props.location.query.eid: '',
+                'channelId': (this.props.location.query.cid) ? this.props.location.query.cid : '',
                 'isAdmin': (typeof(this.props.location.query.state) === "undefined") ? this.props.isAdmin : (this.props.location.query.state === "0")
             }
         }
@@ -64,27 +65,26 @@ class formPage extends Component {
                         ...this.state.meta,
                         'eventId': data.data.form.event,
                         'channelId': data.data.form.channel
-                    }
+                    },
+                    'isLoad': true
                 });
 
-                getEventThumbnail(data.data.form.event, {
-                    isUseAuthorize: true,
-                    onSuccess: (data) => {
-                        this.setState({
-                            ...this.state,
+                getEvent(data.data.form.event).then((data) => {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
                             'event': data
                         });
-                    }
+                    })
                 })
 
-                getChannelThumbnail(data.data.form.channel, {
-                    isUseAuthorize: true,
-                    onSuccess: (data) => {
-                        this.setState({
-                            ...this.state,
+                getChannel(data.data.form.channel).then((data) => {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
                             'channel': data
                         });
-                    }
+                    })
                 })
 
                 return true;
@@ -95,10 +95,29 @@ class formPage extends Component {
             });
         } else if(this.state.meta.isAdmin) {
             //Create new form
+            getEvent(this.state.meta.eventId).then((data) => {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        'event': data
+                    });
+                })
+            })
+
+            getChannel(this.state.meta.channelId).then((data) => {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        'channel': data
+                    });
+                })
+            })
+
             this.setState({
                 ...this.state,
                 'questions': [],
-                'formTitle': 'Untitled'
+                'formTitle': 'Untitled',
+                'isLoad': true
             })
         } else {
             //No formId and is Not Admin
@@ -232,7 +251,7 @@ class formPage extends Component {
         return (
             <section role="main-content" className="no-padding">
                 {
-                    (this.state.questions === null || this.state.event === null || this.state.channel === null) ? (
+                    (!this.state.isLoad) ? (
                         <div className="basic-card-no-glow card-width form" style={{'paddingBottom': '35px'}}>
                             <div style={{'fontSize': '30px', 'margin': 'auto', 'color': '#878787', 'textAlign': 'center'}}>
                                 <div style={{'margin': 'auto', 'width': '50px', 'display': 'inline-block', 'position': 'relative', 'top': '12px', 'marginLeft': '5px'}}>
@@ -245,7 +264,18 @@ class formPage extends Component {
                             </div>
                         </div>
                     ) : (
-                        <QuestionForm questions={this.state.questions} event={this.state.event} channel={this.state.channel} isAdmin={this.state.meta.isAdmin} onSent={this.onSent} onSave={this.onSave} formTitle={this.state.formTitle} shadeColor={this.state.shadeColor} eventShade={this.state.eventShade} channelShade={this.state.channelShade} />
+                        <QuestionForm
+                            questions={this.state.questions}
+                            event={this.state.event}
+                            channel={this.state.channel}
+                            isAdmin={this.state.meta.isAdmin}
+                            onSent={this.onSent}
+                            onSave={this.onSave}
+                            formTitle={this.state.formTitle}
+                            shadeColor={this.state.shadeColor}
+                            eventShade={this.state.eventShade}
+                            channelShade={this.state.channelShade}
+                        />
                     )
                 }
             </section>

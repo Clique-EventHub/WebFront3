@@ -18,31 +18,42 @@ class channelDetail extends Component {
             'picture_large': [],
             'isLoad': false,
             'url': '',
-            'video': ''
+            'video': '',
+            'isFollow': this.props.isFollow
         }
     }
 
     componentWillMount() {
-        axios.get(`${hostname}channel?id=${"595ef6b8822dbf0014cb821b"}`).then((data) => {
-            this.setState({
-                'name': data.data.name,
-                'picture': data.data.picture,
-                'detail': [
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum eros purus, eu suscipit lorem eleifend eget. Pellentesque a finibus felis. Pellentesque quis neque ut dui finibus iaculis. Fusce ac placerat',
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum eros purus, eu suscipit lorem eleifend eget. Pellentesque a finibus felis. Pellentesque quis neque ut dui finibus iaculis. Fusce ac placerat'
-                    ],
-                'picture_large': _.get(data, 'data.picture_large', []),
-                'url': _.get(data, 'data.url', ''),
-                'video': _.get(data, 'data.video', ''),
-                'isLoad': true
+        axios.get(`${hostname}channel?id=${this.props.channelId}`).then((data) => {
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    'name': data.data.name,
+                    'picture': data.data.picture,
+                    'detail': data.data.detail,
+                    'picture_large': _.get(data, 'data.picture_large', []),
+                    'url': _.get(data, 'data.url', ''),
+                    'video': _.get(data, 'data.video', ''),
+                    'isLoad': true
+                });
             })
         }, (error) => {
-            console.log("get channel error");
+            // console.log("get channel error");
         });
     }
 
     onExit() {
         this.props.onToggle();
+    }
+
+    onClick() {
+        const nextState = this.props.onToggleFollow();
+        this.setState((prevState) => {
+            return ({
+                ...prevState,
+                'isFollow': nextState
+            });
+        })
     }
 
     render () {
@@ -53,7 +64,11 @@ class channelDetail extends Component {
                     <Image src={this.state.picture} imgClass="chan-img" rejectClass="chan-img" />
                     <div className="side-style">
                         <h2 className="chan-name">{this.state.name}</h2>
-                        <button className="bt-fol" alt="btn-follow">FOLLOW</button>
+                        <button
+                            className={`bt-fol ${this.state.isFollow ? 'follow-active' : ''}`}
+                            alt="btn-follow"
+                            onClick={this.onClick.bind(this)}
+                        >{ (this.state.isFollow) ? 'FOLLOWING' : 'FOLLOW' }</button>
                     </div>
                 </div>
                 <hr className="thin" />
@@ -108,6 +123,11 @@ class channelDetail extends Component {
         )
 
     }
+}
+
+channelDetail.defaultProps = {
+    'channelId': "595ef6b8822dbf0014cb821b",
+    'onToggleFollow': () => {}
 }
 
 export default channelDetail;

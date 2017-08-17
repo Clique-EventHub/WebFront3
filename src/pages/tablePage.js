@@ -27,9 +27,16 @@ class tablePage extends Component {
             'tableData': [],
             'filteredDataFlags': [],    //sampleData => this.state.tableData?
             'filterKeyword': '',
-            'sentMessage' : '',
             'keys': [],
-            'eventId': _.get(this.props, 'location.query.eid', '')
+            'eventId': _.get(this.props, 'location.query.eid', ''),
+            'joined': [],
+            'refObj': null,
+            'whoJoined': {},
+            'whoRejected': {},
+            'whoAccepted': {},
+            'whoCompleted': {},
+            'whoInterest': {},
+            'whoPending': {}
         }
 
         this.onHightLight = this.onHightLight.bind(this);
@@ -37,11 +44,14 @@ class tablePage extends Component {
         this.onMouseLeaveTable = this.onMouseLeaveTable.bind(this);
         this.onKeyPress = this.onKeyPress.bind(this);
         this.onFilterSearch = this.onFilterSearch.bind(this);
-        this.onToggleBoolean = this.onToggleBoolean.bind(this);
         this.checkDisable = this.checkDisable.bind(this);
-        this.onSendMessage = this.onSendMessage.bind(this);
-        this.sendMessage = this.sendMessage.bind(this);
         this.onSetError = this.onSetError.bind(this);
+        this.onClickApprove = this.onClickApprove.bind(this);
+        this.onUpdateStatus = this.onUpdateStatus.bind(this);
+        this.onUpdateTable = this.onUpdateTable.bind(this);
+        this.onClickCheckIn = this.onClickCheckIn.bind(this);
+        this.onClickReject = this.onClickReject.bind(this);
+        this.onClickSendMessage = this.onClickSendMessage.bind(this);
 
         // this.onMouseMove = this.onMouseMove.bind(this);
     }
@@ -56,48 +66,85 @@ class tablePage extends Component {
         this.props.display_pop_item();
     }
 
-    onToggleBoolean(row, col, forcedValue) {
-        if(row === null || col === null) return;
-        if(_.get(this.state, 'keys', [])[col-1].toUpperCase() === "APPROVED") {
-            if(typeof(this.state.tableData[row-1][col-1]) === "boolean") {
-                let new_tableData = [...this.state.tableData];
-                new_tableData[row-1][col-1] = (typeof(forcedValue) === "boolean") ? forcedValue : !new_tableData[row-1][col-1];
-                if(!new_tableData[row-1][col-1]) {
-                    new_tableData[row-1][(_.get(this.state,'keys',[]).map((key) => key.toUpperCase())).indexOf("CHECK IN")] = false;
-                }
-                if(this._isMounted) {
-                    this.setState({
-                        ...this.state,
-                        'tableData': new_tableData
-                    })
-                }
-                //make ajax call
-            }
-        }
-        else if(_.get(this.state, 'keys[col-1]', '').toUpperCase() === "CHECK IN") {
-            const isApproved = this.state.tableData[row-1][(_.get(this.state, 'keys', []).map((key) => key.toUpperCase())).indexOf("APPROVED")];
+    onClickApprove() {
+        const ids = Array.from(this.state.selectedRows).map((row) => {
+            return (this.state.joined[row-1]._id);
+        });
 
-            if(typeof(this.state.tableData[row-1][col-1]) === "boolean" && isApproved) {
-                let new_tableData = [...this.state.tableData];
-                new_tableData[row-1][col-1] = (typeof(forcedValue) === "boolean") ? forcedValue : !new_tableData[row-1][col-1];
-                if(this._isMounted) {
-                    this.setState({
-                        ...this.state,
-                        'tableData': new_tableData
-                    })
-                }
-                //make ajax call
-            } else {
-                let new_tableData = [...this.state.tableData];
-                new_tableData[row-1][col-1] = false;
-                if(this._isMounted) {
-                    this.setState({
-                        ...this.state,
-                        'tableData': new_tableData
-                    });
-                }
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie("fb_sever_token"))
             }
         }
+
+        axios.put(`${hostname}admin/event/choose?id=${this.state.eventId}`, {
+            'yes': ids
+        } , config).then((data) => {
+            this.onUpdateStatus();
+        }).catch((e) => {
+            // console.log(e);
+        })
+    }
+
+    onClickReject() {
+        const ids = Array.from(this.state.selectedRows).map((row) => {
+            return (this.state.joined[row-1]._id);
+        });
+
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie("fb_sever_token"))
+            }
+        }
+
+        axios.put(`${hostname}admin/event/choose?id=${this.state.eventId}`, {
+            'no': ids
+        } , config).then((data) => {
+            this.onUpdateStatus();
+        }).catch((e) => {
+            // console.log(e);
+        })
+    }
+
+    onClickSendMessage() {
+        const ids = Array.from(this.state.selectedRows).map((row) => {
+            return (this.state.joined[row-1]._id);
+        });
+
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie("fb_sever_token"))
+            }
+        }
+
+        axios.post(`${hostname}event/join/message?id=${this.state.eventId}`, {
+            'description': this.messageInput.value,
+            'people': ids
+        } , config).then((data) => {
+            this.onUpdateStatus();
+        }).catch((e) => {
+            // console.log(e);
+        })
+    }
+
+    onClickCheckIn() {
+        const ids = Array.from(this.state.selectedRows).map((row) => {
+            return (this.state.joined[row-1]._id);
+        });
+
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie("fb_sever_token"))
+            }
+        }
+
+        axios.put(`${hostname}admin/check-in?id=${this.state.eventId}`, {
+            'users': ids
+        } , config).then((data) => {
+            this.onUpdateStatus();
+        }).catch((e) => {
+            // console.log(e);
+        })
     }
 
     onClickCell(row, col) {
@@ -229,10 +276,83 @@ class tablePage extends Component {
         this._isMounted = false;
     }
 
+    onUpdateStatus() {
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
+                'crossDomain': true
+            }
+        }
+
+        axios.get(`${hostname}event/stat?id=${this.state.eventId}`, config).then(
+            (data) => data.data
+        ).then((data) => {
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    let whoJoined = {};
+                    let whoAccepted = {};
+                    let whoInterested = {};
+                    let whoRejected = {};
+                    let whoCompleted = {};
+                    let whoPending = {};
+
+                    _.get(data, 'who_join', []).forEach((id) => whoJoined[id] = true);
+                    _.get(data, 'who_accepted', []).forEach((id) => whoAccepted[id] = true);
+                    _.get(data, 'who_interest', []).forEach((id) => whoInterested[id] = true);
+                    _.get(data, 'who_rejected', []).forEach((id) => whoRejected[id] = true);
+                    _.get(data, 'who_completed', []).forEach((id) => whoCompleted[id] = true);
+                    _.get(data, 'who_pending', []).forEach((id) => whoPending[id] = true);
+
+                    return {
+                        ...prevState,
+                        whoJoined: whoJoined,
+                        whoAccepted: whoAccepted,
+                        whoInterested: whoInterested,
+                        whoRejected: whoRejected,
+                        whoCompleted: whoCompleted,
+                        whoPending: whoPending
+                    }
+                }, this.onUpdateTable)
+            }
+        })
+    }
+
+    onUpdateTable() {
+        // let new_tableData = this.state.tableData;
+        let new_tableData = _.get(this.state, 'joined', []).map(
+        (item) => {
+            let isAccepted = false;
+            let isCompleted = false;
+
+            if(typeof this.state.whoAccepted[item._id] !== "undefined") {
+                isAccepted = true;
+            }
+            if(typeof this.state.whoCompleted[item._id] !== "undefined") {
+                isCompleted = true;
+            }
+
+            let row = [isAccepted, isCompleted];
+
+            _.get(this.state, 'keys', []).forEach((key, index) => {
+                if(["approved", "check in"].indexOf(key) === -1)
+                    row.push(item[key])
+            });
+
+            return row;
+        })
+
+        this.setState((prevState) => {
+            return {
+                ...prevState,
+                'tableData': new_tableData
+            }
+        })
+    }
+
     componentWillMount() {
         document.title = "Event Hub | Table";
 
-        let config = {
+        const config = {
             'headers': {
                 'Authorization': ('JWT ' + getCookie('fb_sever_token')),
                 'crossDomain': true
@@ -247,14 +367,37 @@ class tablePage extends Component {
             let keysArray = [];
             joined.forEach((item) => {
                 Object.keys(item).forEach((key) => keys.add(key))
-            })
+            });
 
             keysArray = ["approved", "check in"].concat(Array.from(keys)).filter((item) => item !== "_id");
             if(this._isMounted) {
                 this.setState((prevState) => {
+
+                    let whoJoined = {};
+                    let whoAccepted = {};
+                    let whoInterested = {};
+                    let whoRejected = {};
+                    let whoCompleted = {};
+                    let whoPending = {};
+
+                    _.get(data.data, 'who_join', []).forEach((id) => whoJoined[id] = true);
+                    _.get(data.data, 'who_accepted', []).forEach((id) => whoAccepted[id] = true);
+                    _.get(data.data, 'who_interest', []).forEach((id) => whoInterested[id] = true);
+                    _.get(data.data, 'who_rejected', []).forEach((id) => whoRejected[id] = true);
+                    _.get(data.data, 'who_completed', []).forEach((id) => whoCompleted[id] = true);
+                    _.get(data.data, 'who_pending', []).forEach((id) => whoPending[id] = true);
+
                     return {
                         ...prevState,
-                        keys: keysArray
+                        keys: keysArray,
+                        joined: joined,
+                        refObj: data.data,
+                        whoJoined: whoJoined,
+                        whoAccepted: whoAccepted,
+                        whoInterested: whoInterested,
+                        whoRejected: whoRejected,
+                        whoCompleted: whoCompleted,
+                        whoPending: whoPending
                     }
                 })
             }
@@ -268,45 +411,50 @@ class tablePage extends Component {
                 })
                 //let row = [false, false, "", joined[i].firstNameTH, joined[i].lastNameTH, joined[i].nick_name, "", joined[i].phone, "", joined[i].firstName+" "+joined[i].lastName, "", joined[i].disease];
                 allData.push(row);
-                allData.push(row);
-                allData.push(row);
             }
             if(this._isMounted) {
-                _this.setState({
-                    ..._this.state,
+                this.setState({
+                    ...this.state,
                     'tableData': allData,
                     'filteredDataFlags': allData.map(() => true)
-                })
+                }, this.onUpdateTable)
             }
         }).catch((e) => {
             this.onSetError(e);
         });
 
         getEvent(this.state.eventId).then((data) => {
+            const formTitle = _.get(Object.keys(_.get(data, 'forms[0]', {})), '[0]', '');
+            const formId = _.get(data, 'forms[0]', {})[formTitle] || '';
+
             if(this._isMounted) {
                 this.setState((prevState) => {
                     return ({
                         ...prevState,
-                        'formId': _.get(data, `forms[0][${Object.keys(_.get(data, 'forms[0]', ''))}[0]]`, ''),
-                        'formTitle': _.get(Object.keys(_.get(data, 'forms[0]', {})), '[0]', ''),
+                        'formId': formTitle,
+                        'formTitle': formId,
                         'eventName': _.get(data, 'title', '')
                     })
                 })
             }
 
-            return _.get(data, `forms[0][${Object.keys(_.get(data, 'forms[0]', ''))}[0]]`, '');
+            return formId;
         }).then((formId) => {
-            axios.get(`${hostname}form?id=${formId}&opt=responses`, config).then((data) => {
-                if(this._isMounted) {
-                    _this.setState({
-                        ..._this.state,
-                        'formData': data.data.form,
-                        'responses': data.data.form.responses
-                    });
-                }
-            })
+            if(formId !== '') {
+                axios.get(`${hostname}form?id=${formId}&opt=responses`, config).then((data) => {
+                    if(this._isMounted) {
+                        this.setState((prevState) => {
+                            return ({
+                                ...prevState,
+                                'formData': data.data.form,
+                                'responses': data.data.form.responses
+                            });
+                        });
+                    }
+                })
+            }
         }).catch((e) => {
-            console.log(e);
+            // console.log(e.response);
             this.onSetError(e);
         });
     }
@@ -355,38 +503,9 @@ class tablePage extends Component {
         }
     }
 
-    // componentDidUpdate() {
-    //     console.log(this.state);
-    // }
-
     checkDisable() {
-        return (this.state.selectedCell.row === null && this.state.selectedCell.col === null)
+        return (this.state.selectedRows.size === 0);
     }
-
-    onSendMessage() {
-        if(this._isMounted) {
-            this.setState({
-                ...this.state,
-                'sentMessage': this.refs.sent_message.value,
-            });
-        }
-    }
-
-    sendMessage() {
-      let config = {
-          'headers': {
-              'Authorization': ('JWT ' + getCookie('fb_sever_token')),
-              'crossDomain': true
-          }
-      }
-      let data = {
-          description: this.state.sentMessage,
-      }
-      axios.post(`${hostname}event/join/message?id=${this.state.eventId}`, data, config).then((data) => {
-          console.log('post ja');
-      });
-    }
-
 
     render() {
         let csvData = [["No.", ..._.get(this.state, 'keys', [])]];
@@ -435,7 +554,7 @@ class tablePage extends Component {
                                                         let inner = (typeof(sample) === "boolean") ? <i className={`fa fa-check ${(sample) ? '' : 'nope'}`} /> : sample
                                                         return (
                                                         <div key={`col-${col}`} className="td" onMouseEnter={() => {this.onHightLight(c, col+1)}} onClick={() => {
-                                                                new Promise((res, rej) => res(true)).then(() => {this.onClickCell(c, col+1);}).then(() => {if(col === 1) this.onToggleBoolean(c, col+1);})
+                                                                new Promise((res, rej) => res(true)).then(() => {this.onClickCell(c, col+1);})
                                                             }}>
                                                             {inner}
                                                         </div>);
@@ -453,10 +572,10 @@ class tablePage extends Component {
                             <div className="options" ref="options">
                                 <ul>
                                     <li onClick={() => {
-                                            this.onToggleBoolean(this.state.selectedCell.row, 1, true);
+
                                         }}>Approve</li>
                                     <li onClick={() => {
-                                            this.onToggleBoolean(this.state.selectedCell.row, 1, false);
+
                                         }}>Reject</li>
                                 </ul>
                             </div>
@@ -471,17 +590,26 @@ class tablePage extends Component {
                     </div>
                     <div className="table-button">
                         <div className="Btn-group">
-                            <button className="Btn-green" onClick={() => {
-                                    this.onToggleBoolean(this.state.selectedCell.row, 1, true);
-                                }}>APPROVE</button>
-                            <button className="Btn-green">CHECK IN</button>
-                            <button className="Btn-red" onClick={() => {
-                                    this.onToggleBoolean(this.state.selectedCell.row, 1, false);
-                                }}>REJECT</button>
+                            <button className="Btn-green" onClick={this.onClickApprove}>APPROVE</button>
+                            <button className="Btn-green" onClick={this.onClickCheckIn}>CHECK IN</button>
+                            <button className="Btn-red" onClick={this.onClickReject}>REJECT</button>
                         </div>
                         <div className="Input-group">
-                            <input type="text" ref="sent_message" value={this.state.sentMessage} onChange={() => this.onSendMessage()} />
-                            <button disabled={this.checkDisable()} className={`${(this.checkDisable()) ? 'cursor-disabled' : ''}`} onClick={() => this.sendMessage()}>SEND MESSAGE</button>
+                            <input
+                                type="text"
+                                ref={(input) => this.messageInput = input}
+                            />
+                            <button
+                                disabled={this.checkDisable()}
+                                className={`${(this.checkDisable()) ? 'cursor-disabled' : ''}`}
+                                onClick={() => {
+                                    if(!this.checkDisable()) {
+                                        this.onClickSendMessage();
+                                    }
+                                }}
+                            >
+                                SEND MESSAGE
+                            </button>
                         </div>
                         <button><CSVLink filename={`Export-[${this.state.eventName}]-(${new Date().toString().slice(0, 10)}).csv`} data={csvData}>EXPORT (CSV)</CSVLink></button>
                     </div>

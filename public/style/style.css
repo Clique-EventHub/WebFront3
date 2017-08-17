@@ -2362,3 +2362,28 @@ button.Btn:hover {
 button.Btn-active:hover {
   background-color: #ff636d !important;
 }
+
+.flex-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+button.Btn-Round {
+  border: 2px solid;
+  border-radius: 20px;
+  height: 35px;
+  font-size: 1.05em;
+  width: 150px;
+  border-color: #AAAAAA;
+  color: #555555;
+  background-color: #FFFFFF;
+}
+
+button.Btn-Round:hover {
+  filter: brightness(0.9);
+}
+
+button.Btn-Round:active {
+  filter: brightness(0.75);
+}

@@ -130,3 +130,9 @@
     text-align: right;
     top: 0;
 }
+
+.channel-detail .follow-active {
+    border-color: #AAAAAA !important;
+    color: #555555 !important;
+    background-color: #4ff779 !important;
+}

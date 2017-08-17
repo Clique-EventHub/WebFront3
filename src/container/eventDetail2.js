@@ -300,7 +300,7 @@ class eventDetailFix extends Component {
 
         }).then((whatever) => {
             if(_.get(this.state.refObj, 'forms', []).length > 0) {
-                this.props.context.router.push(`/form?id=${_.get(this.state.refObj, 'forms', [])[0]}`);
+                this.props.context.router.push(`/form?id=${_.get(this.state.refObj, 'forms', [])[0][Object.keys(_.get(this.state.refObj, 'forms', [])[0])]}`);
             } else {
                 this.onBtnClick("warning-popup");
             }
