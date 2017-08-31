@@ -362,13 +362,12 @@ class tablePage extends Component {
         let _this = this;
 
         axios.get(`${hostname}event/stat?id=${this.state.eventId}`, config).then((data) => {
-            let joined = data.data.join_data;
+            let joined = _.get(data.data, 'join_data', []);
             let keys = new Set();
             let keysArray = [];
             joined.forEach((item) => {
                 Object.keys(item).forEach((key) => keys.add(key))
             });
-
             keysArray = ["approved", "check in"].concat(Array.from(keys)).filter((item) => item !== "_id");
             if(this._isMounted) {
                 this.setState((prevState) => {
@@ -401,6 +400,7 @@ class tablePage extends Component {
                     }
                 })
             }
+
             let allData = [];
             for(let i = 0; i < joined.length; i++){
               var row = [false, false];
@@ -412,27 +412,71 @@ class tablePage extends Component {
                 //let row = [false, false, "", joined[i].firstNameTH, joined[i].lastNameTH, joined[i].nick_name, "", joined[i].phone, "", joined[i].firstName+" "+joined[i].lastName, "", joined[i].disease];
                 allData.push(row);
             }
-            if(this._isMounted) {
-                this.setState({
-                    ...this.state,
-                    'tableData': allData,
-                    'filteredDataFlags': allData.map(() => true)
-                }, this.onUpdateTable)
-            }
-        }).catch((e) => {
-            this.onSetError(e);
-        });
 
-        getEvent(this.state.eventId).then((data) => {
-            const formTitle = _.get(Object.keys(_.get(data, 'forms[0]', {})), '[0]', '');
-            const formId = _.get(data, 'forms[0]', {})[formTitle] || '';
+            const formObj = _.get(data.data, 'forms[0]', {});
+            const formTitle = _.get(formObj, 'title', '');
+            const formId = _.get(formObj, 'id', '');
+            alert("LOWER");
+            console.log(data.data);
 
             if(this._isMounted) {
                 this.setState((prevState) => {
                     return ({
                         ...prevState,
-                        'formId': formTitle,
-                        'formTitle': formId,
+                        formId,
+                        formTitle,
+                        'tableData': allData,
+                        'filterDataFlags': allData.map(() => true),
+                        'eventName': _.get(data, 'title', '')
+                    })
+                }, this.onUpdateTable)
+            }
+
+            if(formId !== '') {
+                alert("OUTSIDE");
+                axios.get(`${hostname}form?id=${formId}&opt=responses`, config).then((data) => {
+                    if(this._isMounted) {
+                        this.setState((prevState) => {
+                            const responses = _.get(data.data, 'form.responses', []);
+                            let new_joined = [...joined];
+                            alert("INSIDE")
+                            console.log(responses);
+                            responses.forEach((item) => {
+                                const id = item._id;
+                                const index = new_joined.findIndex((item) => item._id === id);
+                                if(index !== -1) {
+                                    new_joined[index].response = item.answers.responses;
+                                }
+                            })
+
+
+                            return ({
+                                ...prevState,
+                                'formData': data.data.form,
+                                'responses': data.data.form.responses,
+                                'joined': new_joined
+                            });
+                        });
+                    }
+                })
+            }
+        }).catch((e) => {
+            this.onSetError(e);
+        });
+
+        /*
+        getEvent(this.state.eventId).then((data) => {
+            const formObj = _.get(data, 'forms[0]', {});
+            const formTitle = _.get(formObj, 'title', '');
+            const formId = _.get(formObj, 'id', '');
+            console.log(formObj);
+
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        formId,
+                        formTitle,
                         'eventName': _.get(data, 'title', '')
                     })
                 })
@@ -444,10 +488,22 @@ class tablePage extends Component {
                 axios.get(`${hostname}form?id=${formId}&opt=responses`, config).then((data) => {
                     if(this._isMounted) {
                         this.setState((prevState) => {
+
+                            const responses = _.get(data.data, 'form.responses', []);
+                            let new_joined = _.get(this.state, 'joined', []);
+                            responses.forEach((item) => {
+                                const id = item._id;
+                                const index = new_joined.findIndex((item) => item._id === id);
+                                if(index !== -1) {
+                                    new_joined[index].response = item.answers.responses;
+                                }
+                            })
+
                             return ({
                                 ...prevState,
                                 'formData': data.data.form,
-                                'responses': data.data.form.responses
+                                'responses': data.data.form.responses,
+                                'joined': new_joined
                             });
                         });
                     }
@@ -457,22 +513,25 @@ class tablePage extends Component {
             // console.log(e.response);
             this.onSetError(e);
         });
+        */
     }
 
     componentDidUpdate() {
-        console.log(this.state);
+       // console.log(this.state);
     }
 
     onKeyPress(e) {
         e = e || window.event;
         if(e.keyCode === 27) {
             if(this._isMounted) {
-                this.setState({
-                    ...this.state,
-                    'selectedCell': {
-                        'row': null,
-                        'col': null
-                    }
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        'selectedCell': {
+                            'row': null,
+                            'col': null
+                        }
+                    });
                 });
 
                 this.refs["sr"].style.display = "none";
@@ -495,10 +554,12 @@ class tablePage extends Component {
         const keyword = this.refs.filterSearch.value;
 
         if(this._isMounted) {
-            this.setState({
-                ...this.state,
-                'filterKeyword': keyword,
-                'filteredDataFlags': this.state.tableData.map((item) => this.filter(item, keyword))
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    'filterKeyword': keyword,
+                    'filteredDataFlags': this.state.tableData.map((item) => this.filter(item, keyword))
+                })
             });
         }
     }

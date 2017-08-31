@@ -12,7 +12,7 @@ section.my-event h1 {
 section.profile {
   color: #555555;
   background-color: #FFF;
-  width: 100vw;
+  width: calc(100% + 80px);
   padding: 40px;
   position: relative;
   left: -80px;

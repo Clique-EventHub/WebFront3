@@ -289,18 +289,20 @@ class EditEvent extends Component {
     }
 
     onDelete() {
-        const config = {
-            'headers' : {
-                'Authorization': ('JWT ' + getCookie("fb_sever_token"))
+        if(confirm("Are you sure?")) {
+            const config = {
+                'headers' : {
+                    'Authorization': ('JWT ' + getCookie("fb_sever_token"))
+                }
             }
+    
+            axios.delete(`${hostname}event?id=${this.props.eventId}`, config).then((data) => {
+                alert("Delete Complete");
+                return true;
+            }).then(() => this.props.toggle_pop_item()).catch((e) => {
+                alert("Delete Error");
+            })
         }
-
-        axios.delete(`${hostname}event?id=${this.props.eventId}`, config).then((data) => {
-            alert("Delete Complete");
-            return true;
-        }).then(() => this.props.toggle_pop_item()).catch((e) => {
-            alert("Delete Error");
-        })
     }
 
     onCancel() {
@@ -572,13 +574,6 @@ class EditEvent extends Component {
             if(oldPoster !== newPoster) {
                 const posterPromises = [];
 
-                posterPromises.push(axios.delete(`${hostname}picture`, {
-                    ...config,
-                    'data': {
-                        'urls': _.get(this.state, 'poster_file', [])
-                    }
-                }));
-
                 const poster_file = _.get(this.state,'poster_file', []);
                 if(poster_file.length > 0) {
                     const formData = new FormData();
@@ -769,12 +764,15 @@ class EditEvent extends Component {
     }
 
     onClickForm() {
-        if(_.get(this.state, 'refObj.forms', []).length > 0) {
-            this.props.context.router.push(`/form?id=${_.get(this.state.refObj, 'forms', [])[0]}&state=0&eid=${this.props.eventId}&cid=${this.props.channelId}`);
+        if(_.get(this.state, 'refObject.forms', []).length > 0) {
+            const formObj = _.get(this.state, 'refObject.forms[0]', {});
+            const formId = _.get(formObj, 'id', '');
+
+            this.props.context.router.push(`/form?id=${formId}&state=0&eid=${this.props.eventId}&cid=${this.props.channelId}`);
         } else {
             let cid = this.props.channelId;
-            if(cid.length === 0 && _.get(this.state, 'refObj.channel', '').length > 0) {
-                cid = _.get(this.state, 'refObj.channel', '');
+            if(cid.length === 0 && _.get(this.state, 'refObject.channel', '').length > 0) {
+                cid = _.get(this.state, 'refObject.channel', '');
             }
 
             this.props.context.router.push(`/form?state=0&eid=${this.props.eventId}&cid=${cid}`);
@@ -938,7 +936,7 @@ class EditEvent extends Component {
                                             (this.props.eventId) ? (null) : (
                                                 <Btn
                                                     key={0}
-                                                    text={`CHOOSE JOIN`}
+                                                    text={`SELECT PARTICIPANTS`}
                                                     isInit={true}
                                                     initialState={false}
                                                     classNameOn={`Btn tag Btn-active tag`}

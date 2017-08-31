@@ -86,7 +86,7 @@ class channelPage extends Component {
                 })
             });
 
-            Promise.all(data.data.events.map((id) => {
+            Promise.all(_.get(data.data, 'events', []).map((id) => {
                 return (
                     getEvent(id).then((data) => {
                         this.setState((prevState) => {
@@ -189,7 +189,7 @@ class channelPage extends Component {
                         <p className="hr"></p>
                         <div className="flex-list">
                             {
-                                this.state.events.filter((item) => this.state.eventComplete.indexOf(item) === -1).map((id, index) => {
+                                _.get(this.state, 'events', []).filter((item) => this.state.eventComplete.indexOf(item) === -1).map((id, index) => {
                                     return (
                                         <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} eventId={id} key={index} />
                                     );
@@ -202,7 +202,7 @@ class channelPage extends Component {
                         <p className="hr"></p>
                         <div className="flex-list">
                             {
-                                this.state.events.map((id, index) => {
+                                _.get(this.state, 'events', []).map((id, index) => {
                                     return (
                                         <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} eventId={id} key={index} />
                                     );
@@ -215,7 +215,7 @@ class channelPage extends Component {
                         <p className="hr"></p>
                         <div className="flex-list">
                             {
-                                this.state.eventComplete.map((id, index) => {
+                                _.get(this.state, 'eventComplete', []).map((id, index) => {
                                     return (
                                         <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} eventId={id} key={index} />
                                     );
