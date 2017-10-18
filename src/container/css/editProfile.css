@@ -87,17 +87,27 @@ div.edit-profile section.edit-pro-left input {
 }
 
 div.edit-profile section.edit-pro-left input.w110 {
-  /*width: 110px;*/
-  flex: 1 1 40%;
+  flex: 2;
+  max-width: calc(25% - 20px);
 }
 
 div.edit-profile section.edit-pro-left input.w45 {
-  /*width: 45px;*/
-  flex: 1 1 25%;
+  flex: 1;
+  max-width: calc(12.5% - 10px); 
+} 
+
+div.edit-profile section.edit-pro-left input.m10 {
+  margin-left: 10px;
 }
 
-div.edit-profile section.edit-pro-left input.m15 {
-  margin-left: 10px;
+div.edit-profile section.edit-pro-left div.m40 {
+  margin-left: 40px;
+}
+
+div.edit-profile section.edit-pro-left input.whalf {
+  flex: 1;
+  margin-left: 5px;
+  max-width: calc(50% - 50px);
 }
 
 div.edit-profile section.edit-pro-left div {

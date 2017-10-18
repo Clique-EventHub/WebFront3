@@ -414,8 +414,8 @@ class editProfile extends Component {
                                 <img src="../../resource/icon/icon6.svg" alt="birth"/>
                                 <div className="flex">
                                     <input className="w45" ref="bd_day" type="text" placeholder="dd" value={this.state.new_bd_day} onChange={this.onKeyPressed}/>
-                                    <input className="w45 m15" ref="bd_month" type="text" placeholder="mm" value={this.state.new_bd_month} onChange={this.onKeyPressed}/>
-                                    <input className="w110 m15" ref="bd_year" type="text" placeholder="yyyy (CE)" value={this.state.new_bd_year} onChange={this.onKeyPressed}/>
+                                    <input className="w45 m10" ref="bd_month" type="text" placeholder="mm" value={this.state.new_bd_month} onChange={this.onKeyPressed}/> 
+                                    <input className="w110 m10" ref="bd_year" type="text" placeholder="yyyy (CE)" value={this.state.new_bd_year} onChange={this.onKeyPressed}/>
                                 </div>
                                 <img src="../../resource/icon/icon2.svg" alt="nickname"/> <input ref="nick_name" type="text" placeholder="Nickname" value={this.state.new_nick_name} onChange={this.onKeyPressed}/>
                                 <img src="../../resource/icon/icon8.svg" alt="line"/> <input ref="line" type="text" placeholder="Line ID" value={this.state.new_lineId} onChange={this.onKeyPressed}/>
@@ -424,11 +424,10 @@ class editProfile extends Component {
                                 <img src="../../resource/icon/icon11.svg" alt="size"/> <input ref="size" type="text" placeholder="T-Shirt Size" value={this.state.new_shirt_size} onChange={this.onKeyPressed}/>
                                 <img src="../../resource/icon/icon12.svg" alt="med"/> <input ref="med" type="text" placeholder="Medical Problem" value={this.state.new_disease} onChange={this.onKeyPressed}/>
                                 <img src="../../resource/icon/icon13.svg" alt="food"/> <input ref="food" type="text" placeholder="Food Allergy" value={this.state.new_allergy} onChange={this.onKeyPressed}/>
-                                <img src="../../resource/icon/icon14.svg" alt="dorm"/>
-                                <div className="flex">
-                                    <input className="w110" ref="dorm_building" type="text" placeholder="Dorm Bd." value={this.state.new_dorm_building} onChange={this.onKeyPressed}/>
-                                    <input className="w45 m15" ref="dorm_room" type="text" placeholder="Room" value={this.state.new_dorm_room} onChange={this.onKeyPressed}/>
-                                    <input className="w45 m15" ref="dorm_bed" type="text" placeholder="Bed" value={this.state.new_dorm_bed} onChange={this.onKeyPressed}/>
+                                <img src="../../resource/icon/icon14.svg" alt="dorm"/> <input ref="dorm_building" type="text" placeholder="Dorm Bd." value={this.state.new_dorm_building} onChange={this.onKeyPressed}/>
+                                <div className="flex m40">
+                                    <input className="whalf" ref="dorm_room" type="text" placeholder="Room" value={this.state.new_dorm_room} onChange={this.onKeyPressed}/>
+                                    <input className="whalf" ref="dorm_bed" type="text" placeholder="Bed" value={this.state.new_dorm_bed} onChange={this.onKeyPressed}/>
                                 </div>
                             </section>
                             <p className="sec-line"></p>
