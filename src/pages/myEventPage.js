@@ -56,37 +56,43 @@ class myEventPage extends Component {
                 'Authorization': ('JWT ' + getCookie('fb_sever_token'))
             }
         }
-
+        this._isMounted = true;
         axios.get(`${hostname}user`, config).then((data) => {
-            this.setState({
-                ...this.state,
-                'firstName': data.data.firstName,
-                'lastName': data.data.lastName,
-                'picture': data.data.picture_200px,
-                'regId': (data.data.regId === null) ? 'Not Found' : data.data.regId,
-                'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
-                'nick_name': data.data.nick_name,
-                'lineId': data.data.lineId,
-                'email': data.data.email,
-                'phone': data.data.phone,
-                'shirt_size': data.data.shirt_size,
-                'disease': data.data.disease,
-                'allergy': data.data.allergy,
-                'dorm_building': data.data.dorm_building,
-                'dorm_room': data.data.dorm_room,
-                'dorm_bed': data.data.dorm_bed,
-                'join_events': data.data.join_events,
-                'interest_events': data.data.interest_events,
-                'already_joined_events': data.data.already_joined_events,
-                'n_join': data.data.join_events.length,
-                'n_intr': data.data.interest_events.length,
-                'n_completed': data.data.already_joined_events.length,
-                'showJoin': true
-            })
+            if(this._isMounted) {
+                this.setState({
+                    ...this.state,
+                    'firstName': data.data.firstName,
+                    'lastName': data.data.lastName,
+                    'picture': data.data.picture_200px,
+                    'regId': (data.data.regId === null) ? 'Not Found' : data.data.regId,
+                    'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
+                    'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
+                    'nick_name': data.data.nick_name,
+                    'lineId': data.data.lineId,
+                    'email': data.data.email,
+                    'phone': data.data.phone,
+                    'shirt_size': data.data.shirt_size,
+                    'disease': data.data.disease,
+                    'allergy': data.data.allergy,
+                    'dorm_building': data.data.dorm_building,
+                    'dorm_room': data.data.dorm_room,
+                    'dorm_bed': data.data.dorm_bed,
+                    'join_events': data.data.join_events,
+                    'interest_events': data.data.interest_events,
+                    'already_joined_events': data.data.already_joined_events,
+                    'n_join': data.data.join_events.length,
+                    'n_intr': data.data.interest_events.length,
+                    'n_completed': data.data.already_joined_events.length,
+                    'showJoin': true
+                })
+
+            }
         }, (error) => {
             //console.log("get user error", error);
         });
+    }
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     onShowJoin() {
@@ -94,10 +100,12 @@ class myEventPage extends Component {
         // for(var i = 0; i < this.state.n_join; i++){
         //     this.state.events_item.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         // }
-        this.setState({
-          ...this.state,
-          'showJoin': true
-        });
+        if(this._isMounted){
+            this.setState({
+            ...this.state,
+            'showJoin': true
+            });
+        }
     }
 
     onShowIntr() {
@@ -105,20 +113,25 @@ class myEventPage extends Component {
         // for(var i = 0; i < this.state.n_intr; i++){
         //     this.state.events_item.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         // }
-        this.setState({
-          ...this.state,
-          'showJoin': false
-        });
+        if(this._isMounted){
+            this.setState({
+            ...this.state,
+            'showJoin': false
+            });
+        }
     }
 
     onChildSave(val) {
-        this.setState({
-          ...this.state,
-          'nick_name': val.nick_name,
-          'birth_day': val.birth_day.toString().slice(0,15),
-          'shirt_size': val.shirt_size,
-          'disease': val.disease,
-        });
+        if(this._isMounted){
+            this.setState({
+            ...this.state,
+            'nick_name': val.nick_name,
+            'birth_day': val.birth_day.toString().slice(0,15),
+            'shirt_size': val.shirt_size,
+            'disease': val.disease,
+            });
+        }
+
     }
 
     onEditProfile() {

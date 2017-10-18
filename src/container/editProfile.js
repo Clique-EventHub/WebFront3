@@ -357,14 +357,16 @@ class editProfile extends Component {
             'password': this.refs.reg_password.value
         }, config).then((data) => {
 
-            this.setState((prevState) => {
+            this.setState((prevState)=> {
                 return ({
                     ...prevState,
+                    reg_password: '',
+                    regId: this.refs.reg_id.value,
                     message: 'Success'
                 });
             })
-            this.state.reg_id.value = '';
-            this.state.reg_password.value = '';
+            // this.state.reg_id.value = '';
+            // this.state.reg_password.value = '';
         }).catch((e) => {
             console.log(e);
             this.setState((prevState) => {
