@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { getRandomShade } from '../actions/common';
 
 class Image extends Component {
@@ -38,6 +39,14 @@ class Image extends Component {
 
 Image.defaultProps = {
     'src': ''
+}
+
+Image.PropTypes = {
+    'rejectClass': PropTypes.string,
+    'rejectOption': PropTypes.object,
+    'src': PropTypes.string.isRequired,
+    'imgClass': PropTypes.string,
+    'imgOption': PropTypes.object
 }
 
 export default Image;

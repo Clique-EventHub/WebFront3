@@ -2,7 +2,8 @@ import * as types from '../actions/types';
 
 const initalState = {
     events: {},
-    channels: {}
+    channels: {},
+    users: {}
 }
 
 /*
@@ -31,6 +32,15 @@ export default ( state = initalState, action ) => {
             return {
                 ...state,
                 channels: new_channels
+            }
+        case types.UPDATE_USER_MAP:
+            let new_users = {
+                ...state.users
+            }
+            new_users[action.payload._id] = action.payload;
+            return {
+                ...state,
+                users: new_users
             }
         default:
             return state;

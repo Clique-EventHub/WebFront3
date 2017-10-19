@@ -140,7 +140,7 @@ class eventItem extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(typeof(nextProps.eventId) === "string" && !this.state.isLoad || !this.props.isLoad && nextProps.isLoad) {
+        if(typeof(nextProps.eventId) === "string" && nextProps.eventId !== this.props.eventId) {
             this.onLoadData(nextProps.eventId);
         }
     }

@@ -69,7 +69,7 @@ class channelInfo extends Component {
         let tagState = {};
 
         this.state = {
-            'channel_id': "595ef6b8822dbf0014cb821b",
+            'channel_id': "59b905da27cd470014e46c92",
             'poster': [],
             'poster_file': [],
             'picture': [],

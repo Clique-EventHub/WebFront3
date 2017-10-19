@@ -8,6 +8,7 @@ class loginPage extends Component {
 
     onLogin() {
         this.props.fbLogin(this.props.fbGetSeverToken);
+        this.props.context.router.push("/")
     }
 
     onLogout() {
@@ -46,16 +47,18 @@ class loginPage extends Component {
             <section className="signup-page">
                 <atricle className="basic-card-no-glow login-card">
                     <img src="../../resource/images/icon.png" alt="icon" />
-                    <button alt="fb-login" onClick={this.onLogin.bind(this)}>
-                        <div alt="fb-icon-container">
-                            <img src="../../resource/images/fb_icon.svg" alt="fb-icon" />
-                        </div>
-                        <div>
-                            <span>
-                                Sign up with Facebook
-                            </span>
-                        </div>
-                    </button>
+
+                        <button alt="fb-login" onClick={this.onLogin.bind(this)}>
+                            <div alt="fb-icon-container">
+                                <img src="../../resource/images/fb_icon.svg" alt="fb-icon" />
+                            </div>
+                            <div>
+                                <span>
+                                    Sign up with Facebook
+                                </span>
+                            </div>
+                        </button>
+                    
                     <Link to='/'>
                         Continue as guest
                     </Link>

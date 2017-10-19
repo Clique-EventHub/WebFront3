@@ -2,7 +2,99 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import { hostname } from '../../actions/index';
+import { getUserIdInfo, compareArray } from '../../actions/common'
 import Image from '../../components/Image';
+import styled from 'styled-components';
+
+const AddListStyle = styled.div`
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 100%;
+    flex: 1 1 100%;
+    max-width: 33%;
+    width: 100%;
+    min-width: 250px;
+    box-sizing: border-box;
+    padding: 0px 10px;
+    display: inline-block;
+
+    button {
+        border-color: #ccc !important;
+        color: #999 !important;
+        background-color: #fff !important;
+        border: 1.8px solid;
+        padding: 10px 20px;
+        border-radius: 5px;
+        width: 100%;
+    }
+
+    button.invisible {
+        background-color: transparent !important;
+        border: none;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .ChildBox {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        border: 1px solid #CCC;
+        border-radius: 5px;
+        padding: 15px;
+        position: relative;
+        padding-top: 40px;
+
+        &>* {
+            display: block;
+        }
+
+        input {
+            margin-bottom: 7px;
+            outline: none;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 1rem;
+        }
+
+        .right {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: auto !important;
+
+            img {
+                height: 1.5em;
+                width: 1.5em;
+            }
+    }
+
+    ul {
+        list-style-type: none !important;
+        padding: 0px;
+
+        li {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            margin: 3px 0px;
+
+            input {
+                width: 100%;
+                font-size: 1.5rem;
+                padding: 3px 5px;
+                height: 1.2em;
+                -webkit-box-flex: 1;
+                -ms-flex: 1 1 100%;
+                flex: 1 1 100%;
+            }
+            
+            button {
+                display: block;
+            }
+        }
+    }
+`;
 
 class AddList extends Component {
     constructor(props) {
@@ -35,6 +127,14 @@ class AddList extends Component {
         }, 500);
     }
 
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillUnmoint() {
+        this._isMounted = false;
+    }
+
     getUserInfoFromMap(id) {
         if(typeof this.state.userMap[id] !== undefined) {
             return this.state.userMap[id]
@@ -44,53 +144,101 @@ class AddList extends Component {
 
     onUpdateUserMap(id, index) {
         if(typeof this.state.userMap[id] === "undefined") {
-            axios.get(`${hostname}findmg?user=${id}`).then(
-                (data) => data.data)
-                .then((data) => {
-                    // console.log(data);
-                    const new_map = {...this.state.userMap};
-                    new_map[_.get(data, 'user_info._id', undefined)] = data.user_info;
-                    this.setState({
-                        ...this.state,
-                        userMap: new_map
-                    });
-                }).catch((error) => {
-                    // console.log(error);
-            })
-
-            if(!isNaN(parseFloat(id)) && isFinite(id)) {
-                axios.get(`${hostname}findfb?user=${id}`).then(
-                    (data) => data.data
-                ).then((data) => {
+            try {
+                axios.get(`${hostname}findmg?user=${id}`).then(
+                    (data) => data.data)
+                    .then((data) => {
                         // console.log(data);
-                        const new_map = {...this.state.userMap};
+                        const new_map = { ...this.state.userMap };
+                        new_map[_.get(data, 'user_info._id', undefined)] = data.user_info;
+                        if (this._isMounted) {
+                            this.setState((prevState) => {
+                                return ({
+                                    ...prevState,
+                                    userMap: new_map
+                                });
+                            });
+                        }
+                    }).catch((error) => {
+                        // console.log(error);
+                    })
+
+                if (!isNaN(parseFloat(id)) && isFinite(id)) {
+                    axios.get(`${hostname}findreg?user=${id}`).then(
+                        (data) => data.data
+                    ).then((data) => {
+                        // console.log(data);
+                        const new_map = { ...this.state.userMap };
                         new_map[_.get(data, 'user_info._id', undefined)] = data.user_info;
                         const new_children = [...this.state.children];
                         new_children[index] = _.get(data, 'user_info._id', '');
-                        this.setState({
-                            ...this.state,
-                            userMap: new_map,
-                            children: new_children
-                        });
+                        if (this._isMounted) {
+                            this.setState((prevState) => {
+                                return ({
+                                    ...this.prevState,
+                                    userMap: new_map,
+                                    children: new_children
+                                });
+                            }, () => {
+                                if (typeof (this.props.onUpdate) === "function") {
+                                    this.props.onUpdate(this.state.children);
+                                }
+                            });
+                        }
                     }).catch((error) => {
                         // console.log(error);
-                })
+                    })
 
-                axios.get(`${hostname}findreg?user=${id}`).then(
-                    data => data.data
-                ).then((data) => {
-                    const new_map = {...this.state.userMap};
-                    new_map[_.get(data, 'user_info._id', undefined)] = data.user_info;
-                    const new_children = [...this.state.children];
-                    new_children[index] = _.get(data, 'user_info._id', '');
-                    this.setState({
-                        ...this.state,
-                        userMap: new_map,
-                        children: new_children
-                    });
-                }).catch((error) => {
-                    // console.log(error);
-                })
+                    axios.get(`${hostname}findfb?user=${id}`).then(
+                        (data) => data.data
+                    ).then((data) => {
+                        // console.log(data);
+                        const new_map = { ...this.state.userMap };
+                        new_map[_.get(data, 'user_info._id', undefined)] = data.user_info;
+                        const new_children = [...this.state.children];
+                        new_children[index] = _.get(data, 'user_info._id', '');
+                        if (this._isMounted) {
+                            this.setState((prevState) => {
+                                return ({
+                                    ...this.prevState,
+                                    userMap: new_map,
+                                    children: new_children
+                                });
+                            }, () => {
+                                if (typeof (this.props.onUpdate) === "function") {
+                                    this.props.onUpdate(this.state.children);
+                                }
+                            });
+                        }
+                    }).catch((error) => {
+                        // console.log(error);
+                    })
+                } else {
+                    getUserIdInfo(id).then((data) => {
+                        const new_map = { ...this.state.userMap };
+                        new_map[_.get(data, '_id', undefined)] = data;
+                        const new_children = [...this.state.children];
+                        new_children[index] = _.get(data, '_id', '');
+                        if (this._isMounted) {
+                            this.setState((prevState) => {
+                                return ({
+                                    ...this.prevState,
+                                    userMap: new_map,
+                                    children: new_children
+                                });
+                            }, () => {
+                                if (typeof (this.props.onUpdate) === "function") {
+                                    this.props.onUpdate(this.state.children);
+                                }
+                            });
+                        }
+                    }).catch((error) => {
+                        // console.log(error);
+                    })
+                }
+                
+            } catch(e) {
+                console.log(e);
             }
         }
     }
@@ -102,20 +250,36 @@ class AddList extends Component {
                 if(typeof(this.props.onUpdate) === "function") {
                     this.props.onUpdate(new_children_1);
                 }
-                this.setState({
-                    ...this.state,
-                    'children': new_children_1
-                })
+                if (this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            'children': new_children_1
+                        });
+                    }, () => {
+                        if (typeof (this.props.onUpdate) === "function") {
+                            this.props.onUpdate(this.state.children);
+                        }
+                    });
+                }
                 break;
             case 2:
                 const new_children_3 = [...this.state.children].concat([""]);
                 if(typeof(this.props.onUpdate) === "function") {
                     this.props.onUpdate(new_children_3);
                 }
-                this.setState({
-                    ...this.state,
-                    'children': new_children_3
-                })
+                if (this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            'children': new_children_3
+                        });
+                    }, () => {
+                        if (typeof (this.props.onUpdate) === "function") {
+                            this.props.onUpdate(this.state.children);
+                        }
+                    });
+                }
                 break;
             default:
                 const new_children_2 = [...this.state.children].concat([{
@@ -126,34 +290,65 @@ class AddList extends Component {
                 if(typeof(this.props.onUpdate) === "function") {
                     this.props.onUpdate(new_children_2);
                 }
-                this.setState({
-                    ...this.state,
-                    'children': new_children_2
-                })
+                if (this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            'children': new_children_2
+                        });
+                    }, () => {
+                        if (typeof (this.props.onUpdate) === "function") {
+                            this.props.onUpdate(this.state.children);
+                        }
+                    });
+                }
         }
     }
 
     componentWillReceiveProps(nextProps) {
         if(!this.state.isLoad && nextProps.isLoad) {
-            this.setState((prevState, props) => {
-                if(this.state.mode !== 2) {
-                    return {
-                        ...prevState,
-                        isLoad: true,
-                        children: (nextProps.children && nextProps.children.constructor === Array) ? nextProps.children : []
+            if(this._isMounted) {
+                this.setState((prevState, props) => {
+                    if(this.state.mode !== 2) {
+                        return {
+                            ...prevState,
+                            isLoad: true,
+                            children: (nextProps.children && nextProps.children.constructor === Array) ? nextProps.children : []
+                        }
+                    } else {
+                        const reliableChild = (nextProps.children && nextProps.children.constructor === Array) ? nextProps.children : [];
+                        return {
+                            ...prevState,
+                            isLoad: true,
+                            children: reliableChild
+                        }
                     }
-                } else {
-                    const reliableChild = (nextProps.children && nextProps.children.constructor === Array) ? nextProps.children : [];
-                    return {
-                        ...prevState,
-                        isLoad: true,
-                        children: reliableChild
+                }, () => {
+                    if(this.props.mode === 2) {
+                        this.state.children.forEach((id, index) => this.onUpdateUserMap(id, index));
                     }
-                }
-            }, () => {
-                if(this.props.mode === 2) {
-                    this.state.children.forEach((id, index) => this.onUpdateUserMap(id, index));
-                }
+                    if (typeof (this.props.onUpdate) === "function") {
+                        this.props.onUpdate(this.state.children);
+                    }
+                })
+            }
+        }
+
+        if (!compareArray(nextProps.children, this.props.children)) {
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        children: nextProps.children
+                    });
+                }, () => {
+                    if (typeof (this.props.onUpdate) === "function") {
+                        this.props.onUpdate(this.state.children);
+                    }
+                })
+            }
+            nextProps.children.forEach((mongoId, index) => {
+                this.onUpdateUserMap(mongoId, index)
             })
         }
     }
@@ -182,10 +377,14 @@ class AddList extends Component {
                 }
         }
 
-        this.setState({
-            ...this.state,
-            'children': new_children
-        })
+        if (this._isMounted) {
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    'children': new_children
+                });
+            });
+        }
 
         if(typeof(this.props.onUpdate) === "function") {
             this.props.onUpdate(new_children);
@@ -194,10 +393,14 @@ class AddList extends Component {
 
     onRemove(index) {
         const new_children = this.state.children.slice(0, index).concat(this.state.children.slice(index+1, this.state.children.length));
-        this.setState({
-            ...this.state,
-            'children': new_children
-        })
+        if (this._isMounted) {
+            this.setState((prevState) => {
+                return ({
+                    ...prevState,
+                    'children': new_children
+                });
+            });
+        }
 
         if(typeof(this.props.onUpdate) === "function") {
             this.props.onUpdate(new_children);
@@ -211,7 +414,7 @@ class AddList extends Component {
         }
 
         return (
-            <div className={`AddList ${this.props.className ? this.props.className : ''}`} style={
+            <AddListStyle className={`AddList ${this.props.className ? this.props.className : ''}`} style={
                     (this.state.mode === 2) ? {
                         'maxWidth': '100%'
                     } : {}
@@ -222,8 +425,13 @@ class AddList extends Component {
                 <ul data-role="top-list" style={
                         (this.state.mode === 2) ? {
                             'display': 'flex',
-                            'flexWrap': 'wrap'
-                        } : {}
+                            'flexWrap': 'wrap',
+                            'listStyleType': 'none',
+                            'paddingLeft': '0'
+                        } : {
+                            'listStyleType': 'none',
+                            'paddingLeft': '0'
+                        }
                     }>
                     {
                         this.state.children.map((info, index) => {
@@ -270,7 +478,7 @@ class AddList extends Component {
                                     <div>
                                         <div style={{
                                                 'display': 'flex',
-                                                'justifyContent': 'center',
+                                                'justifyContent': 'left',
                                                 'alignItems': 'center'
                                             }}>
                                             <Image
@@ -294,7 +502,7 @@ class AddList extends Component {
                                             />
                                             <div>
                                                 <span>{_.get(userInfoArray[index], 'firstName', '') + " " + _.get(userInfoArray[index], 'lastName', '')}</span>
-                                                <div>[REG ID]</div>
+                                                <div>{_.get(userInfoArray[index], 'regId', '[REG ID]')}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -303,7 +511,7 @@ class AddList extends Component {
                         })
                     }
                 </ul>
-            </div>
+            </AddListStyle>
         );
     }
 }

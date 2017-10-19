@@ -1,8 +1,9 @@
 import React , { Component } from 'react';
 import { getRandomShade } from '../actions/common';
 import { Link } from 'react-router';
+import Image from './Image';
 
-class circle extends Component {
+class Circle extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -16,11 +17,11 @@ class circle extends Component {
         if(props.parent === "channel") {
             if(props.option) {
                 const { name, id } = props.option;
-                const picture = props.option || '';
+                const picture = props.option.picture || '';
                 return (
                     <Link to={`/channel/${id}`}>
                         <article className={`${props.parent}-item basic-card`}>
-                            <div role="img" src={picture} alt="channel-photo" className={this.state.shade}/>
+                            <Image role="img" src={picture} alt="channel-photo" className={this.state.shade}/>
                             <h3>{name}</h3>
                         </article>
                     </Link>
@@ -37,4 +38,4 @@ class circle extends Component {
     }
 }
 
-export default circle;
+export default Circle;

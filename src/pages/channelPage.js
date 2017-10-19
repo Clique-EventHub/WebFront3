@@ -1,17 +1,18 @@
 import React , { Component } from 'react';
 import EventItem from '../container/eventItem';
 import EditEvent from '../container/editEvent';
-import Circle from '../components/circle';
 import pages from '../hoc/pages';
 import normalPage from '../hoc/normPage';
 import axios from 'axios';
-import { getCookie, getEvent } from '../actions/common';
+import { getCookie, getEvent, getChannel } from '../actions/common';
 import { hostname } from '../actions/index';
 import './css/channelPage.css';
 
 import ChannelDetail from '../container/channelDetail';
 import ChannelInfo from '../container/channelInfo';
 import _ from 'lodash';
+
+import AddAdminModal from '../components/AddAdminModal';
 
 class channelPage extends Component {
 
@@ -45,12 +46,14 @@ class channelPage extends Component {
         const url = `${hostname}user/${(nextState) ? '' : 'un'}subscribe?id=${channel_id}`;
 
         axios.put(url, {}, config).then((response) => {
-            this.setState((prevState) => {
-                return ({
-                    ...prevState,
-                    'isFollow': nextState
+            if(this._isMounted) {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        'isFollow': nextState
+                    });
                 });
-            });
+            }
         }, (error) => {
             // console.log("follow error", error);
         });
@@ -64,8 +67,15 @@ class channelPage extends Component {
         this.props.toggle_pop_item();
     }
 
-    componentWillMount() {
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
 
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillMount() {
         let config = {
             'headers': {
                 'Authorization': ('JWT ' + getCookie('fb_sever_token'))
@@ -74,34 +84,38 @@ class channelPage extends Component {
 
         const channel_id = this.props.params.id;
 
-        axios.get(`${hostname}channel?id=${channel_id}`).then((data) => {
-            this.setState((prevState) => {
-                return ({
-                    ...prevState,
-                    'name': data.data.name,
-                    'picture': data.data.picture,
-                    'cover_picture': data.data.picture_large[0],
-                    'events': data.data.events,
-                    'refObj': data.data
-                })
-            });
+        getChannel(channel_id, true).then((data) => {
+            if (this._isMounted) {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        'name': data.name,
+                        'picture': data.picture,
+                        'cover_picture': data.picture_large[0],
+                        'events': data.events,
+                        'refObj': data
+                    })
+                });
+            }
 
             Promise.all(_.get(data.data, 'events', []).map((id) => {
                 return (
                     getEvent(id).then((data) => {
-                        this.setState((prevState) => {
-                            let new_map = { ...prevState.eventMap };
-                            new_map[data._id] = data;
-                            const new_event_completed = [ ...prevState.eventComplete ];
-                            if(new Date() > new Date(data.date_end)) {
-                                new_event_completed.push(data._id);
-                            }
-                            return ({
-                                ...prevState,
-                                eventMap: new_map,
-                                eventComplete: new_event_completed
+                        if (this._isMounted) {
+                            this.setState((prevState) => {
+                                let new_map = { ...prevState.eventMap };
+                                new_map[data._id] = data;
+                                const new_event_completed = [...prevState.eventComplete];
+                                if (new Date() > new Date(data.date_end)) {
+                                    new_event_completed.push(data._id);
+                                }
+                                return ({
+                                    ...prevState,
+                                    eventMap: new_map,
+                                    eventComplete: new_event_completed
+                                })
                             })
-                        })
+                        }
                         return true;
                     }).catch((e) => e)
                 )
@@ -110,19 +124,18 @@ class channelPage extends Component {
             }).catch((e) => {
                 // console.log(e);
             })
-
-        }, (error) => {
-            // console.log("get channel error", error);
         });
 
         axios.get(`${hostname}user/subscribe`, config).then((data) => {
             if(data.data.hasOwnProperty(this.state.name)){
-                this.setState((prevState) => {
-                    return ({
-                        ...prevState,
-                        'isFollow': true
+                if(this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            'isFollow': true
+                        })
                     })
-                })
+                }
             }
         }, (error) => {
 
@@ -146,6 +159,13 @@ class channelPage extends Component {
                 <button className="Btn-Round">MORE DETAIL</button>
             </div>
         )
+        let lol = _.get(this.state, 'events', []).map(
+        (id) => {
+            return ({
+                'id': id,
+                ..._.get(this.props, `map.events[${id}]`, {})
+            }
+        )})
         return (
             <section className="channel-main">
                 <section className="channel-head">
@@ -179,8 +199,21 @@ class channelPage extends Component {
                                     className="Btn-Round"
                                     onClick={() => {this.onItemPopUpClick(<EditEvent channelId={this.props.params.id} />)}}
                                     key={1}
+                                    style={{'margin': '10px 10px' }}
                                 >Create Event</button>,
-                                <hr className="thin" key={3}/>
+                                <button
+                                    className="Btn-Round"
+                                    style={{ 'width': '200px', 'margin': '10px 10px' }}
+                                    onClick={() => { this.onItemPopUpClick(<AddAdminModal user={this.props.user} isEvent={false} channelId={this.props.params.id} onToggle={this.props.toggle_pop_item} />)}}
+                                    key={2}
+                                >Add Channel Admin</button>,
+                                <button
+                                    className="Btn-Round"
+                                    style={{ 'width': '200px', 'margin': '10px 10px' }}
+                                    onClick={() => { this.onItemPopUpClick(<AddAdminModal user={this.props.user} isEvent={true} Events={lol} channelId={this.props.params.id} onToggle={this.props.toggle_pop_item} />)}}
+                                    key={3}
+                                >Add Event Admin</button>,
+                                <hr className="thin" key={4}/>
                             ]
                         ) : null
                     }
@@ -189,7 +222,16 @@ class channelPage extends Component {
                         <p className="hr"></p>
                         <div className="flex-list">
                             {
-                                _.get(this.state, 'events', []).filter((item) => this.state.eventComplete.indexOf(item) === -1).map((id, index) => {
+                                _.get(this.state, 'events', []).filter((item) => this.state.eventComplete.indexOf(item) === -1).concat(["", "", ""]).map((id, index) => {
+                                
+                                    if(id === "") {
+                                        return (
+                                            <article key={index} style={{
+                                                'width': 'calc(1.405*300px)',
+                                                'margin': '0px 25px'
+                                            }} />
+                                        );
+                                    }
                                     return (
                                         <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} eventId={id} key={index} />
                                     );
@@ -202,7 +244,15 @@ class channelPage extends Component {
                         <p className="hr"></p>
                         <div className="flex-list">
                             {
-                                _.get(this.state, 'events', []).map((id, index) => {
+                                _.get(this.state, 'events', []).concat(["", "", ""]).map((id, index) => {
+                                    if(id === "") {
+                                        return (
+                                            <article key={index} style={{
+                                                'width': 'calc(1.405*300px)',
+                                                'margin': '0px 25px'
+                                            }} />
+                                        );
+                                    }
                                     return (
                                         <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} eventId={id} key={index} />
                                     );
@@ -215,7 +265,17 @@ class channelPage extends Component {
                         <p className="hr"></p>
                         <div className="flex-list">
                             {
-                                _.get(this.state, 'eventComplete', []).map((id, index) => {
+                                _.get(this.state, 'eventComplete', []).concat(["", "", ""]).map((id, index) => {
+                                    if(id === "") {
+                                        return (
+                                            <article style={{
+                                                'width': 'calc(1.405*300px)',
+                                                'margin': '0px 25px'
+                                            }}
+                                            key={index}
+                                            />
+                                        );
+                                    }
                                     return (
                                         <EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} eventId={id} key={index} />
                                     );

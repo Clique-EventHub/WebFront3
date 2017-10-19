@@ -11,7 +11,7 @@ import CustomRadio from '../components/CustomRadio';
 import PictureUpload from '../components/PictureUpload';
 import MultipleChoice from '../components/MultipleChoice';
 
-import { getCookie, objModStr, getTags, ServerToClientFields, ClientToServerFields, optionYear, optionFaculty, getEvent } from '../actions/common';
+import { getCookie, objModStr, getTags, ServerToClientFields, ClientToServerFields, optionYear, optionFaculty, getEvent, getUserIdInfo } from '../actions/common';
 import { hostname } from '../actions/index';
 import { getCodeList, findInfoById } from '../actions/facultyMap';
 
@@ -428,11 +428,18 @@ class EditEvent extends Component {
             },
             'year_require': (res) => {
                 let rArray = [];
+                let isAll = false;
+                let refYear = (new Date().getFullYear() + 543) % 100 + 1;
                 Object.keys(res).forEach((key) => {
                     if(res[key] === "true") {
-                        rArray.push(optionYear[key])
+                        if(optionYear[key] === "ALL") {
+                            isAll = true;
+                        } else {
+                            rArray.push(String(refYear - Number(optionYear[key])))
+                        }
                     }
                 })
+                if(isAll) return [];
                 return rArray;
             },
             'optional_field': (res) => {
@@ -608,13 +615,15 @@ class EditEvent extends Component {
                     if(deleteAdmins.length > 0) {
                         let deleteAdminPromises = []
                         deleteAdmins.forEach((item) => {
-                            deleteAdminPromises.push(axios.delete(`${hostname}admin/event/delete?id=${eid}`,
-                            {
-                                ...config,
-                                params: {
-                                    user: item
-                                }
-                            }))
+                            getUserIdInfo(item).then((data) => {
+                                deleteAdminPromises.push(axios.delete(`${hostname}admin/event/delete?id=${eid}`,
+                                {
+                                    ...config,
+                                    data: {
+                                        user: data.regId
+                                    }
+                                }))
+                            })
                         })
                         uploadPromises.push(new Promise((good, bad) => {
                             Promise.all(deleteAdminPromises).then((result) => {
@@ -667,12 +676,16 @@ class EditEvent extends Component {
             adminProcess.bind(this)(this.props.eventId);
             uploadPromises.push(axios.put(`${hostname}event?id=${this.props.eventId}`, uploadedObj, config));
 
-            Promise.all(uploadPromises).then(() => {
-                alert("Uploaded Completed");
-            }).catch((e) => {
-                // console.log(e);
-                alert("Some error happened");
-            })
+            try {
+                Promise.all(uploadPromises).then(() => {
+                    alert("Uploaded Completed");
+                }).catch((e) => {
+                    // console.log(e);
+                    alert("Some error happened");
+                })
+            } catch(err) {
+
+            }
 
             /*Fields that need to use external api
                 - poster
@@ -767,7 +780,6 @@ class EditEvent extends Component {
         if(_.get(this.state, 'refObject.forms', []).length > 0) {
             const formObj = _.get(this.state, 'refObject.forms[0]', {});
             const formId = _.get(formObj, 'id', '');
-
             this.props.context.router.push(`/form?id=${formId}&state=0&eid=${this.props.eventId}&cid=${this.props.channelId}`);
         } else {
             let cid = this.props.channelId;

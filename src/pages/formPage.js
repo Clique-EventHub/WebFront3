@@ -39,8 +39,17 @@ class formPage extends Component {
     }
 
     componentWillMount() {
+        this._isMounted = true;
         this.onStart();
         document.title = "Event Hub | Form";
+    }
+    
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
     }
 
     onStart() {
@@ -54,34 +63,42 @@ class formPage extends Component {
         if(this.state.meta.formId) {
             //Answering form or edit old form
             axios.get(`${hostname}form?id=${this.state.meta.formId}`, config).then((data) => {
-                this.setState({
-                    ...this.state,
-                    'questions': data.data.form.questions,
-                    'formTitle': data.data.form.title,
-                    'meta': {
-                        ...this.state.meta,
-                        'eventId': data.data.form.event,
-                        'channelId': data.data.form.channel
-                    },
-                    'isLoad': true
-                });
-
-                getEvent(data.data.form.event).then((data) => {
+                if(this._isMounted) {
                     this.setState((prevState) => {
                         return ({
                             ...prevState,
-                            'event': data
+                            'questions': data.data.form.questions,
+                            'formTitle': data.data.form.title,
+                            'meta': {
+                                ...this.state.meta,
+                                'eventId': data.data.form.event,
+                                'channelId': data.data.form.channel
+                            },
+                            'isLoad': true
                         });
-                    })
+                    });
+                }
+
+                getEvent(data.data.form.event).then((data) => {
+                    if(this._isMounted) {
+                        this.setState((prevState) => {
+                            return ({
+                                ...prevState,
+                                'event': data
+                            });
+                        })
+                    }
                 })
 
                 getChannel(data.data.form.channel).then((data) => {
-                    this.setState((prevState) => {
-                        return ({
-                            ...prevState,
-                            'channel': data
-                        });
-                    })
+                    if(this._isMounted) {
+                        this.setState((prevState) => {
+                            return ({
+                                ...prevState,
+                                'channel': data
+                            });
+                        })
+                    }
                 })
 
                 return true;
@@ -92,29 +109,38 @@ class formPage extends Component {
         } else if(this.state.meta.isAdmin) {
             //Create new form
             getEvent(this.state.meta.eventId).then((data) => {
-                this.setState((prevState) => {
-                    return ({
-                        ...prevState,
-                        'event': data
-                    });
-                })
+                if(this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            'event': data
+                        });
+                    })
+                }
             })
 
             getChannel(this.state.meta.channelId).then((data) => {
+                if(this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            'channel': data
+                        });
+                    })
+                }
+            })
+            
+            console.log(this._isMounted)
+            if(this._isMounted) {
                 this.setState((prevState) => {
                     return ({
                         ...prevState,
-                        'channel': data
+                        'questions': [],
+                        'formTitle': 'Untitled',
+                        'isLoad': true
                     });
                 })
-            })
-
-            this.setState({
-                ...this.state,
-                'questions': [],
-                'formTitle': 'Untitled',
-                'isLoad': true
-            })
+            }
         } else {
             //No formId and is Not Admin
             let error = {

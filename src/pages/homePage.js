@@ -58,39 +58,45 @@ class homePage extends Component {
         if(nextProps.fb.isLogin && !this.state.channelList.isLoad) {
             const channelIDs = _.get(nextProps, 'user.events.general.subscribe', []);
             Promise.all(channelIDs.map((id) => getChannel(id, false).then((data) => {
-                this.setState((prevState) => {
-                    return {
-                        ...prevState,
-                        channelList: {
-                            list: prevState.channelList.list.concat([{
-                                name: data.title,
-                                id: data._id
-                            }]),
-                            isLoad: prevState.channelList.isLoad
+                if(this._isMounted) {
+                    this.setState((prevState) => {
+                        return {
+                            ...prevState,
+                            channelList: {
+                                list: prevState.channelList.list.concat([{
+                                    name: data.title,
+                                    id: data._id
+                                }]),
+                                isLoad: prevState.channelList.isLoad
+                            }
                         }
-                    }
-                })
+                    })
+                }
                 return true;
             }))).then(() => {
-                this.setState((prevState) => {
-                    return ({
-                        ...prevState,
-                        channelList: {
-                            ...prevState.channelList,
-                            isLoad: true
-                        }
+                if (this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            channelList: {
+                                ...prevState.channelList,
+                                isLoad: true
+                            }
+                        })
                     })
-                })
-            }).catch(() => {
-                this.setState((prevState) => {
-                    return ({
-                        ...prevState,
-                        channelList: {
-                            ...prevState.channelList,
-                            isLoad: true
-                        }
+                }
+            }).catch((e) => {
+                if (this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            channelList: {
+                                ...prevState.channelList,
+                                isLoad: true
+                            }
+                        })
                     })
-                })
+                }
             })
         }
     }
@@ -127,101 +133,117 @@ class homePage extends Component {
                     );
                 })
 
-                this.setState((prevState, props) => {
-                    return ({
-                        ...this.state,
-                        'eventHot': eventHotId,
-                        'progress': {
-                            ...this.state.progress,
-                            'hot': true
-                        }
+                if (this._isMounted) {
+                    this.setState((prevState, props) => {
+                        return ({
+                            ...this.state,
+                            'eventHot': eventHotId,
+                            'progress': {
+                                ...this.state.progress,
+                                'hot': true
+                            }
+                        })
                     })
-                })
+                }
             }).catch((e) => {
-                this.setState((prevState, props) => {
-                    return ({
-                        ...this.state,
-                        'eventHot': [],
-                        'progress': {
-                            ...this.state.progress,
-                            'hot': true
-                        }
+                if (this._isMounted) {
+                    this.setState((prevState, props) => {
+                        return ({
+                            ...this.state,
+                            'eventHot': [],
+                            'progress': {
+                                ...this.state.progress,
+                                'hot': true
+                            }
+                        })
                     })
-                })
+                }
             })
 
             axios.get(`${hostname}event/new`, config).then((data) => data.data.events).then((res) => {
-                this.setState((prevState, props) => {
-                    return ({
-                        ...this.state,
-                        'eventNew': res.map((item) => item._id).slice(0, 4),
-                        'progress': {
-                            ...this.state.progress,
-                            'new': true
-                        }
+                if (this._isMounted) {
+                    this.setState((prevState, props) => {
+                        return ({
+                            ...this.state,
+                            'eventNew': res.map((item) => item._id).slice(0, 4),
+                            'progress': {
+                                ...this.state.progress,
+                                'new': true
+                            }
+                        })
                     })
-                })
+                }
             }).catch(() => {
-                this.setState((prevState, props) => {
-                    return ({
-                        ...this.state,
-                        'eventNew': [],
-                        'progress': {
-                            ...this.state.progress,
-                            'new': true
-                        }
+                if (this._isMounted) {
+                    this.setState((prevState, props) => {
+                        return ({
+                            ...this.state,
+                            'eventNew': [],
+                            'progress': {
+                                ...this.state.progress,
+                                'new': true
+                            }
+                        })
                     })
-                })
+                }
             })
 
             axios.get(`${hostname}event/upcoming`, config).then((data) => data.data.events).then(
             (res) => {
-                this.setState((prevState, props) => {
-                    return ({
-                        ...this.state,
-                        'eventUpcomming': res.map((item) => item._id).slice(0, 4),
-                        'progress': {
-                            ...this.state.progress,
-                            'upcoming': true
-                        }
+                if (this._isMounted) {
+                    this.setState((prevState, props) => {
+                        return ({
+                            ...this.state,
+                            'eventUpcomming': res.map((item) => item._id).slice(0, 4),
+                            'progress': {
+                                ...this.state.progress,
+                                'upcoming': true
+                            }
+                        })
                     })
-                })
+                }
             }).catch(() => {
-                this.setState((prevState, props) => {
-                    return ({
-                        ...this.state,
-                        'eventUpcomming': [],
-                        'progress': {
-                            ...this.state.progress,
-                            'upcoming': true
-                        }
+                if (this._isMounted) {
+                    this.setState((prevState, props) => {
+                        return ({
+                            ...this.state,
+                            'eventUpcomming': [],
+                            'progress': {
+                                ...this.state.progress,
+                                'upcoming': true
+                            }
+                        })
                     })
-                })
+                }
             });
 
             axios.get(`${hostname}event/foryou`, { ...config, ...authConfig }).then((data) => data.data.events).then(
             (res) => {
-                this.setState((prevState, props) => {
-                    return ({
-                        ...this.state,
-                        'eventForYou': res.map((item) => item._id).slice(0, 4),
-                        'progress': {
-                            ...this.state.progress,
-                            'forYou': true
-                        }
+                if (this._isMounted) {
+                    this.setState((prevState, props) => {
+                        return ({
+                            ...this.state,
+                            'eventForYou': res.map((item) => item._id).slice(0, 4),
+                            'progress': {
+                                ...this.state.progress,
+                                'forYou': true
+                            }
+                        })
                     })
-                })
+                }
             }).catch(() => {
-                this.setState((prevState, props) => {
-                    return ({
-                        ...this.state,
-                        'eventForYou': [],
-                        'progress': {
-                            ...this.state.progress,
-                            'forYou': true
-                        }
+                if (this._isMounted) {
+                    this.setState((prevState, props) => {
+                        return ({
+                            ...this.state,
+                            'eventForYou': [],
+                            'progress': {
+                                ...this.state.progress,
+                                'forYou': true
+                            }
+                        })
                     })
-                })
+                }
             })
 
             getTags().then((tags) => {
@@ -230,19 +252,23 @@ class homePage extends Component {
                     new_tag = new_tag.concat(tags[key]);
                 })
 
-                this.setState((prevState) => {
-                    return ({
-                        ...prevState,
-                        'tags': new_tag
+                if (this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            'tags': new_tag
+                        })
                     })
-                })
+                }
             }).catch((e) => {
-                this.setState((prevState) => {
-                    return ({
-                        ...prevState,
-                        'tags': []
+                if (this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            'tags': []
+                        })
                     })
-                })
+                }
             })
         }
     }
@@ -251,6 +277,11 @@ class homePage extends Component {
         if(!(typeof(this.props.location.query.eid) === "undefined" || this.props.location.query.eid === null)) {
             this.onItemPopUpClick(<EventDetailFix onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         }
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
@@ -276,7 +307,15 @@ class homePage extends Component {
                             <h2>New</h2>
                             <div style={{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
                                 {
-                                    this.state.eventNew.map((id, index) => {
+                                    this.state.eventNew.concat(["", "", ""]).map((id, index) => {
+                                        if (id === "") {
+                                            return (
+                                                <article key={index} style={{
+                                                    'width': 'calc(1.405*300px)',
+                                                    'margin': '0px 10px'
+                                                }} />
+                                            );
+                                        }
                                         return (<EventItem key={index} isLoad={this.state.progress.new} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
                                     })
                                 }
@@ -292,7 +331,15 @@ class homePage extends Component {
                             <h2>For you</h2>
                             <div style={{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
                                 {
-                                    this.state.eventForYou.map((id, index) => {
+                                    this.state.eventForYou.concat(["", "", ""]).map((id, index) => {
+                                        if (id === "") {
+                                            return (
+                                                <article key={index} style={{
+                                                    'width': 'calc(1.405*300px)',
+                                                    'margin': '0px 10px'
+                                                }} />
+                                            );
+                                        }
                                         return (<EventItem key={index} isLoad={this.state.progress.forYou} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
                                     })
                                 }

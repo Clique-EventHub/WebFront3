@@ -4,7 +4,14 @@ import React , { Component } from 'react';
 import $ from 'jquery';
 import { Link } from 'react-router';
 import { getCookie, clearAllCookie, getUserInfo } from '../actions/common';
+import { fbLogin, fbLogout } from '../actions/index';
 import './style/sideMenu.css';
+
+const defaultState = {
+  'name': "Guest",
+  'picture': "../../resource/images/dummyProfile.png",
+  'isLogin': false
+};
 
 class sideMenu extends Component {
 
@@ -68,7 +75,7 @@ class sideMenu extends Component {
     }
 
     onLogout() {
-        this.props.fbLogout();
+        fbLogout();
         if(this._isMounted) {
             this.setState(defaultState)
         }
@@ -84,11 +91,18 @@ class sideMenu extends Component {
                     <img src={this.state.picture} />
                     <div content="name">{this.state.name}</div>
                 </section>
-                <ul>
-                    <li><Link to="/profile">MY EVENT</Link></li>
-                    <li><Link to="/calendar">CALENDAR</Link></li>
-                    <li><Link to="/"><button className="invisible" onClick={this.onLogout.bind(this)}>LOG OUT</button></Link></li>
-                </ul>
+                { (this.state.isLogin) ? (
+                      <ul>
+                          <li><Link to="/profile">MY EVENT</Link></li>
+                          <li><Link to="/calendar">CALENDAR</Link></li>
+                          <li><Link to="/" onClick={this.onLogout.bind(this)}>LOG OUT</Link></li>
+                      </ul>
+                  ) : (
+                      <ul>
+                          <li><Link to="/signup" >Sign in / Sign up</Link></li>
+                      </ul>
+                  )
+                }
             </aside>
         );
     }

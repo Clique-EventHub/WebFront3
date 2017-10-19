@@ -218,7 +218,7 @@ class CustomRadio extends Component {
         return (
             <CustomRadioStyled
                 color={this.props.color}
-                colorHover={this.props.colorHover} 
+                colorHover={this.props.colorHover}
                 colorActive={this.props.colorActive}
                 className={`${this.props.addedClass ? (this.props.addedClass) : ''} ${(this.state.active) ? 'active' : ''} ${(this.props.isInline) ? '' : 'no-line'}`}
                 onClick={this.onClick}

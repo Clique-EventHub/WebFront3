@@ -14,17 +14,26 @@ class FallbackPage extends Component {
         };
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     componentDidMount() {
+        this._isMounted = true;
         let interval = setInterval(() => {
             if(this.state.secondsLeft === 0) {
                 clearInterval(interval);
                 this.context.router.push('/');
             }
             else {
-                this.setState({
-                    ...(this.state),
-                    secondsLeft: (this.state.secondsLeft - 1)
-                });
+                if(this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            secondsLeft: (this.state.secondsLeft - 1)
+                        });
+                    });
+                }
             }
         }, 1000);
     }

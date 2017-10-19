@@ -4,12 +4,14 @@ import normalPage from '../hoc/normPage';
 import pages from '../hoc/pages';
 // import { Link } from 'react-router';
 import axios from 'axios';
-import { getCookie } from '../actions/common';
+import { getCookie, getChannel } from '../actions/common';
 import { hostname } from '../actions/index';
 import * as facultyMap from '../actions/facultyMap';
 import CardList from '../components/cardList';
 import EventItem from '../container/eventItem';
 import EditProfile from '../container/editProfile';
+import Circle from '../components/circle';
+import _ from 'lodash';
 
 import './css/myEvent.css';
 
@@ -43,12 +45,9 @@ class myEventPage extends Component {
           'n_completed': '',
           'showJoin': true,
           'isLoading': true,
+          'channel_data': {}
         };
     }
-
-    // componentWillReceiveProps(nextProps) {
-    //     this.setState({updated: nextProps.updated});
-    // }
 
     componentWillMount() {
         let config = {
@@ -58,32 +57,52 @@ class myEventPage extends Component {
         }
 
         axios.get(`${hostname}user`, config).then((data) => {
-            this.setState({
-                ...this.state,
-                'firstName': data.data.firstName,
-                'lastName': data.data.lastName,
-                'picture': data.data.picture_200px,
-                'regId': (data.data.regId === null) ? 'Not Found' : data.data.regId,
-                'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
-                'nick_name': data.data.nick_name,
-                'lineId': data.data.lineId,
-                'email': data.data.email,
-                'phone': data.data.phone,
-                'shirt_size': data.data.shirt_size,
-                'disease': data.data.disease,
-                'allergy': data.data.allergy,
-                'dorm_building': data.data.dorm_building,
-                'dorm_room': data.data.dorm_room,
-                'dorm_bed': data.data.dorm_bed,
-                'join_events': data.data.join_events,
-                'interest_events': data.data.interest_events,
-                'already_joined_events': data.data.already_joined_events,
-                'n_join': data.data.join_events.length,
-                'n_intr': data.data.interest_events.length,
-                'n_completed': data.data.already_joined_events.length,
-                'showJoin': true
+            _.get(data.data, 'admin_channels', []).forEach((id) => {
+              getChannel(id, true).then((dat) => {
+                this.setState((prevState) => {
+                  let new_data = { ...prevState.channel_data }
+                  new_data[id] = dat;
+                  return ({
+                    ...prevState,
+                    'channel_data': new_data
+                  });
+                })
+              })
             })
+            this.setState((prevState) => {
+                return ({
+                  ...prevState,
+                  'firstName': data.data.firstName,
+                  'lastName': data.data.lastName,
+                  'picture': data.data.picture_200px,
+                  'regId': (data.data.regId === null) ? 'Not Found' : data.data.regId,
+                  'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
+                  'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
+                  'nick_name': data.data.nick_name,
+                  'lineId': data.data.lineId,
+                  'email': data.data.email,
+                  'phone': data.data.phone,
+                  'shirt_size': data.data.shirt_size,
+                  'disease': data.data.disease,
+                  'allergy': data.data.allergy,
+                  'dorm_building': data.data.dorm_building,
+                  'dorm_room': data.data.dorm_room,
+                  'dorm_bed': data.data.dorm_bed,
+                  'join_events': data.data.join_events,
+                  'interest_events': data.data.interest_events,
+                  'already_joined_events': data.data.already_joined_events,
+                  'n_join': data.data.join_events.length,
+                  'n_intr': data.data.interest_events.length,
+                  'n_completed': data.data.already_joined_events.length,
+                  'showJoin': true,
+                });
+            })
+            // console.log(_.get(this.props, 'user.events.admin.channel', []));
+            // _.get(this.props, 'user.info.admin_channels', []).then((id) => {
+            //   getChannel(id, false).then((data) => {
+            //     console.log(data);
+            //   });
+            // })
         }, (error) => {
             //console.log("get user error", error);
         });
@@ -182,16 +201,16 @@ class myEventPage extends Component {
                       <h1>{this.state.n_completed}</h1>
                   </div>
                 </section>
-                <p className="line" />
+                <p className="line" style={{'position': 'relative'}} />
                 <section className="my-event-center">
-                <h2 className={`join-${this.state.showJoin}`} onClick={this.onShowJoin.bind(this)}>Joined Event</h2>
-                <h2 className={`join-${!this.state.showJoin}`} onClick={this.onShowIntr.bind(this)}>Interested Event</h2>
-                <p className={`join-${this.state.showJoin}`}></p>
-                <p className={`join-${!this.state.showJoin} l160`}></p>
-                <hr />
-                <div className="flex" style={{'flexWrap': 'wrap'}}>
-                    {(this.state.showJoin) ? join_events : intr_events}
-                </div>
+                    <h2 className={`join-${this.state.showJoin}`} onClick={this.onShowJoin.bind(this)}>Joined Event</h2>
+                    <h2 className={`join-${!this.state.showJoin}`} onClick={this.onShowIntr.bind(this)}>Interested Event</h2>
+                    <p className={`join-${this.state.showJoin}`}></p>
+                    <p className={`join-${!this.state.showJoin} l160`}></p>
+                    <hr />
+                    <div className="flex" style={{'flexWrap': 'wrap'}}>
+                        {(this.state.showJoin) ? join_events : intr_events}
+                    </div>
                 </section>
                 <section className="my-event-buttom">
                     <h2>Completed Event</h2>
@@ -200,6 +219,19 @@ class myEventPage extends Component {
                         {completed_events}
                     </div>
                 </section>
+                <h1>MY CHANNEL</h1>
+                <hr />
+                {
+                  Object.keys(_.get(this.state, 'channel_data', {})).map((id) => {
+                    let name = _.get(this.state, `channel_data[${id}].name`, '');
+                    let picture = _.get(this.state, `channel_data[${id}].picture`, '');
+                    return (<Circle parent="channel" option={{
+                      'name': name,
+                      'id': id,
+                      'picture': picture
+                    }} />);
+                  })
+                }
             </section>
         );
     }
@@ -207,4 +239,4 @@ class myEventPage extends Component {
 
 {/* <CardList isContain={true} onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} /> */}
 
-export default normalPage(pages(myEventPage));
+export default normalPage(pages(myEventPage, true));

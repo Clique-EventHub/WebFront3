@@ -540,7 +540,8 @@ export function fbGetSeverToken(dispatch) {
 
 let alreadyCalled = {
     events: {},
-    channels: {}
+    channels: {},
+    users: {}
 }
 
 export function checkEvent(id) {
@@ -573,6 +574,25 @@ export function checkChannel(id) {
             if(typeof myStore.getState().map.channels[id] === "undefined") {
                 myStore.dispatch({
                     type: types.UPDATE_CHANNEL_MAP,
+                    payload: data
+                })
+            }
+        })
+    }
+    return true;
+}
+
+export function checkUserMongoInfo(id) {
+    const map = myStore.getState().map;
+    if (_.get(alreadyCalled.users, `${id}`, false)) return false;
+    if (typeof map.users[id] === "undefined") {
+        alreadyCalled.users[id] = true;
+        axios.get(`${hostname}findmg?user=${id}`).then(
+            (data) => data.data.user_info
+        ).then((data) => {
+            if (typeof myStore.getState().map.users[id] === "undefined") {
+                myStore.dispatch({
+                    type: types.UPDATE_USER_MAP,
                     payload: data
                 })
             }

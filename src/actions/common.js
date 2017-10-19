@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { hostname } from './index';
 import { myStore, googleAPI } from '../index';
+import * as types from './types';
 import * as actions from './index'
 import _ from 'lodash';
 import { getCodeList, findInfoById } from './facultyMap';
@@ -236,6 +237,23 @@ export function getEvent(id, stat) {
     })
 }
 
+export function forceUpdateEvent(id, stat) {
+    const useStat = stat ? stat : false;
+    return new Promise((resolve, reject) => {
+        axios.get(`${hostname}event?id=${id}&stat=${useStat}`, {
+            crossDomain: true
+        }).then(
+            (data) => data.data
+        ).then((data) => {
+            myStore.dispatch({
+                type: types.UPDATE_EVENT_MAP,
+                payload: data
+            })
+            resolve(data)
+        }).catch((e) => reject(e))
+    })
+}
+
 export function getChannel(id, stat) {
     const channelMap = myStore.getState().map.channels;
     const useStat = stat ? stat : false;
@@ -247,7 +265,7 @@ export function getChannel(id, stat) {
                 ).catch((e) => reject(e))
             } else {
                 const checkAvalible = setInterval(() => {
-                    if(myStore.getState().map.events[id]) {
+                    if(myStore.getState().map.channels[id]) {
                         clearInterval(checkAvalible);
                         return resolve(myStore.getState().map.channels[id]);
                     }
@@ -255,6 +273,59 @@ export function getChannel(id, stat) {
             }
         } else {
             resolve(channelMap[id])
+        }
+    })
+}
+
+export function forceUpdateChannel(id, stat) {
+    const useStat = stat ? stat : false;
+    return new Promise((resolve, reject) => {
+        axios.get(`${hostname}channel?id=${id}&stat=${useStat}`, {
+            crossDomain: true
+        }).then(
+            (data) => data.data
+            ).then((data) => {
+                myStore.dispatch({
+                    type: types.UPDATE_CHANNEL_MAP,
+                    payload: data
+                })
+                resolve(data)
+            }).catch((e) => reject(e))
+    })
+}
+
+export function compareArray(array1, array2) {
+    if (array1.length === array2.length) {
+        let isSame = true;
+        for (let i = 0; i < array1.length; i++) {
+            if (array1[i] !== array2[i]) {
+                isSame = false;
+                break;
+            }
+        }
+        return isSame;
+    }
+    return false;
+}
+
+export function getUserIdInfo(mongoId) {
+    const userMap = myStore.getState().map.users;
+    return new Promise((resolve, reject) => {
+        if (typeof userMap[mongoId] === "undefined") {
+            if (actions.checkUserMongoInfo(mongoId)) {
+                axios.get(`${hostname}findmg?user=${mongoId}`).then(
+                    (data) => resolve(data.data.user_info)
+                ).catch((e) => reject(e))
+            } else {
+                const checkAvalible = setInterval(() => {
+                    if (myStore.getState().map.users[mongoId]) {
+                        clearInterval(checkAvalible);
+                        return resolve(myStore.getState().map.users[mongoId]);
+                    }
+                }, intervalTime)
+            }
+        } else {
+            resolve(userMap[mongoId])
         }
     })
 }
@@ -374,4 +445,39 @@ export function checkYoutubeUrl(youtubeId) {
         }).catch(() => {
             return false;
         });
+}
+
+/*
+*   arrayOfFuncPromises is array of function which return a promise
+*   for example: () => Promise.resolve(() => "a")
+*/
+
+export function promiseSerial(arrayOfFuncPromises) {
+    function isPromise(x) {
+        return x && Object.prototype.toString.call(x) === "[object Promise]"
+    }
+
+    function validateForm(array) {
+        for (let i = 0; i < array.length; i++) {
+            if (typeof array[i] !== "function") {
+                return false
+            }
+        }
+        return true;
+    }
+
+    if (validateForm(arrayOfFuncPromises)) {
+        return arrayOfFuncPromises.reduce((promise, func) => {
+            if (typeof promise === "function") {
+                if (typeof func === "function") {
+                    return promise().then((result) => Promise.resolve(func()).then(Array.prototype.concat.bind(result)))
+                }
+            } else if (isPromise(promise)) {
+                if (typeof func === "function") {
+                    return promise.then((result) => Promise.resolve(func()).then(Array.prototype.concat.bind(result)))
+                }
+            }
+        }, Promise.resolve([]))
+    }
+    return Promise.reject("Incorrect format");
 }

@@ -27,24 +27,28 @@ class tagPage extends Component {
         let isAdd = false;
         if(isActive) {
             if(target.className.indexOf(" active") === -1) {
-                this.setState((prevState) => {
-                    return ({
-                        ...prevState,
-                        like_state: true
+                if(this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            like_state: true
+                        })
                     })
-                })
+                }
                 isChange = true;
                 isAdd = true;
             }
         } else {
             if(target.className.indexOf(" active") !== -1) {
                 isChange = true;
-                this.setState((prevState) => {
-                    return ({
-                        ...prevState,
-                        like_state: false
+                if (this._isMounted) {
+                    this.setState((prevState) => {
+                        return ({
+                            ...prevState,
+                            like_state: false
+                        })
                     })
-                })
+                }
             }
         }
 
@@ -91,26 +95,38 @@ class tagPage extends Component {
                 }
 
                 axios.get(`${hostname}tags/search?keywords=${keyword}`).then((data) => {
-                    this.setState((prevState) => {
-                        return ({
-                            ...prevState,
-                            listOfEvents: data.data.events
+                    if (this._isMounted) {
+                        this.setState((prevState) => {
+                            return ({
+                                ...prevState,
+                                listOfEvents: data.data.events
+                            });
                         });
-                    });
+                    }
                 }).catch(() => {})
 
                 axios.get(`${hostname}user`, config).then((data) => {
-                    this.setState((prevState) => {
-                        return ({
-                            ...prevState,
-                            like_state: (_.get(data, 'data.tag_like', []).indexOf(keyword) !== -1),
+                    if (this._isMounted) {
+                        this.setState((prevState) => {
+                            return ({
+                                ...prevState,
+                                like_state: (_.get(data, 'data.tag_like', []).indexOf(keyword) !== -1),
+                            });
+                        }, () => {
+                            this.setLikeState.bind(this)(this.likeButton, this.state.like_state, false);
                         });
-                    }, () => {
-                        this.setLikeState.bind(this)(this.likeButton, this.state.like_state, false);
-                    });
+                    }
                 }).catch(() => {})
             }
         }
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
@@ -133,7 +149,15 @@ class tagPage extends Component {
                 </article>
                 <section content="event-list" className="margin-auto">
                     {
-                        this.state.listOfEvents.map((item, index) => {
+                        this.state.listOfEvents.concat(["", "", "", "", ""]).map((item, index) => {
+                            if (item === "") {
+                                return (
+                                    <article style={{
+                                        'width': 'calc(1.405*300px)',
+                                        'margin': '0px 10px'
+                                    }} />
+                                );
+                            }
                             if(index < 6) return <EventItem eventId={item._id} key={index} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                             else if(index === 6) return [<br key="abc"/>, <EventItem key="def" eventId={item._id} detail-shown="false" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />]
                             else return <EventItem eventId={item._id} detail-shown="false" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
