@@ -150,6 +150,10 @@ import { hostname } from '../actions/index';
 //     }
 // }
 
+function isEmpty(s){
+    return s === null || s === "";
+}
+
 class editProfile extends Component {
 
     constructor(props) {
@@ -218,25 +222,25 @@ class editProfile extends Component {
                 'firstName': data.data.firstName,
                 'lastName': data.data.lastName,
                 'picture': data.data.picture_200px,
-                'regId': (data.data.regId === null) ? 'Not Found' : data.data.regId,
-                'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
-                'nick_name': data.data.nick_name,
+                'regId': isEmpty(data.data.regId) ? 'Not Found' : data.data.regId,
+                'faculty': isEmpty(data.data.regId) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
+                'birth_day' : data.data.birth_day,
+                'nick_name' : data.data.nick_name,
                 'lineId': data.data.lineId,
                 'email': data.data.email,
                 'phone': data.data.phone,
-                'shirt_size': data.data.shirt_size,
-                'disease': data.data.disease,
+                'shirt_size' : data.data.shirt_size,
+                'disease' : data.data.disease,
                 'allergy': data.data.allergy,
                 'dorm_building': data.data.dorm_building,
                 'dorm_room': data.data.dorm_room,
                 'dorm_bed': data.data.dorm_bed,
                 'tag_like': data.data.tag_like,
 
-                'new_birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
-                'new_bd_day': (new Date(data.data.birth_day)).getDate(),
-                'new_bd_month': (new Date(data.data.birth_day)).getMonth()+1,
-                'new_bd_year': (new Date(data.data.birth_day)).getFullYear(),
+                'new_birth_day': isEmpty(data.data.birth_day) ? "" : (new Date(data.data.birth_day)).toString().slice(0,15),
+                'new_bd_day': isEmpty(data.data.birth_day) ? "" : (new Date(data.data.birth_day)).getDate(),
+                'new_bd_month': isEmpty(data.data.birth_day) ? "" : (new Date(data.data.birth_day)).getMonth()+1,
+                'new_bd_year': isEmpty(data.data.birth_day) ? "" : (new Date(data.data.birth_day)).getFullYear(),
                 'new_nick_name': data.data.nick_name,
                 'new_lineId': data.data.lineId,
                 'new_email': data.data.email,
@@ -258,7 +262,8 @@ class editProfile extends Component {
     onKeyPressed() {
         const newState = {
             ...this.state,
-            'new_birth_day': new Date(this.refs.bd_day.value,this.refs.bd_month.value-1,this.refs.bd_year.value),
+            'new_birth_day': (isEmpty(this.refs.bd_year.value) || isEmpty(this.refs.bd_month.value) || isEmpty(this.refs.bd_day.value)) 
+                ? "" : new Date(this.refs.bd_year.value,this.refs.bd_month.value-1,this.refs.bd_day.value),
             'new_bd_day': this.refs.bd_day.value,
             'new_bd_month': this.refs.bd_month.value,
             'new_bd_year': this.refs.bd_year.value,
@@ -280,9 +285,27 @@ class editProfile extends Component {
     }
 
     save() {
+        // const newState = {
+            // ...this.state,
+            // 'birth_day': (isEmpty(this.refs.bd_year) || isEmpty(this.refs.bd_month) || isEmpty(this.refs.bd_day))
+                //  ? "BIRTHDAY NOT FOUND" : new Date(this.refs.bd_year.value,this.refs.bd_month.value-1,this.refs.bd_day.value),
+            // 'nick_name': isEmpty(this.refs.nick_name.value) ? "NICKNAME NOT FOUND"  : this.refs.nick_name.value,
+            // 'lineId': this.refs.line.value,
+            // 'email': this.refs.email.value,
+            // 'phone': this.refs.mobile.value,
+            // 'shirt_size': isEmpty(this.refs.size.value) ? "SHIRT SIZE NOT FOUND" : this.refs.size.value,
+            // 'disease': isEmpty(this.refs.med.value) ? "DISEASE NOT FOUND" : this.refs.disease.value,
+            // 'allergy': this.refs.food.value,
+            // 'dorm_building': this.refs.dorm_building.value,
+            // 'dorm_room': this.refs.dorm_room.value,
+            // 'dorm_bed': this.refs.dorm_bed.value,
+            // 'tag_like': 'new_tag_like',
+        // };
+
         const newState = {
             ...this.state,
-            'birth_day': new Date(this.refs.bd_year.value,this.refs.bd_month.value-1,this.refs.bd_day.value),
+            'birth_day': (isEmpty(this.refs.bd_year.value) || isEmpty(this.refs.bd_month.value) || isEmpty(this.refs.bd_day.value)) 
+                ? "" : new Date(this.refs.bd_year.value,this.refs.bd_month.value-1,this.refs.bd_day.value),
             'nick_name': this.refs.nick_name.value,
             'lineId': this.refs.line.value,
             'email': this.refs.email.value,
@@ -322,9 +345,9 @@ class editProfile extends Component {
         const newState = {
             ...this.state,
             'new_birth_day': this.state.birth_day,
-            'new_bd_day': (new Date(this.state.birth_day)).getDate(),
-            'new_bd_month': (new Date(this.state.birth_day)).getMonth()+1,
-            'new_bd_year': (new Date(this.state.birth_day)).getFullYear(),
+            'new_bd_day': isEmpty(this.state.birth_day) ? "" : (new Date(this.state.birth_day)).getDate(),
+            'new_bd_month': isEmpty(this.state.birth_day) ? "" : (new Date(this.state.birth_day)).getMonth()+1,
+            'new_bd_year': isEmpty(this.state.birth_day) ? "" : (new Date(this.state.birth_day)).getFullYear(),
             'new_nick_name': this.state.nick_name,
             'new_lineId': this.state.lineId,
             'new_email': this.state.email,
@@ -357,16 +380,14 @@ class editProfile extends Component {
             'password': this.refs.reg_password.value
         }, config).then((data) => {
 
-            this.setState((prevState)=> {
+            this.setState((prevState) => {
                 return ({
                     ...prevState,
-                    reg_password: '',
-                    regId: this.refs.reg_id.value,
                     message: 'Success'
                 });
             })
-            // this.state.reg_id.value = '';
-            // this.state.reg_password.value = '';
+            this.state.reg_id.value = '';
+            this.state.reg_password.value = '';
         }).catch((e) => {
             console.log(e);
             this.setState((prevState) => {

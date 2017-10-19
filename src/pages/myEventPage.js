@@ -13,6 +13,10 @@ import EditProfile from '../container/editProfile';
 
 import './css/myEvent.css';
 
+function isEmpty(s){
+    return s === null || s === "";
+}
+
 class myEventPage extends Component {
 
     constructor(props) {
@@ -64,9 +68,9 @@ class myEventPage extends Component {
                     'firstName': data.data.firstName,
                     'lastName': data.data.lastName,
                     'picture': data.data.picture_200px,
-                    'regId': (data.data.regId === null) ? 'Not Found' : data.data.regId,
-                    'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                    'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
+                    'regId' : data.data.regId,
+                    'faculty': isEmpty(data.data.regId) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
+                    'birth_day': isEmpty(data.data.birth_day) ? "" : (new Date(data.data.birth_day)).toString().slice(0,15),
                     'nick_name': data.data.nick_name,
                     'lineId': data.data.lineId,
                     'email': data.data.email,
@@ -85,7 +89,6 @@ class myEventPage extends Component {
                     'n_completed': data.data.already_joined_events.length,
                     'showJoin': true
                 })
-
             }
         }, (error) => {
             //console.log("get user error", error);
@@ -183,12 +186,22 @@ class myEventPage extends Component {
                       </div>
                       <button onClick={this.onEditProfile.bind(this)}>Edit Profile</button>
                   </div>
-                  <div className="profile-center">
-                      <img src="../../resource/icon/icon2.svg" alt="nickname"/> <p>{this.state.nick_name}</p>
-                      <img src="../../resource/icon/icon3.svg" alt="id"/> <p>{this.state.regId}</p>
-                      <img src="../../resource/icon/icon6.svg" alt="birth"/> <p>{this.state.birth_day}</p>
-                      <img src="../../resource/icon/icon11.svg" alt="size"/> <p>{this.state.shirt_size}</p>
-                      <img src="../../resource/icon/icon12.svg" alt="med"/> <p>{this.state.disease}</p>
+                  <div className="flex profile-center">
+                      <div className="profile-center-description">
+                        <img src="../../resource/icon/icon2.svg" alt="nickname"/> <p>{isEmpty(this.state.nick_name) ? "Nickname not found" : this.state.nick_name}</p>
+                      </div>
+                      <div className="profile-center-description">
+                        <img src="../../resource/icon/icon3.svg" alt="id"/> <p>{ isEmpty(this.state.regId) ? "Reg ID not found" : this.state.regId}</p>
+                      </div>
+                      <div className="profile-center-description">
+                        <img src="../../resource/icon/icon6.svg" alt="birth"/> <p>{ isEmpty(this.state.birth_day) ? "Birthday not found" : this.state.birth_day}</p>
+                      </div>
+                      <div className="profile-center-description">
+                        <img src="../../resource/icon/icon11.svg" alt="size"/> <p>{ isEmpty(this.state.shirt_size) ? "Shirt size not found" : this.state.shirt_size}</p>
+                      </div>
+                      <div className="profile-center-description">
+                        <img src="../../resource/icon/icon12.svg" alt="med"/> <p>{ isEmpty(this.state.disease) ? "No medical problem" : this.state.disease}</p>
+                      </div>
                   </div>
                   <div className="profile-right">
                       <p>Completed</p>
