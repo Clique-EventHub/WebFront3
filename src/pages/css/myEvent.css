@@ -74,8 +74,15 @@ div.profile-left button:hover {
   margin-top: 10px; }
 
 div.profile-center {
+  flex-direction: column;
   width: 23vw;
   padding: 0px 20px; }
+
+div.profile-center-description{
+  flex: 1;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 
 div.profile-center img {
   height: 30px;
@@ -84,8 +91,9 @@ div.profile-center img {
   margin-top: -5px; }
 
 div.profile-center p {
-  margin: 0px 0px 20px 40px;
-  font-size: 1.1em; }
+  margin: 0px 0px 0px 40px;
+  font-size: 1.0em;
+}
 
 @media screen and (max-width: 950px) {
   section.profile {

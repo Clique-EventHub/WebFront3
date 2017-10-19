@@ -25,6 +25,7 @@ const defaultState = {
   'login': false
 };
 
+
 function compareDate(date1, date2) {
     if(date1 && date2) {
         const a = new Date(date1);

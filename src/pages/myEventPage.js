@@ -15,6 +15,10 @@ import _ from 'lodash';
 
 import './css/myEvent.css';
 
+function isEmpty(s){
+    return s === null || s === "";
+}
+
 class myEventPage extends Component {
 
     constructor(props) {
@@ -55,7 +59,7 @@ class myEventPage extends Component {
                 'Authorization': ('JWT ' + getCookie('fb_sever_token'))
             }
         }
-
+        this._isMounted = true;
         axios.get(`${hostname}user`, config).then((data) => {
             _.get(data.data, 'admin_channels', []).forEach((id) => {
               getChannel(id, true).then((dat) => {
@@ -76,8 +80,8 @@ class myEventPage extends Component {
                   'lastName': data.data.lastName,
                   'picture': data.data.picture_200px,
                   'regId': (data.data.regId === null) ? 'Not Found' : data.data.regId,
+                  'birth_day': isEmpty(data.data.birth_day) ? "" : (new Date(data.data.birth_day)).toString().slice(0,15),
                   'faculty': (data.data.regId === null) ? '99': JSON.stringify(data.data.regId).substring(9, 11),
-                  'birth_day': (new Date(data.data.birth_day)).toString().slice(0,15),
                   'nick_name': data.data.nick_name,
                   'lineId': data.data.lineId,
                   'email': data.data.email,
@@ -107,16 +111,21 @@ class myEventPage extends Component {
             //console.log("get user error", error);
         });
     }
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
 
     onShowJoin() {
         // this.state.events_item = [];
         // for(var i = 0; i < this.state.n_join; i++){
         //     this.state.events_item.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         // }
-        this.setState({
-          ...this.state,
-          'showJoin': true
-        });
+        if(this._isMounted){
+            this.setState({
+            ...this.state,
+            'showJoin': true
+            });
+        }
     }
 
     onShowIntr() {
@@ -124,20 +133,25 @@ class myEventPage extends Component {
         // for(var i = 0; i < this.state.n_intr; i++){
         //     this.state.events_item.push(<EventItem detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />);
         // }
-        this.setState({
-          ...this.state,
-          'showJoin': false
-        });
+        if(this._isMounted){
+            this.setState({
+            ...this.state,
+            'showJoin': false
+            });
+        }
     }
 
     onChildSave(val) {
-        this.setState({
-          ...this.state,
-          'nick_name': val.nick_name,
-          'birth_day': val.birth_day.toString().slice(0,15),
-          'shirt_size': val.shirt_size,
-          'disease': val.disease,
-        });
+        if(this._isMounted){
+            this.setState({
+            ...this.state,
+            'nick_name': val.nick_name,
+            'birth_day': val.birth_day.toString().slice(0,15),
+            'shirt_size': val.shirt_size,
+            'disease': val.disease,
+            });
+        }
+
     }
 
     onEditProfile() {
@@ -189,12 +203,22 @@ class myEventPage extends Component {
                       </div>
                       <button onClick={this.onEditProfile.bind(this)}>Edit Profile</button>
                   </div>
-                  <div className="profile-center">
-                      <img src="../../resource/icon/icon2.svg" alt="nickname"/> <p>{this.state.nick_name}</p>
-                      <img src="../../resource/icon/icon3.svg" alt="id"/> <p>{this.state.regId}</p>
-                      <img src="../../resource/icon/icon6.svg" alt="birth"/> <p>{this.state.birth_day}</p>
-                      <img src="../../resource/icon/icon11.svg" alt="size"/> <p>{this.state.shirt_size}</p>
-                      <img src="../../resource/icon/icon12.svg" alt="med"/> <p>{this.state.disease}</p>
+                  <div className="flex profile-center">
+                      <div className="profile-center-description">
+                        <img src="../../resource/icon/icon2.svg" alt="nickname"/> <p>{isEmpty(this.state.nick_name) ? "Nickname not found" : this.state.nick_name}</p>
+                      </div>
+                      <div className="profile-center-description">
+                        <img src="../../resource/icon/icon3.svg" alt="id"/> <p>{ isEmpty(this.state.regId) ? "Reg ID not found" : this.state.regId}</p>
+                      </div>
+                      <div className="profile-center-description">
+                        <img src="../../resource/icon/icon6.svg" alt="birth"/> <p>{ isEmpty(this.state.birth_day) ? "Birthday not found" : this.state.birth_day}</p>
+                      </div>
+                      <div className="profile-center-description">
+                        <img src="../../resource/icon/icon11.svg" alt="size"/> <p>{ isEmpty(this.state.shirt_size) ? "Shirt size not found" : this.state.shirt_size}</p>
+                      </div>
+                      <div className="profile-center-description">
+                        <img src="../../resource/icon/icon12.svg" alt="med"/> <p>{ isEmpty(this.state.disease) ? "No medical problem" : this.state.disease}</p>
+                      </div>
                   </div>
                   <div className="profile-right">
                       <p>Completed</p>

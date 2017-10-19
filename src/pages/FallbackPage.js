@@ -38,6 +38,11 @@ class FallbackPage extends Component {
         }, 1000);
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+
     render() {
         return (
             <div className="main-content" style={{'paddingTop': '65px', 'display': 'flex', 'width': '100%', 'height': 'calc(100vh - 65px)', 'alignItems': 'center', 'justifyContent': 'center'}}>
