@@ -8,13 +8,14 @@ $color-dark-red: #ff6600;
 $calendar-cell-height: 130px;
 //$blob-size: 40px;
 $blob-size: 60px;
+$min-width: 200px;
 //popopoopopopopopopopopopopopopopoopopopopopopo
 .Calendar-Container {
     font-family: Mitr;
     padding: 30px;
     border-radius: 5px !important;
     margin: auto;
-    min-width: calc(400px);
+    min-width: calc(#{$min-width});
     max-width: calc(900px + 2*30px);
 
     background: #FFF;
@@ -25,7 +26,7 @@ $blob-size: 60px;
     display: flex;
     flex-direction: column;
     max-width: 900px;
-    min-width: calc(400px - 2*30px);
+    min-width: calc(#{$min-width} - 2*30px);
     margin: auto;
 }
 
@@ -178,6 +179,7 @@ $blob-size: 60px;
 }
 .color-red {
     background: $color-dark-red !important;
+    color: #FFF !important;
 }
 
 .Display-None {
@@ -292,6 +294,109 @@ $blob-size: 60px;
         .EventRange.pos-#{$i}-#{$j} {
             top: calc( #{$i - 1}*#{$calendar-cell-height} + 60px);
             left: calc(#{$j - 1}*100%/7);
+        }
+    }
+}
+
+@media all and (max-width: 440px) {
+    .Calendar .Head button {
+        font-size: 1.2em;
+        height: 1.2em;
+        width: 1.2em;
+    }
+
+    .Calendar-Container {
+        border-top: 1px solid #F1F1F1;
+        top: -20px;
+        left: -20px;
+        width: calc(100vw - 20px);
+        min-width: 290px;
+        padding: 10px;
+        position: relative;
+        height: calc(100vh - 130px);
+        min-height: 440px;
+    }
+
+    .Calendar .Body .Days.d-4 {
+        height: calc(2*#{$calendar-cell-height}) !important;
+    }
+
+    .Calendar .Body .Days.d-5 {
+        height: calc(2.5*#{$calendar-cell-height}) !important;
+    }
+    .Calendar .Body .Days.d-6 {
+        height: calc(3*#{$calendar-cell-height}) !important;
+    }
+
+    .Calendar .Body .Days.d-6 .Day {
+        min-height: calc(#{$calendar-cell-height}/2) !important;
+    }
+
+    @for $i from 1 through 6 {
+        @for $j from 1 through 7 {
+            @if $j == 7 {
+                .DayInfo.pos-#{$i}-#{$j} {
+                    display: none;
+                }
+            } @else {
+                .DayInfo.pos-#{$i}-#{$j} {
+                    display: none;
+                }
+            }
+
+            .EventRange.pos-#{$i}-#{$j} {
+                display: none;
+            }
+        }
+    }
+
+    .Calendar .Body .Week .Day {
+        span {
+            display: none;
+        }
+        span:nth-child(1),
+        span:nth-child(2),
+        span:nth-child(3) {
+            display: inline-block; /* Enable widths */
+            width: 0.75em;            /* Set width across all characters */
+            text-align: center;
+        }
+    }
+
+    .Blob-Container {
+        width: 100%;
+        position: relative;
+        font-size: 0.75em;
+    }
+
+    .DayInfo {
+        padding: 40px 5px 20px 5px;
+    }
+
+    .DayInfo .EventBlob {
+        position: relative;
+        display: block;
+        height: 100%;
+        width: 90%;
+        min-width: 90%;
+        max-width: 90%;
+        min-height: initial;
+        max-height: initial;
+        line-height: calc(#{$blob-size}/3);
+        border-radius: 5px;
+        overflow: visible;
+        word-wrap: break-word;
+        white-space: normal;
+        word-wrap: break-word;
+        margin: 0px;
+        margin-left: auto;
+        margin-right: auto;
+
+        span {
+            display: inline-block;
+            width: 100%;
+            white-space: normal;
+            word-wrap: break-word;
         }
     }
 }

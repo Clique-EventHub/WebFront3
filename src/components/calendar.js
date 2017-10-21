@@ -483,7 +483,7 @@ class Calendar extends Component {
         let CalendarBody = (
             <div className="Body">
                 <div className="Week">
-                    {dayName.map((item, index) => (<div key={`Day-${index}`} className="Day text-center">{item}</div>))}
+                    {dayName.map((item, index) => (<div key={`Day-${index}`} className="Day text-center">{item.split("").map((letter, ind) => <span key={ind}>{letter}</span>)}</div>))}
                 </div>
                 <div className={`Days d-${Math.ceil((SOMDay + monthDay)/7)}`}>
                     {Days}
