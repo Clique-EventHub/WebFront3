@@ -17,23 +17,52 @@ section.profile {
   position: relative;
   left: -80px;
   display: flex;
-}
+  justify-content: center;
+  flex-wrap: wrap;
 
-div.profile-left {
-  width: 25vw;
-  padding: 0px 60px;
+  p.line-2 {
+    display: none;
+  }
+
+  > div {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    flex-basis: 25%;
+    > * {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .profile-left {
+    padding: 0px 20px;
+
+    button {
+      position: relative;
+      top: -20px;
+    }
+  }
+
+  .profile-right {
+    text-align: center;
+  }
 }
 
 section.profile img[alt="profile-pic"] {
   height: 200px;
   width: 200px;
   min-width: 200px;
+  max-width: 200px;
   /*max-height: calc(400px);
   min-height: calc(180px);*/
   margin-left: 50px;
   border-radius: 50%;
   /*border: 1px solid #000;*/
   display: inline-block;
+  flex: 1;
 }
 
 div.profile-left h2[alt="profile-name"] {
@@ -49,14 +78,16 @@ div.profile-left div[alt="faculty-icon"] {
   height: 18px;
   width: 18px;
   margin-top: 3px;
-  margin-right: 5px;
-  position: absolute;
+  margin-right: 10px;
+  display: inline-block;
+  position: relative;
+  top: 2px;
 }
 
 div.profile-left p {
-  margin-left: 35px;
   margin-top: 5px;
   font-size: 1.2em;
+  display: inline-block;
 }
 
 div.profile-left button {
@@ -107,35 +138,6 @@ div.profile-center p {
   font-size: 1.0em;
 }
 
-@media screen and (max-width: 950px) {
-  section.profile {
-    height: 450px;
-  }
-  div.profile-left {
-    min-width: 350px;
-  }
-  div.profile-center {
-    position: absolute;
-    width: 40vw;
-    top: 300px;
-    left: 70px;
-  }
-  div.profile-right {
-    position: absolute;
-    top: 300px;
-    left: 420px;
-  }
-  p.line {
-    width: 100%;
-    height: 1px;
-    background-color: rgba(128, 128, 128, 0.7);
-    display: block;
-    padding: 0px;
-    position: relative;
-    top: -270px;
-  }
-}
-
 div.profile-right {
   width: 20vw;
   white-space: nowrap;
@@ -154,17 +156,28 @@ div.profile-right h1 {
   margin: 10px 25px;
 }
 
-section.my-event-center h2 {
-  display: inline-block;
-  margin: 20px 20px 5px 20px;
-}
+section.my-event-center {
+  > div > div {
+    display: inline-block;
 
-section.my-event-center h2.join-true {
-  color: #1493FF;
-}
+    &.join-true {
+      color: #1493FF;
+    }
 
-section.my-event-center h2.join-false:hover {
-  color: #888888;
+    &.join-false:hover {
+      color: #888888;
+    }
+  }
+
+  .fa {
+    font-size: 1.5em;
+    margin-left: 10px;
+  }
+
+  h2 {
+    display: inline-block;
+    margin: 20px 20px 5px 10px;
+  }
 }
 
 /*section.my-event-center h2.join-false:hover ~ p.join-false {
@@ -177,8 +190,18 @@ section.my-event-center h2.join-false:hover {
   top: 0.5em;
 }*/
 
+@media all and (max-width: 1020px) {
+  p.line {
+    width: 100%;
+    height: 1px;
+    background-color: rgba(128, 128, 128, 0.7);
+    display: block;
+    padding: 0px;
+  }
+}
+
 section.my-event-center p.join-true {
-  width: 190px;
+  width: 200px;
   height: 2px;
   background-color: #1493FF;
   z-index: 600px;
@@ -197,8 +220,8 @@ section.my-event-center p.join-false {
 }
 
 section.my-event-center p.l160 {
-  left: 190px;
-  width: 215px;
+  left: 200px;
+  width: 230px;
 }
 
 section.my-event-buttom h2 {
@@ -207,46 +230,90 @@ section.my-event-buttom h2 {
 }
 
 @media all and (max-width: 768px) {
-    div.profile-left {
-      padding: 0px 20px;
-    }
-    section.profile {
-        padding: 40px 0px;
-    }
-
-    div.profile-center {
-        left: 50px;
-    }
-
-    div.profile-right {
-        left: 300px;
-    }
+  section.profile > div {
+    flex-basis: 100%;
+  }
 }
 
 @media all and (max-width: 600px) {
     section.profile img[alt="profile-pic"] {
         margin-left: 50px;
-        width: 150px;
-        height: 150px;
-        min-width: 150px;
-        min-height: 150px;
+        width: 250px;
+        height: 250px;
+        min-width: 250px;
+        min-height: 250px;
+        max-width: 250px;
         position: relative;
         top: 25px;
     }
-    div.profile-left {
-        > div {
-            > p {
-                width: 10px;
-            }
-        }
-    }
-    div.profile-center {
 
+    .my-event-center {
+      > div {
+        overflow: visible;
+        white-space: nowrap;
+      }
+      .fa {
+        font-size: 1em !important;
+      }
+      h2 {
+        font-size: 1em;
+      }
+      p.l160 {
+        position: relative;
+        left: 100px;
+        width: 100px;
+      }
+
+      p.join-true {
+        width: 155px !important;
+      }
+
+      p.join-true.l160 {
+        left: 155px !important;
+      }
     }
 
-    div.profile-right {
-        left: 200px;
+    section.profile > div {
+      flex-wrap: wrap;
+      > * {
+        flex-basis: 100%;
+      }
+
+      p.line-2 {
+        display: block !important;
+        width: 100%;
+        height: 1px;
+        background-color: rgba(128, 128, 128, 0.7);
+        display: block;
+        padding: 0px;
+      }
     }
+}
+
+@media all and (max-width: 470px) {
+  .my-event-center {
+    margin-top: 20px;
+    h2 {
+      display: none !important;
+    }
+
+    > div > div {
+      width: 50%;
+      text-align: center;
+    }
+
+    .fa {
+      font-size: 2em !important;
+    }
+    
+    p.join-true {
+      width: 50% !important;
+    }
+
+    p.join-true.l160 {
+      left: 50% !important;
+    }
+  }
 }
 
 @media all and (max-width: 400px) {

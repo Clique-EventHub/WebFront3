@@ -743,7 +743,7 @@ nav[role="top-nav"] img[alt="icon"] {
   left: 50%;
   transform: translateX(-50%);
   top: 10%;
-  height: 80%;
+  height: 70%;
 }
 
 nav[role="top-nav"] input {
@@ -1243,6 +1243,7 @@ article[role="event-item"] section[content="detail"] section[role="middle-detail
 }
 
 article[role="event-item"] section[content="detail"] section[role="bio"] {
+  white-space: normal;
   margin-top: calc(0.06052631578947 * 300px);
   padding-right: 10px;
 }

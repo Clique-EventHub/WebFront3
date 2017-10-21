@@ -28,7 +28,7 @@ export default (
         <Route path="channel/:id" component={ChannelPage} />
         <Route path="editchannel/:id" component={EditChannelPage} />
         <Route path="profile" component={requireLogin(MyEventPage)} />
-        <Route path="table" component={TablePage} />
+        <Route path="table" component={requireLogin(TablePage)} />
         <Route path="calendar" component={CalendarPage} />
         <Route path="form" component={requireLogin(FormPage)} />
         <Route path="feedback" component={FeedbackPage} />
