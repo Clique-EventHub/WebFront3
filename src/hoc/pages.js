@@ -53,6 +53,7 @@ export default function(ComposedComponent, isBindWithRequests, actionsAdded, sta
             let blur_class = (this.props.pages.is_blur) ? "blur shift" : "no-blur shift";
             let pop_up_item = (this.props.pages.pop_up_item != null) ? this.props.pages.pop_up_item : (<div aria-hidden="true"></div>);
             let setStyle = (this.props.pages.forced_fixed_body) ? {'overflow': 'hidden'} : {'overflow': 'auto'};
+            
             return (
                 <div>
                     <div className={blur_class} style={setStyle}>

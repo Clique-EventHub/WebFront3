@@ -316,7 +316,7 @@ class homePage extends Component {
                                                 }} />
                                             );
                                         }
-                                        return (<EventItem key={index} isLoad={this.state.progress.new} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
+                                        return (<EventItem key={index} isJoined={_.get(this.props, 'user.events.general.join', []).indexOf(id) !== -1} isLoad={this.state.progress.new} eventId={id} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />)
                                     })
                                 }
                             </div>

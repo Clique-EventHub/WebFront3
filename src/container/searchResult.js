@@ -40,7 +40,7 @@ class SearchResult extends Component {
         } : {}
 
         return (
-            <div  className="search-box-container" style={addtitonalStyle} className={this.props.className}>
+            <div  className="search-box-containerr" style={addtitonalStyle} className={this.props.className}>
                 <article className="event-search">
                     <div className="keyword truncate">{this.props.keyword}</div>
                     <div className="found">found {this.state.listOfEvents.length} results</div>
@@ -58,7 +58,7 @@ class SearchResult extends Component {
                       })}
                     </div>
                 </article>
-                {(this.props.noBg) ? (null) : (<div className="background-overlay-fix"/>) }
+                {(this.props.noBg) ? (null) : (<div className="background-overlay-fix" onClick={this.props.onToggle} />) }
             </div>
         );
     }

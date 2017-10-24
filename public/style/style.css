@@ -17,6 +17,10 @@ body {
   font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
 }
 
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
 button {
   padding-bottom: 0px;
 }
@@ -422,67 +426,6 @@ button[role="event-exit"] img {
   transform: translateX(300px);
 }
 
-.side-menu {
-  position: fixed;
-  width: 300px;
-  height: 100%;
-  top: 0px;
-  left: -300px;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
-  overflow-x: hidden;
-  background-color: #FAFAFA;
-  box-sizing: border-box;
-  padding: 20px;
-}
-
-.side-menu *[role="close"] {
-  font-size: 1.5em;
-  cursor: pointer;
-  color: #AAA;
-}
-
-.side-menu ul {
-  padding: 0px;
-}
-
-.side-menu li::before {
-  content: "";
-  width: 20px;
-  height: calc(1em + 22px);
-  position: absolute;
-  left: 0px;
-  transform: translateY(-25%);
-  background-color: #AFA;
-}
-
-.side-menu li:nth-child(2n)::before {
-  background-color: #000;
-}
-
-.side-menu li {
-  list-style: none;
-  padding: 10px;
-  width: 100%;
-  background-color: #CCC;
-}
-
-.side-menu li:nth-child(2n) {
-  background-color: #AAA;
-}
-
-.side-menu section[content="profile"] {
-  text-align: center;
-}
-
-.side-menu section[content="profile"] img {
-  height: 100px;
-  width: 100px;
-  border-radius: 50%;
-  border: 1px solid #000;
-  margin-bottom: 10px;
-}
-
 @keyframes dissoveIn {
   from {
     opacity: 0;
@@ -502,12 +445,12 @@ button[role="event-exit"] img {
 }
 
 .profile-menu-active::before {
-  content: "";
+  content: " ";
   width: 0;
   height: 0;
   border-left: 15px solid transparent;
   border-right: 15px solid transparent;
-  border-bottom: 30px solid #FCFCFC;
+  border-bottom: 30px solid #FFFFFF;
   position: relative;
   top: -34px;
   left: 370px;
@@ -520,7 +463,7 @@ button[role="event-exit"] img {
   height: 500px;
   top: 70px;
   right: 15px;
-  background-color: #FCFCFC;
+  background-color: #FFFFFF;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   animation: dissoveIn 0.1s ease-in-out;
@@ -541,7 +484,7 @@ button[role="event-exit"] img {
   height: 0;
   border-left: 15px solid transparent;
   border-right: 15px solid transparent;
-  border-bottom: 30px solid #FCFCFC;
+  border-bottom: 30px solid #FFFFFF;
   position: relative;
   top: -34px;
   left: 5px;
@@ -553,7 +496,7 @@ button[role="event-exit"] img {
   width: 350px;
   height: 350px;
   top: 70px;
-  background-color: #FCFCFC;
+  background-color: #FFFFFF;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   animation: dissoveIn 0.1s ease-in-out;

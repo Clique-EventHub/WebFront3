@@ -6,6 +6,83 @@ import { Link } from 'react-router';
 import { getCookie, clearAllCookie, getUserInfo } from '../actions/common';
 import { fbLogin, fbLogout } from '../actions/index';
 import './style/sideMenu.css';
+import styled from 'styled-components';
+
+const SideMenuStyle = styled.aside`
+color: #222222;
+position: fixed;
+width: 300px;
+height: 100%;
+top: 0px;
+left: -300px;
+overflow-y: scroll;
+-webkit-overflow-scrolling: touch;
+overflow-x: hidden;
+background-color: #FAFAFA;
+box-sizing: border-box;
+
+div[content="name"] {
+    font-size: 1.3em;
+    margin-bottom: 30px;
+}
+
+*[role="close"] {
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #AAA;
+}
+ul {
+    padding: 0px;
+}
+li {
+    list-style: none;
+    padding: 10px;
+    width: 100%;
+
+    a {
+        width: 100%;
+        display: block;
+        background-color: #CCC;
+        padding: 10px 10px 10px 20px;
+
+        ::before {
+            content: "";
+            width: 20px;
+            height: calc(1em + 22px);
+            position: absolute;
+            left: 0px;
+            transform: translateY(calc(-25%));
+            background-color: #555;
+        }
+
+        &:active::before {
+            background-color: #222;
+        }
+
+        &:active {
+            background-color: #000;
+        }
+    }
+
+    &:nth-child(2n) {'
+        // background-color: #AAA;
+        &::before {
+            // background-color: #000;
+        }
+    }
+}
+
+section[content="profile"] {
+    text-align: center;
+    img {
+        height: 100px;
+        width: 100px;
+        border-radius: 50%;
+        border: 1px solid #000;
+        margin-bottom: 10px;
+    }
+}
+`;
 
 const defaultState = {
   'name': "Guest",
@@ -85,7 +162,7 @@ class sideMenu extends Component {
 
     render() {
         return (
-            <aside className="side-menu content-move-inactive">
+            <SideMenuStyle className="side-menu content-move-inactive">
                 <i className="fa fa-times" role="close" onClick={this.onClose}></i>
                 <section content="profile">
                     <img src={this.state.picture} />
@@ -103,7 +180,7 @@ class sideMenu extends Component {
                       </ul>
                   )
                 }
-            </aside>
+            </SideMenuStyle>
         );
     }
 }

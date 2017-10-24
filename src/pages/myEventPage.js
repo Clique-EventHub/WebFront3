@@ -13,6 +13,8 @@ import EditProfile from '../container/editProfile';
 import Circle from '../components/circle';
 import _ from 'lodash';
 
+import Image from '../components/Image';
+
 import './css/myEvent.css';
 
 function isEmpty(s){
@@ -196,7 +198,7 @@ class myEventPage extends Component {
                 <section className="profile">
                     <div>
                         <div>
-                            <img src={this.state.picture} alt="profile-pic" />
+                            <Image src={this.state.picture} alt="profile-pic" />
                         </div>
                         <div className="profile-left">
                             <div>

@@ -7,6 +7,7 @@ import './css/editProfile.css';
 import * as facultyMap from '../actions/facultyMap';
 let useCls = " toggle-vis";
 import { hostname } from '../actions/index';
+import ReactLoading from 'react-loading';
 
 // class BirthDayText extends Component {
 //     constructor(props) {
@@ -416,7 +417,15 @@ class editProfile extends Component {
         return (
             <div className="modal-container">
                 <div className="edit-profile basic-card-no-glow modal-main mar-h-auto mar-v-40">
-                    {(this.state.isLoading) ? (<div>Loading...</div>) : (
+                    {(this.state.isLoading) ? (
+                        <div className="flex flex-center" style={{
+                            'margin': '60px 0px 10px 0px'
+                        }}>
+                            <button role="exit" onClick={this.cancel.bind(this)}>
+                                <img src="../../resource/images/X.svg" />
+                            </button>
+                            <ReactLoading type={'bars'} color={'#878787'} height='40px' width='40px' /> Loading...<ReactLoading type={'bars'} color={'#878787'} height='40px' width='40px' />
+                        </div>) : (
                       <div>
                         <section className="edit-pro-head">
                             <button role="exit" onClick={this.cancel.bind(this)}>
@@ -501,7 +510,7 @@ class editProfile extends Component {
                       </div>
                     )}
                 </div>
-                <div className="background-overlay" />
+                <div className="background-overlay" onClick={this.props.onToggle} />
             </div>
         );
     }

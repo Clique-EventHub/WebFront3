@@ -5,7 +5,9 @@ import { GET_USER_INFO,
     UPDATE_USER_ADMIN_INFO,
     FB_FETCH_BASIC_INFO,
     FB_FETCH_USERS_FRIENDS_LIST,
-    UPDATE_USER_FRIENDS_INFO } from '../actions/types';
+    UPDATE_USER_FRIENDS_INFO,
+    FB_LOGOUT
+ } from '../actions/types';
 
 export const inMeta = [
         "_id",
@@ -232,6 +234,10 @@ export default ( state = initalState, action ) => {
                     ...state.info,
                     'friends_list': action.payload
                 }
+            });
+        case FB_LOGOUT:
+            return ({
+                ...initalState
             });
         default:
             return state;

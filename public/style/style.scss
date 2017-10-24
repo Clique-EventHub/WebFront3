@@ -29,6 +29,10 @@ body {
     font-family: "Century Gothic", CenturyGothic, Muli, AppleGothic, sans-serif;
 }
 
+* {
+    -webkit-overflow-scrolling: touch;
+}
+
 button {
     padding-bottom: 0px;
 }
@@ -255,62 +259,9 @@ $i: 10;
     transform: translateX(300px);
 }
 
-.side-menu {
-    position: fixed;
-    width: 300px;
-    height: 100%;
-    top: 0px;
-    left: -300px;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
-    overflow-x: hidden;
-    background-color: #FAFAFA;
-    box-sizing: border-box;
-    padding: 20px;
-}
-.side-menu *[role="close"] {
-    font-size: 1.5em;
-    cursor: pointer;
-    color: #AAA;
-}
-.side-menu ul {
-    padding: 0px;
-}
-.side-menu li::before {
-    content: "";
-    width: 20px;
-    height: calc(1em + 22px);
-    position: absolute;
-    left: 0px;
-    transform: translateY(-25%);
-    background-color: #AFA;
-}
-.side-menu li:nth-child(2n)::before {
-    background-color: #000;
-}
-.side-menu li {
-    list-style: none;
-    padding: 10px;
-    width: 100%;
-    background-color: #CCC;
-}
-.side-menu li:nth-child(2n) {
-    background-color: #AAA;
-}
-.side-menu section[content="profile"] {
-    text-align: center;
-    img {
-        height: 100px;
-        width: 100px;
-        border-radius: 50%;
-        border: 1px solid #000;
-        margin-bottom: 10px;
-    }
-}
 
 
-
-$profile-menu-color: #FCFCFC;
+$profile-menu-color: #FFFFFF;
 
 @keyframes dissoveIn {
     from {opacity: 0;}
@@ -327,7 +278,7 @@ $profile-menu-color: #FCFCFC;
 }
 
 .profile-menu-active::before {
-    content: "";
+    content: " ";
     width: 0;
     height: 0;
     border-left: 15px solid transparent;
@@ -338,6 +289,7 @@ $profile-menu-color: #FCFCFC;
     left: 370px;
     animation: dissoveIn 0.1s ease-in-out;
 }
+
 .profile-menu-active {
     position: absolute;
     width: 450px;

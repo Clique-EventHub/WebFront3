@@ -334,7 +334,7 @@ class eventDetailFix extends Component {
 
         const isAdmin = checkAdmin(this.props.eventId);
         let adminComponent = (
-            <div>
+            <div className="admin-top">
                 <div className="flex">
                     <div className="btn-top" onClick={this.onClickEdit.bind(this)}>EDIT</div>
                     <div className="btn-top" onClick={this.onRedirectTable.bind(this)}>PARTICIPANTS LIST</div>
@@ -416,7 +416,7 @@ class eventDetailFix extends Component {
                         {eventName}
                     </div>
                     <div className="event-poster-fix">
-                        <Image src={replaceIncorrectLink(this.state.picture)} imgOption={{'alt': 'main-poster'}} rejectClass="flex-1 min-height-400" />
+                        <Image src={replaceIncorrectLink(this.state.picture)} imgOption={{'alt': 'main-poster'}} rejectClass="flex-1 min-height-400" alt="main-poster" />
                         {
                             (isImplement) ? (
                                 <div className="tags-container">
@@ -663,7 +663,7 @@ class eventDetailFix extends Component {
                     {(isAdmin) ? (adminComponent) : null}
                     {content}
                 </article>
-                <div className="background-overlay"/>
+                <div className="background-overlay" onClick={this.props.onToggle} />
             </div>
         );
     }

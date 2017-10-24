@@ -45,6 +45,7 @@ section.profile .profile-left {
 
 section.profile .profile-left button {
   position: relative;
+  white-space: nowrap;
   top: -20px;
 }
 
@@ -52,7 +53,8 @@ section.profile .profile-right {
   text-align: center;
 }
 
-section.profile img[alt="profile-pic"] {
+section.profile img[alt="profile-pic"],
+section.profile div[alt="profile-pic"] {
   height: 200px;
   width: 200px;
   min-width: 200px;
@@ -234,8 +236,9 @@ section.my-event-buttom h2 {
 }
 
 @media all and (max-width: 600px) {
-  section.profile img[alt="profile-pic"] {
-    margin-left: 50px;
+  section.profile img[alt="profile-pic"],
+  section.profile div[alt="profile-pic"] {
+    margin: 0px 0px 20px 0px;
     width: 250px;
     height: 250px;
     min-width: 250px;
@@ -304,7 +307,8 @@ section.my-event-buttom h2 {
 }
 
 @media all and (max-width: 400px) {
-  section.profile img[alt="profile-pic"] {
+  section.profile img[alt="profile-pic"],
+  section.profile div[alt="profile-pic"] {
     margin-left: 20px;
   }
   div.profile-center {

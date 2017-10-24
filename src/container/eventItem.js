@@ -164,19 +164,6 @@ class eventItem extends Component {
         }).catch((e) => {
             //console.log(e);
         })
-
-        // this.setState((prevState) => {
-        //     return ({
-        //         ...prevState,
-        //         title: '',
-        //         poster: '',
-        //         channel_name: '',
-        //         location: '',
-        //         about: '',
-        //         isLoad: true,
-        //         date_time: []
-        //     })
-        // })
     }
 
     onButtonClick() {

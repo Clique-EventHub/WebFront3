@@ -18,6 +18,10 @@ article.event-detail-fix {
   margin: 40px auto 100px auto;
 }
 
+article.event-detail-fix .admin-top {
+  margin-top: 20px;
+}
+
 article.event-detail-fix div .btn-top {
   min-height: 2.2em;
   max-height: 2.2em;
@@ -59,6 +63,7 @@ article.event-detail-fix div .warning-pop-up {
   padding: 5px;
   box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.4) !important;
   transform: translateY(5px);
+  z-index: 500;
   visibility: visible;
   opacity: 1;
   transition: opacity 0.1s, visibility 0.1s;

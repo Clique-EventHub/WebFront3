@@ -117,7 +117,7 @@ class channelDetail extends Component {
                         content
                     }
                 </article>
-                <div className="background-overlay"/>
+                <div className="background-overlay" onClick={this.props.onToggle} />
             </div>
 
         )

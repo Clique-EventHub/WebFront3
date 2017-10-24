@@ -1269,7 +1269,7 @@ class EditEvent extends Component {
                         </footer>
                     </div>
                 </article>
-                <div className="background-overlay"/>
+                <div className="background-overlay" onClick={this.props.onToggle} />
             </div>
         )
     }

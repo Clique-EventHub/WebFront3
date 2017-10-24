@@ -139,7 +139,7 @@ class tagPage extends Component {
                     <div className="tag-info-container">
                         <Image src="" imgClass="photo" rejectClass="photo" />
                         <div className="tag-name"><h2>{keyword}</h2></div>
-                        <div ref={(div) => this.likeButton = div} className={`like-button ${!this.props.fb.isLogin ? 'cursor-disable' : ''} ${this.state.like_state ? 'active' : ''}`} onClick={(e) => {
+                        <div ref={(div) => this.likeButton = div} className={`like-button ${!this.props.fb.isLogin ? 'cursor-disable' : ''} ${this.state.like_state && this.props.fb.isLogin ? 'active' : ''}`} onClick={(e) => {
                                 if(this.props.fb.isLogin) {
                                     this.setLikeState.bind(this)(e.target, (e.target.className.indexOf(" active") === -1), true)
                                 }
@@ -147,7 +147,7 @@ class tagPage extends Component {
                         </div>
                     </div>
                 </article>
-                <section content="event-list" className="margin-auto">
+                <section content="event-list" className="margin-auto" style={{'width': '90vw'}}>
                     {
                         this.state.listOfEvents.concat(["", "", "", "", ""]).map((item, index) => {
                             if (item === "") {

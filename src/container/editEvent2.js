@@ -917,7 +917,7 @@ class EditEvent extends Component {
                         <button className="bt" onClick={this.cancel.bind(this)}>CANCEL</button>
                     </div>
                 </article>
-                <div className="background-overlay"/>
+                <div className="background-overlay" onClick={this.props.onToggle} />
             </div>
         )
     }

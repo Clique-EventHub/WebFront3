@@ -8,6 +8,7 @@ import autoBind from '../hoc/autoBind';
 import { getCookie } from '../actions/common';
 import { hostname } from '../actions/index';
 import $ from 'jquery';
+import _ from 'lodash';
 
 class topNavBar extends Component {
 
@@ -91,6 +92,15 @@ class topNavBar extends Component {
                     ...this.state,
                     'name': nextProps.user.meta.firstName,
                     'picture': nextProps.user.meta.picture_200px
+                })
+            }
+        } else if(!_.get(nextProps, 'fb.isLogin', false)) {
+            if (this._isMounted) {
+                this.setState({
+                    ...this.state,
+                    'name': "Sign in / Sign up",
+                    'picture': "../../resource/images/dummyProfile.png",
+                    'isLogin': false
                 })
             }
         }
@@ -305,7 +315,7 @@ class topNavBar extends Component {
                 <div className={`toggle-not no-pos ${(this.state.searchTerm.length > 0 && this.state.isSearchActive) ? '' : 'display-none'}`}>
                     <SearchResult className={(this.state.searchTerm.length > 0 && this.state.isSearchActive) ? '' : 'display-none'} keyword={this.state.searchTerm} onToggle={this.onToggle} onSetItem={this.props.set_pop_up_item} />
                 </div>
-                <div className="profile-menu-inactive" style={(this.state.isLogin) ? {'height': 'auto'} : {'height': '300px'}}>
+                <div className="profile-menu-inactive" style={(this.props.fb.isLogin) ? {'height': 'auto'} : {'height': '300px'}}>
                     <ProfilePopUp onLogin={this.onLogin.bind(this)} fbLogin={this.props.fbLogin} fbGetSeverToken={this.props.fbGetSeverToken} />
                 </div>
                 <div className="tags-menu-inactive">

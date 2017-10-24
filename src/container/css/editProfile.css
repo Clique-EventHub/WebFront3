@@ -47,7 +47,7 @@ div.edit-profile section.edit-pro-head img[alt="profile-pic"] {
   position: absolute;
 }
 
-div.edit-profile section.edit-pro-head button[role="exit"] {
+div.edit-profile button[role="exit"] {
   position: absolute;
   top: 15px;
   right: 15px;
@@ -55,7 +55,7 @@ div.edit-profile section.edit-pro-head button[role="exit"] {
   border: 0px;
 }
 
-div.edit-profile section.edit-pro-head button[role="exit"] img {
+div.edit-profile button[role="exit"] img {
   width: 25px;
   height: 25px;
 }

@@ -14,23 +14,25 @@ import _ from 'lodash';
 
 import AddAdminModal from '../components/AddAdminModal';
 
+const initialState = {
+    'isLoading': true,
+    'isFollow': false,
+    'name': '',
+    'picture': '',
+    'cover_picture': '',
+    'events': [],
+    'refObj': {},
+    'eventMap': {},
+    'eventComplete': []
+}
+
 class channelPage extends Component {
 
     constructor(props) {
         super(props);
         let _this = this;
 
-        this.state = {
-            'isLoading': true,
-            'isFollow': false,
-            'name': '',
-            'picture': '',
-            'cover_picture': '',
-            'events': [],
-            'refObj': {},
-            'eventMap': {},
-            'eventComplete': []
-        }
+        this.state = initialState;
 
         this.onItemPopUpClick = this.onItemPopUpClick.bind(this);
     }
@@ -144,6 +146,7 @@ class channelPage extends Component {
     }
 
     render() {
+        const isLogin = _.get(this.props, 'fb.isLogin', false);
         const channel_id = this.props.params.id;
         const isAdmin = _.get(this.props, 'user.events.admin.channel', []).indexOf(channel_id) !== -1;
         const moreInfo = (isAdmin) ? (
@@ -154,7 +157,7 @@ class channelPage extends Component {
             </div>
         ) : (
             <div className="cn-detail" onClick={() => {
-                    this.onItemPopUpClick(<ChannelDetail onToggleFollow={this.onClick.bind(this)} isFollow={this.state.isFollow} onToggle={this.props.toggle_pop_item} />)
+                    this.onItemPopUpClick(<ChannelDetail onToggleFollow={this.onClick.bind(this)} isFollow={this.state.isFollow && isLogin} onToggle={this.props.toggle_pop_item} />)
                 }}>
                 <button className="Btn-Round">MORE DETAIL</button>
             </div>
@@ -174,7 +177,7 @@ class channelPage extends Component {
                     {moreInfo}
                     <div className="cn-name">
                         <div><h1>{this.state.name}</h1><p>{this.state.detail}</p></div>
-                        {(this.state.isFollow) ? (
+                        {(this.state.isFollow && isLogin) ? (
                         <button
                             className="active Btn-Round"
                             onClick={this.onClick.bind(this)}

@@ -404,7 +404,7 @@ class channelInfo extends Component {
                     </button>
                     { content }
                 </article>
-                <div className="background-overlay"/>
+                <div className="background-overlay" onClick={this.props.onToggle} />
             </div>
         )
     }
