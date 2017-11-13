@@ -451,7 +451,18 @@ class QuestionForm extends Component {
                 {
                     this.state.questions.map((item, index) => {
                         return (
-                            <QuestionItem key={index} isError={this.state.validateError.includes(index)} index={index} question={item} response={this.state.responses[index]} onDelete={() => {this.onDeleteQuestion(index);}} isEditable={this.state.isAdmin} onChangeChoices={(new_choice)=>{this.onChangeChoices(index, new_choice);}} onGetResponse={(res) => {this.onGetResponse(res, index);}} onChangeText={this.onChangeText} />
+                            <QuestionItem
+                                key={index}
+                                isError={this.state.validateError.includes(index)}
+                                index={index}
+                                question={item}
+                                response={this.state.responses[index]}
+                                onDelete={() => {this.onDeleteQuestion(index);}}
+                                isEditable={this.state.isAdmin}
+                                onChangeChoices={(new_choice) => {this.onChangeChoices(index, new_choice);}}
+                                onGetResponse={(res) => {this.onGetResponse(res, index);}}
+                                onChangeText={this.onChangeText}
+                            />
                         );
                     })
                 }

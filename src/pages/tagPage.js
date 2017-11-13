@@ -152,7 +152,7 @@ class tagPage extends Component {
                         this.state.listOfEvents.concat(["", "", "", "", ""]).map((item, index) => {
                             if (item === "") {
                                 return (
-                                    <article style={{
+                                    <article key={index} style={{
                                         'width': 'calc(1.405*300px)',
                                         'margin': '0px 10px'
                                     }} />
@@ -160,7 +160,7 @@ class tagPage extends Component {
                             }
                             if(index < 6) return <EventItem eventId={item._id} key={index} detail-shown="true" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                             else if(index === 6) return [<br key="abc"/>, <EventItem key="def" eventId={item._id} detail-shown="false" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />]
-                            else return <EventItem eventId={item._id} detail-shown="false" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
+                            else return <EventItem key={index} eventId={item._id} detail-shown="false" onToggle={this.props.toggle_pop_item} onSetItem={this.props.set_pop_up_item} />
                         })
                     }
                 </section>

@@ -8,6 +8,7 @@ import * as facultyMap from '../actions/facultyMap';
 let useCls = " toggle-vis";
 import { hostname } from '../actions/index';
 import ReactLoading from 'react-loading';
+import MsgFeedBack from '../components/MsgFeedback';
 
 // class BirthDayText extends Component {
 //     constructor(props) {
@@ -197,14 +198,55 @@ class editProfile extends Component {
           'isLoading': true,
           'message': '',
           'reg_id': '',
-          'reg_password': ''
+          'reg_password': '',
+          'Feedback': {
+              'isShow': false,
+              'isError': false,
+              'Children': <div />
+          }
         };
 
         this.onKeyPressed = this.onKeyPressed.bind(this);
+        this.onShowFeedback = this.onShowFeedback.bind(this);
+        this.onExitFeedback = this.onExitFeedback.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({updated: nextProps.updated});
+    }
+
+    onShowFeedback(MsgText, isError) {
+        this.setState((prevState) => {
+            return ({
+                ...prevState,
+                'Feedback': {
+                    ...prevState.Feedback,
+                    'isShow': true,
+                    'isError': isError,
+                    'Children': (
+                        <span>
+                            {MsgText}
+                        </span>
+                    ),
+                    'Error': {
+                        'Msg': 'Oh! Ow! Something is wrong',
+                        'Detail': ''
+                    }
+                }
+            });
+        })
+    }
+
+    onExitFeedback() {
+        this.setState((prevState) => {
+            return ({
+                ...prevState,
+                'Feedback': {
+                    ...prevState.Feedback,
+                    'isShow': false
+                }
+            });
+        }, this.props.toggle_pop_item)
     }
 
     componentWillMount() {
@@ -339,7 +381,7 @@ class editProfile extends Component {
             this.props.onSaveItem(newState);
         }
 
-        this.props.toggle_pop_item();
+        this.onShowFeedback("Updated Profile Complete!", false);
     }
 
     cancel() {
@@ -511,6 +553,12 @@ class editProfile extends Component {
                     )}
                 </div>
                 <div className="background-overlay" onClick={this.props.onToggle} />
+                <MsgFeedBack
+                    isShow={this.state.Feedback.isShow}
+                    onExit={this.onExitFeedback}
+                    children={this.state.Feedback.Children}
+                    isError={this.state.Feedback.isError}
+                />
             </div>
         );
     }

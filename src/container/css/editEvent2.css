@@ -82,7 +82,8 @@ article.edit-event button.tag {
   margin-right: 20px;
   margin-bottom: 10px;
   width: 95px;
-  height: 35px;
+  box-sizing: border-box;
+  /* height: 35px; */
   border-color: #CCCCCC;
   color: #999999;
   background-color: #FFFFFF;

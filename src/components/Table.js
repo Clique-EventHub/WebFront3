@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { CSVLink } from 'react-csv';
+
 import Loader from './Loader'
 import CustomRadio from './CustomRadio';
 
 import InputText from '../Styled_Components/InputText';
 import InputGroup from '../Styled_Components/InputGroup';
 import BtnGroup from '../Styled_Components/BtnGroup';
+
+const monthName = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 //TODO
 /*
@@ -269,9 +273,9 @@ class Table extends Component {
         Object.keys(_.get(props, 'values', {})).forEach((id) => {
             values[id] = props.values[id];
             values[id]['row_selected'] = false;
-            values[id]['is_accepted'] = false;
-            values[id]['is_check_in'] = false;
             values[id]['is_filtered_out'] = false;
+            values[id]['is_accepted'] = _.get(values, `[${id}]['is_accepted']`, false);
+            values[id]['is_check_in'] = _.get(values, `[${id}]['is_check_in']`, false);
         })
         _.get(props, 'fields', []).forEach((key) => {
             filter_field[key] = true
@@ -294,6 +298,7 @@ class Table extends Component {
         this.onChangeFilterField = this.onChangeFilterField.bind(this);
         this.onCSVDataCal = this.onCSVDataCal.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
+        this.getCSVName = this.getCSVName.bind(this);
         this.onAccept = (() => this.onChangeBoolean("onAccept", true))
         this.onCheckIn = (() => this.onChangeBoolean("onCheckIn", true))
         this.onDeAccept = (() => this.onChangeBoolean("onAccept", false))
@@ -311,6 +316,24 @@ class Table extends Component {
                 });
             })
         }
+    }
+
+    getCSVName(isInSelection) {
+        let now = new Date().toISOString();
+        let date = now.split('T')[0].split('-');
+        let time = now.split('T')[1].split(':').map((text) => text.replace('Z', ''));
+        function pad(str, max) {
+            str = str.toString();
+            return str.length < max ? pad("0" + str, max) : str;
+        }
+        time[0] = String(parseInt(time[0]) + 7)
+        time[2] = String(Math.floor(parseFloat(time[2])))
+        let timeIndicator = (parseInt(time[0]) >= 12) ? "PM" : "AM";
+        time = time.map((t) => pad(t, 2))
+        let eventName = _.get(this.props, 'eventData.title', 'No_title')
+        eventName = eventName.length > 10 ? eventName.slice(0, 10) : eventName;
+
+        return `[${isInSelection ? 'Partial' : 'Full'}]_${eventName}_(${date[2]}-${monthName[parseInt(date[1]) - 1]}-${date[0].slice(date[0].length - 2, date[0].length)})_#(${parseInt(time[0]) % 12}-${time[1]}-${time[2]}_${timeIndicator})`
     }
 
     onFilterWord(word) {
@@ -483,9 +506,10 @@ class Table extends Component {
                 })
                 CSVData.push(dat);
             });
-            this.props.onCSVDataChange(CSVData);
+            return CSVData;
         } catch (e) {
             this.props.onErrorMsg("Oh! Ow! Something went wrong", "Cannot Export CSV Data at this time");
+            return [];
         }
     }
 
@@ -499,7 +523,7 @@ class Table extends Component {
 
         let new_values = {};
         newKeys.forEach((key) => {
-            if (oldKeys.indexOf(key) !== -1) {
+            if (oldKeys.indexOf(key) === -1) {
                 new_values[key] = {
                     ..._.get(this.state, `values[${key}]`, {}),
                     row_selected: false,
@@ -510,10 +534,7 @@ class Table extends Component {
             } else {
                 new_values[key] = {
                     ..._.get(nextProps, `values[${key}]`, {}),
-                    row_selected: false,
-                    is_accepted: false,
-                    is_check_in: false,
-                    is_filtered_out: false
+                    ..._.get(this.state, `values[${key}]`, {})
                 }
             }
         })
@@ -637,7 +658,7 @@ class Table extends Component {
                                         <i className={`fa ${_.get(this.state, `values[${key}].is_check_in`, false) ? 'fa-check color-enable' : 'fa-times color-disable'}`} />
                                     </div>
                                     {
-                                        _.get(this.props, `fields`, []).map((topic, ind) => {
+                                        _.get(this.props, `fields`, []).map((topic) => topic.replace(' *', '')).map((topic, ind) => {
                                             if (_.get(this.state, `filter_field.isEnable`, false)) {
                                                 if (_.get(this.state, `filter_field[${topic}]`, false)) {
                                                     return (
@@ -691,7 +712,7 @@ class Table extends Component {
                         (key, index) => {
                             return (
                                 <BoxKit key={index} className={(_.get(this.state, `values[${key}]['is_check_in']`, false)) ? 'check-in' : (_.get(this.state, `values[${key}]['is_accepted']`, false)) ? 'accepted' : ''}>
-                                    {_.get(this.state, `values[${key}][${this.props.fields[0]}]`, '')}
+                                    {_.get(this.state, `values[${key}][${this.props.fields[0]}]`, Object.keys(_.get(this.state, 'values', [])).indexOf(key) + 1)}
                                     <CloseThin onClick={() => this.onRowSelected(key)} />
                                 </BoxKit>);
                         }
@@ -780,13 +801,18 @@ class Table extends Component {
         );
         const CSVData = (
             <BtnGroup>
-                <button onClick={() => this.onCSVDataCal(false)}>Export CSV</button>
-                <button onClick={() => this.onCSVDataCal(true)}>Export CSV Selection</button>
+                <CSVLink data={this.onCSVDataCal(false)} filename={this.getCSVName(false)}>
+                    <button className="first" onClick={() => this.onCSVDataCal(false)}>Export CSV</button>
+                </CSVLink>
+                <CSVLink data={this.onCSVDataCal(true)} filename={this.getCSVName(true)}>
+                    <button className="last" onClick={() => this.onCSVDataCal(true)}>Export CSV Selection</button>
+                </CSVLink>
             </BtnGroup>
         );
 
         return (
             <TableStyled>
+                <h1 style={{ 'fontSize': '2em' }} >{_.get(this.props, 'eventData.title', 'No Title')}</h1>
                 {FilterSearch}
                 {MainTable}
                 <div style={{'display': 'flex', 'flexWrap': 'wrap'}}>
@@ -807,7 +833,6 @@ class Table extends Component {
                         {FilterField}
                     </div>
                 </div>
-                
             </TableStyled>
         );
     }
@@ -819,7 +844,11 @@ const TableLoad = (props) => {
     if(typeof props.isLoad === "boolean" && props.isLoad) {
         return <Table {...props} />
     }
-    return (<div>{props.loadingComponent}</div>)
+    return (<div style={{
+        'top': '65px',
+        'height': 'calc(100vh - 65px)',
+        'position': 'relative'
+    }}>{props.loadingComponent}</div>)
 }
 
 Table.propTypes = {

@@ -41,7 +41,7 @@ div.profile-popup img[alt="profile-pic"] {
   height: calc(85px);
   margin-left: 25px;
   border-radius: 50%;
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   display: inline-block;
   position: absolute;
 }
@@ -114,14 +114,15 @@ div.my-noti p {
 }
 
 
-div.my-noti img {
+div.my-noti img,
+div.my-noti div.img {
   height: calc(12px);
   width: calc(12px);
   margin-left: 10px;
   margin-right: 6px;
   margin-top: 3px;
   border-radius: 50%;
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
 }
 
 
@@ -171,4 +172,6 @@ div.btn-profile button[alt="btn-logout"]:hover {
 
 div.noti p:hover {
   color: #999999;
+
+  position: relative;
 }

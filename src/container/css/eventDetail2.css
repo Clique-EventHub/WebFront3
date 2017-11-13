@@ -514,6 +514,19 @@ article.event-detail-fix div .event-info .to-right button[alt="btn-interest"]:ho
   background-color: rgba(252, 195, 37, 0.85);
 }
 
+article.event-detail-fix div .event-info .to-right button[alt="edit"] {
+  color: #FFF;
+  border-color: #F1F1F1;
+  background-color: #60E40B;
+  margin-left: 5px;
+  width: 30px;
+  box-sizing: border-box;
+}
+
+article.event-detail-fix div .event-info .to-right button[alt="edit"]:hover, article.event-detail-fix div .event-info .to-right button[alt="edit"]:active {
+  filter: brightness(95%);
+}
+
 article.event-detail-fix div .event-info .to-right button[alt="btn-interest"].active,
 article.event-detail-fix div .event-info .to-right button[alt="btn-join"].active {
   cursor: not-allowed;

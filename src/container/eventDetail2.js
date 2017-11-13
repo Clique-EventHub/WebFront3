@@ -407,8 +407,13 @@ class eventDetailFix extends Component {
                     );
                 })
             }
-        </ul>] : [];
+        </ul>] : []
 
+        let onlyFaculty = "";
+        if(this.state.faculty_require !== null && this.state.faculty_require.length > 0) {
+            onlyFaculty = this.state.faculty_require.map((code) => facultyMap.findInfoById(code).FullName).join(", ")
+        }
+        
         let content = (
             <div>
                 <div className="top-moving">
@@ -440,6 +445,20 @@ class eventDetailFix extends Component {
                                             if(this.joinBtn.className.indexOf(" active") === -1)
                                                 this.onBtnClick("warning-popup")
                                         }}>JOIN</button>
+                                    {
+                                        (() => {
+                                            if(_.get(this.props, 'user.events.general.join', []).indexOf(this.props.eventId) !== -1 && (_.get(this.state, 'forms', []) !== null) && (_.get(this.state, 'forms', []).length > 0)) {
+                                                return (
+                                                    <Link to={`/form?id=${_.get(this.state.refObj, 'forms[0].id', '')}`}>
+                                                        <button alt="edit" title="Edit Response">
+                                                            <i className="fa fa-paper-plane-o" />
+                                                        </button>
+                                                    </Link>
+                                                )
+                                            }
+                                            return null;
+                                        })()
+                                    }
                                 </div>
                                 <div className={`warning-pop-up basic-card-no-glow ${useCls}`} data-role="share-popup" ref="share-popup">
                                     <div className="btn-c btn-facebook" />
@@ -521,9 +540,13 @@ class eventDetailFix extends Component {
                                 }
                             </div>
                             <div className="sub-detail">
-                                <div className="only-fac">
-                                    For <strong>Engineering student</strong> only
-                                </div>
+                                {
+                                    (onlyFaculty.length > 0) && (
+                                        <div className="only-fac">
+                                            For <strong>{onlyFaculty}</strong> only
+                                        </div>
+                                    )
+                                }
                                 <div className="time">
                                     {dateTimeString}
                                 </div>

@@ -201,7 +201,6 @@ function updateActivities(dispatch) {
         'method': 'get'
     }).then((res) => {
         console.log(res.data);
-        console.log();
         dispatch({
             type: types.UPDATE_USER_EVENTS_INFO_SUBSCRIBE,
             payload: {
@@ -251,6 +250,12 @@ window.clearCookie = clearAllCookie;
 //     })
 // })
 */
+
+export function forced_update_user_info() {
+    return (dispatch) => {
+        init_user_info(dispatch);
+    }
+}
 
 function init_user_info(dispatch) {
     requestWithAuthorization(`${hostname}user`, {
@@ -597,6 +602,55 @@ export function checkUserMongoInfo(id) {
                 })
             }
         })
+        return false;
+    }
+    return true;
+}
+
+export function checkUserRegInfo(id) {
+    const map = myStore.getState().map;
+    if (_.get(alreadyCalled.users, `${id}`, false)) return false;
+    let isIn = Object.keys(map.users).reduce((bool, mongoID) => {
+        if(!bool) return map.users[mongoID].regId === id;
+        return bool;
+    }, false);
+    if (!isIn) {
+        alreadyCalled.users[id] = true;
+        axios.get(`${hostname}findreg?user=${id}`).then(
+            (data) => data.data.user_info
+        ).then((data) => {
+            if (typeof myStore.getState().map.users[id] === "undefined") {
+                myStore.dispatch({
+                    type: types.UPDATE_USER_MAP,
+                    payload: data
+                })
+            }
+        })
+        return false;
+    }
+    return true;
+}
+
+export function checkUserFBInfo(id) {
+    const map = myStore.getState().map;
+    if (_.get(alreadyCalled.users, `${id}`, false)) return false;
+    let isIn = Object.keys(map.users).reduce((bool, mongoID) => {
+        if (!bool) return map.users[mongoID].facebookLink.replace('https://www.facebook.com/app_scoped_user_id/', '').split('/')[0] === id;
+        return bool;
+    }, false);
+    if (!isIn) {
+        alreadyCalled.users[id] = true;
+        axios.get(`${hostname}findfb?user=${id}`).then(
+            (data) => data.data.user_info
+        ).then((data) => {
+            if (typeof myStore.getState().map.users[id] === "undefined") {
+                myStore.dispatch({
+                    type: types.UPDATE_USER_MAP,
+                    payload: data
+                })
+            }
+        })
+        return false;
     }
     return true;
 }

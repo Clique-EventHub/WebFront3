@@ -22,7 +22,7 @@ class MultipleChoice extends Component {
         this.setState((prevState, props) => {
             return {
                 ...prevState,
-                active: this.props.initialValue,
+                active: { ...this.props.initialValue},
                 isLoad: true
             }
         })
@@ -109,10 +109,6 @@ class MultipleChoice extends Component {
         if(Object.keys(this.state.active).length < this.props.maxActive) return false;
         if(typeof(this.state.active[index]) === "string") return false;
         return true;
-    }
-
-    componentDidUpdate() {
-        console.log(this.state);
     }
 
     render() {

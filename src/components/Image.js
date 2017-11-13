@@ -30,7 +30,7 @@ class Image extends Component {
 
     render() {
         return (this.state.isExist) ? (
-            <img src={this.props.src} onError={this.onError} className={(this.props.imgClass) ? this.props.imgClass : ''} {...this.props.imgOption} alt={this.props.alt} />
+            <img src={this.props.src !== null ? this.props.src : ''} onError={this.onError} className={(this.props.imgClass) ? this.props.imgClass : ''} {...this.props.imgOption} alt={this.props.alt} />
         ) : (
                 <div className={`${(this.props.rejectClass) ? this.props.rejectClass : ''} ${this.state.defaultColor}`} {...this.props.rejectOption} alt={this.props.alt} />
         );

@@ -265,6 +265,13 @@ $color-dark-red: #fe2000;
         flex-wrap: wrap;
     }
 
+    .Btn.tag {
+        height: initial;
+        width: 200px;
+        padding: 5px 20px;
+        box-sizing: border-box;
+    }
+
     .AddList {
         flex: 1 1 100%;
         max-width: 33%;

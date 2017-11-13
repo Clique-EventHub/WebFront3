@@ -123,27 +123,32 @@ class slickCarousel extends Component {
 
     render() {
         if(this.props.isLoad && this.state.eventDataLoad && _.get(this.state, 'eventDatas', []).length !== 0) {
+            let eventDatas = _.get(this.state, 'eventDatas', []);
+            let tmp = eventDatas;
+            if (eventDatas.length < 4) {
+                eventDatas = eventDatas.concat(tmp);
+            }
             return (
                 <div>
                     <div className='myContainer'>
                         <Slider {...Settings} className='single-item'>
                             {
-                                _.get(this.state, 'eventDatas', []).map((item, index) => {
-                                    const obj = (_.get(item, 'picture', '') !== '' && this.state.imageLoad[index]) ? (
+                                eventDatas.map((item, index) => {
+                                    const obj = (_.get(item, 'picture', '') !== '' && this.state.imageLoad[index%tmp.length]) ? (
                                         <div
                                             key={index}
                                             className="slick-slide-item"
                                             style={{
                                                 'backgroundImage': `url('${_.get(item, 'picture', '')}')`
                                             }}
-                                            onClick={() => this.onItemClick(Number(index))}
+                                            onClick={() => this.onItemClick(Number(index%tmp.length))}
                                         />
                                     ) : (
                                         <div
                                             key={index}
-                                            className={`slick-slide ${this.state.imageColor[index]}`}
+                                            className={`slick-slide ${this.state.imageColor[index%tmp.length]}`}
                                             onClick={(e) => {
-                                                this.onItemClick(index)
+                                                this.onItemClick(index%tmp.length)
                                             }}
                                         />
                                     );
@@ -153,7 +158,7 @@ class slickCarousel extends Component {
                             }
                         </Slider>
                         {
-                            _.get(this.state, 'eventDatas', []).map((item, index) => {
+                            tmp.map((item, index) => {
                                 return <img key={index} src={_.get(item, 'picture', '')} onError={() => {this.onImageError(index);}} style={{'visibility': 'hidden', 'position': 'absolute', 'top': '-9999px', 'left': '-9999px'}} />
                             })
                         }

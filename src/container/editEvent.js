@@ -10,8 +10,10 @@ import DateAndTime from './EditEvent2/DateAndTime';
 import CustomRadio from '../components/CustomRadio';
 import PictureUpload from '../components/PictureUpload';
 import MultipleChoice from '../components/MultipleChoice';
+import MsgFeedBack from '../components/MsgFeedback';
+import MsgConfirm from '../components/MsgConfirm';
 
-import { getCookie, objModStr, getTags, ServerToClientFields, ClientToServerFields, optionYear, optionFaculty, getEvent, getUserIdInfo } from '../actions/common';
+import { getCookie, objModStr, getTags, ServerToClientFields, ClientToServerFields, optionYear, optionFaculty, getEvent, getUserIdInfo, forceUpdateEvent, getChannel, forceUpdateChannel } from '../actions/common';
 import { hostname } from '../actions/index';
 import { getCodeList, findInfoById } from '../actions/facultyMap';
 
@@ -119,6 +121,15 @@ const defaultState = {
         'End': ''
     },
     'video': '',
+    'Feedback': {
+        'isShow': false,
+        'isError': false,
+        'Children': <div />
+    },
+    'Confirm': {
+        'isShow': false,
+        'Children': <div />
+    },
     'uploadProgress': {
         'isUploading': false,
         'uploadStatus': {
@@ -149,6 +160,11 @@ class EditEvent extends Component {
         this.onTextAreaChange = this.onTextAreaChange.bind(this);
         this.onChangeValue = this.onChangeValue.bind(this);
         this.onChangeArrayValue = this.onChangeArrayValue.bind(this);
+        this.onShowFeedback = this.onShowFeedback.bind(this);
+        this.onShowConfirm = this.onShowConfirm.bind(this);
+        this.onExitFeedback = this.onExitFeedback.bind(this);
+        this.onExitConfirm = this.onExitConfirm.bind(this);
+        this.onConfirmDelete = this.onConfirmDelete.bind(this);
 
         getTags().then((tags) => {
             this.setState((prevState) => {
@@ -194,7 +210,7 @@ class EditEvent extends Component {
 
         let new_state = { ...this.state };
         new_state.eventDate = {
-            Dates: _.get(states, 'time_each_day', []).map((item) => convertItem(item)),
+            Dates: _.get(states, 'time_each_day', []).map((item) => convertItem(item, -7)),
             Time: {
                 Start: new Date(_.get(states, 'time_start', '')).toString().slice(16, 21),
                 End: new Date(_.get(states, 'time_end', '')).toString().slice(16, 21)
@@ -279,7 +295,9 @@ class EditEvent extends Component {
         const jStart = _.get(states, 'joinable_start_time', null);
         const jEnd = _.get(states, 'joinable_end_time', null);
         if(jStart !== null && jEnd !== null) {
-            new_state.joinableDate = [[new Date(jStart), new Date(jEnd)]];
+            new_state.joinableDate = {
+                Dates: [[new Date(jStart), new Date(jEnd)]]
+            }
         }
 
         this.firstMeet_Notes.value = _.get(states, 'notes[0].note', '');
@@ -289,20 +307,95 @@ class EditEvent extends Component {
     }
 
     onDelete() {
-        if(confirm("Are you sure?")) {
-            const config = {
-                'headers' : {
-                    'Authorization': ('JWT ' + getCookie("fb_sever_token"))
-                }
+        this.onShowConfirm("Are you sure?");
+    }
+
+    onConfirmDelete() {
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie("fb_sever_token"))
             }
-    
-            axios.delete(`${hostname}event?id=${this.props.eventId}`, config).then((data) => {
-                alert("Delete Complete");
-                return true;
-            }).then(() => this.props.toggle_pop_item()).catch((e) => {
-                alert("Delete Error");
-            })
         }
+
+        axios.delete(`${hostname}event?id=${this.props.eventId}`, config).then((data) => {
+            this.onShowFeedback("Delete Complete", false);
+            console.log("Delete Complete")
+            return true;
+        }).then(() => this.props.toggle_pop_item()).catch((e) => {
+            this.onShowFeedback("Delete Error", true);
+            console.log("Delete Error")
+        });
+    }
+
+    onShowFeedback(MsgText, isError) {
+        this.setState((prevState) => {
+            return ({
+                ...prevState,
+                'Feedback': {
+                    ...prevState.Feedback,
+                    'isShow': true,
+                    'isError': isError,
+                    'Children': (
+                        <span>
+                            {MsgText}
+                        </span>
+                    ),
+                    'Error': {
+                        'Msg': 'Oh! Ow! Something is wrong',
+                        'Detail': ''
+                    }
+                }
+            });
+        })
+    }
+
+    onShowConfirm(MsgText) {
+        this.setState((prevState) => {
+            return ({
+                ...prevState,
+                'Confirm': {
+                    ...prevState.Confirm,
+                    'isShow': true,
+                    'Children': (
+                        <span>
+                            {MsgText}
+                        </span>
+                    )
+                }
+            });
+        })
+    }
+
+    onExitFeedback(isExit) {
+        this.setState((prevState) => {
+            return ({
+                ...prevState,
+                'Feedback': {
+                    ...prevState.Feedback,
+                    'isShow': false
+                }
+            });
+        }, () => {
+            if (isExit && !this.state.Feedback.isError) {
+                this.props.toggle_pop_item();
+            }
+        })
+    }
+
+    onExitConfirm(isExit) {
+        this.setState((prevState) => {
+            return ({
+                ...prevState,
+                'Confirm': {
+                    ...prevState.Confirm,
+                    'isShow': false
+                }
+            });
+        }, () => {
+            if(isExit) {
+                this.props.toggle_pop_item();
+            }
+        })
     }
 
     onCancel() {
@@ -382,7 +475,17 @@ class EditEvent extends Component {
         }
 
         const mapConvertFunc = {
-            'time_each_day': (res) => _.get(res, 'Dates', []),
+            'time_each_day': (res) => {
+                return _.get(res, 'Dates', []).map((item) => {
+                    if (item.constructor === Array && item.length === 2) {
+                        if (typeof item[0].getFullYear === "function" && typeof item[1].getFullYear === "function")
+                            return item.map((x) => new Date(new Date(x).setHours(0)));
+                        else
+                            return [new Date(new Date(item[0]).setHours(0)), new Date(new Date(item[1]).setHours(0))]
+                    }
+                    return new Date(new Date(item).setHours(0));
+                }).map((item) => convertItem(item, 7))
+            },
             'about': (res) => (res || '').split("\n\n"),
             'time_start': (res) => {
                 let start_date = _.get(res, 'Dates[0]', [new Date(new Date().setTime(0))]);
@@ -400,13 +503,13 @@ class EditEvent extends Component {
             'date_start': (res) => {
                 let start_date = _.get(res, 'Dates[0]', [new Date(new Date().setTime(0))]);
                 if(start_date.constructor === Array) start_date = start_date[0];
-                return new Date(new Date(start_date).setUTCHours(0, 0, 0));
+                return new Date(start_date.setHours(0)).addHours(7);
             },
             'date_end': (res) => {
                 let r = _.get(res, 'Dates', []);
                 let end_date = (r.length > 0) ? r[r.length - 1] : new Date(new Date().setTime(0));
                 if(end_date.constructor === Array) end_date = end_date[1];
-                return new Date(new Date(end_date).setUTCHours(0, 0, 0));
+                return new Date(end_date.setHours(0)).addHours(7)
             },
             'require_field': (res) => {
                 let rArray = [];
@@ -647,9 +750,13 @@ class EditEvent extends Component {
 
                         //REG_ID
                         addAdmins.forEach((item) => {
-                            addAdminPromises.push(axios.put(`${hostname}admin/event/add?id=${eid}`, {
-                                user: item
-                            }, config))
+                            addAdminPromises.push(getUserIdInfo(item).then((data) => data.regId).then((regId) => {
+                                axios.put(`${hostname}admin/event/add?id=${eid}`, {
+                                    user: regId
+                                }, config).then(() => {
+                                    this.props.forced_update_user_info();
+                                })
+                            }))
                         })
 
                         uploadPromises.push(new Promise((good, bad) => {
@@ -678,10 +785,13 @@ class EditEvent extends Component {
 
             try {
                 Promise.all(uploadPromises).then(() => {
-                    alert("Uploaded Completed");
+                    this.onShowFeedback("Upload Completed", false);
+                    setTimeout(() => {
+                        forceUpdateEvent(this.props.eventId, true);
+                    }, 50);
                 }).catch((e) => {
                     // console.log(e);
-                    alert("Some error happened");
+                    this.onShowFeedback("Upload Error", true);
                 })
             } catch(err) {
 
@@ -720,9 +830,14 @@ class EditEvent extends Component {
                     if(typeof data.id === "string" && data.id.length > 0) {
                         adminProcess.bind(this)(data.id);
                         pictureProcess.bind(this)();
+                        getEvent(data.id);
+                        forceUpdateChannel(this.props.channelId);
                     }
                 }
-            ).catch((e) => {
+            ).then(() => {
+                this.onShowFeedback('You successfully creating a new event!', false);
+            }).catch((e) => {
+                this.onShowFeedback(`Some error occured while creating a new event! (${e.response.data.err})`, true);
                 // console.log(e);
             })
         }
@@ -890,7 +1005,7 @@ class EditEvent extends Component {
                                                     }
                                                 />
                                                 <label className="flex-order-1" htmlFor="name">EVENT NAME</label>
-                                                <span className="flex-order-3 note">Event Name can oly be set once.</span>
+                                                <span className="flex-order-3 note">Event Name can only be set once.</span>
                                             </div>
                                         )
                                     }
@@ -1265,11 +1380,23 @@ class EditEvent extends Component {
                         <hr className="fullwidth" />
                         <footer>
                             <button className="bt" onClick={this.onCancel.bind(this)}>CANCEL</button>
-                            <button className="bt blue" onClick={this.onSave.bind(this)}>SAVE</button>
+                            <button className="bt blue" onClick={this.onSave.bind(this)}>SAVE & QUIT</button>
                         </footer>
                     </div>
                 </article>
                 <div className="background-overlay" onClick={this.props.onToggle} />
+                <MsgFeedBack
+                    isShow={this.state.Feedback.isShow}
+                    onExit={this.onExitFeedback}
+                    children={this.state.Feedback.Children}
+                    isError={this.state.Feedback.isError}
+                />
+                <MsgConfirm
+                    isShow={this.state.Confirm.isShow}
+                    onExit={this.onExitConfirm}
+                    children={this.state.Confirm.Children}
+                    onConfirm={this.onConfirmDelete}
+                />
             </div>
         )
     }
@@ -1285,16 +1412,30 @@ EditEvent.defaultProps = {
 
 export default autoBind(EditEvent);
 
-function convertItem(item) {
+function convertItem(item, hours) {
+    hours = hours || 0
     if(item.constructor === Array && item.length === 2) {
         if(typeof item[0].getFullYear === "function" && typeof item[1].getFullYear === "function")
-            return item;
+            return item.map((x) => x.addHours(hours));
         else
-            return [new Date(item[0]), new Date(item[1])]
+            return [new Date(item[0]).addHours(-7), new Date(item[1]).addHours(hours)]
     }
-    else if(typeof item.getFullYear === "function") return item;
-    return new Date(item);
+    else if (typeof item.getFullYear === "function") return item.addHours(hours);
+    return new Date(item).addHours(hours);
 }
+
+// function normalizeDate(item) {
+//     let timezoneOffset = new Date().getTimezoneOffset()/60;
+
+//     if (item.constructor === Array && item.length === 2) {
+//         if (typeof item[0].getFullYear === "function" && typeof item[1].getFullYear === "function")
+//             return item.addHours(hours);
+//         else
+//             return [new Date(item[0]).addHours(hours), new Date(item[1]).addHours(hours)]
+//     }
+//     else if (typeof item.getFullYear === "function") return item.addHours(hours);
+//     return new Date(item).addHours(hours);
+// }
 
 function convertMultipleChoice(response) {
     let obj = {}

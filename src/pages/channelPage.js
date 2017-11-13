@@ -35,6 +35,7 @@ class channelPage extends Component {
         this.state = initialState;
 
         this.onItemPopUpClick = this.onItemPopUpClick.bind(this);
+        this.onUpdateState = this.onUpdateState.bind(this);
     }
 
     onClick() {
@@ -78,6 +79,20 @@ class channelPage extends Component {
     }
 
     componentWillMount() {
+        this.onUpdateState();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const channel_id = this.props.params.id; 
+        const oldEventsId = _.get(this.props, `map.channels[${channel_id}].events`, []);
+        const newEventsId = _.get(nextProps, `map.channels[${channel_id}].events`, []);
+
+        if(oldEventsId.length !==newEventsId.length) {
+            this.onUpdateState();
+        }
+    }
+
+    onUpdateState() {
         let config = {
             'headers': {
                 'Authorization': ('JWT ' + getCookie('fb_sever_token'))
@@ -129,8 +144,8 @@ class channelPage extends Component {
         });
 
         axios.get(`${hostname}user/subscribe`, config).then((data) => {
-            if(data.data.hasOwnProperty(this.state.name)){
-                if(this._isMounted) {
+            if (data.data.hasOwnProperty(this.state.name)) {
+                if (this._isMounted) {
                     this.setState((prevState) => {
                         return ({
                             ...prevState,
@@ -142,7 +157,6 @@ class channelPage extends Component {
         }, (error) => {
 
         });
-
     }
 
     render() {

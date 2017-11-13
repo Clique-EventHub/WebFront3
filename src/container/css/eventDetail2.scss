@@ -507,6 +507,20 @@ article.event-detail-fix {
                     background-color: rgba(252, 195, 37, 0.85);
                 }
 
+                button[alt="edit"]{
+                    color: #FFF;
+                    border-color: #F1F1F1;
+                    background-color: #60E40B;
+                    margin-left: 5px;
+                    width: 30px;
+                    box-sizing: border-box;
+
+                    &:hover,
+                    &:active {
+                        filter: brightness(95%);
+                    }
+                }
+
                 button[alt="btn-interest"].active,
                 button[alt="btn-join"].active {
                     cursor: not-allowed

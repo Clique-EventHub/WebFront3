@@ -49,9 +49,16 @@ const BtnGroup = styled.div`
         border-radius: 10px 0px 0px 10px !important;
         border-right: none !important;
     }
-    button:last-child {
+
+    button:last-child,
+    button.last {
         border-radius: 0px 10px 10px 0px !important;
         border-left: none !important;
+    }
+
+    button.first {
+        border-radius: 10px 0px 0px 10px !important;
+        border-right: none !important;
     }
 `;
 

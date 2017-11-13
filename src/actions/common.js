@@ -348,6 +348,7 @@ export function getUserInfo() {
 
                 if(userStore.refObj === null) {
                     axios.get(`${hostname}user`, config).then((data) => {
+
                         return resolve(data.data);
                     }).catch((e) => {
                         return reject(e);

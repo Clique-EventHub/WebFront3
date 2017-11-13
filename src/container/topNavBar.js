@@ -9,6 +9,7 @@ import { getCookie } from '../actions/common';
 import { hostname } from '../actions/index';
 import $ from 'jquery';
 import _ from 'lodash';
+import Image from '../components/Image';
 
 class topNavBar extends Component {
 
@@ -278,7 +279,7 @@ class topNavBar extends Component {
                 <section className="flex-left toggle-not" content="left-group" aria-hidden="true">
                     <Link to="/calendar">
                         <button className="invisible">
-                            <img aria-hidden="false" src="../resource/images/bubble.svg" role="tags-icon" alt="bubble-icon"/>
+                            <img aria-hidden="false" src="../resource/images/small-calendar.svg" role="tags-icon" alt="bubble-icon"/>
                         </button>
                     </Link>
                     <div aria-hidden="true" className="vr"></div>
@@ -297,16 +298,16 @@ class topNavBar extends Component {
                     </form>
                 </section>
                 <Link to="/" className="flex-center" onClick={this.onLogoClick.bind(this)}>
-                    <img src="../../resource/images/icon.png" alt="icon" />
+                    <img src="../../resource/images/icon-beta.png" alt="icon" />
                 </Link>
                 <button aria-hidden="false" className="flex-right toggle-not invisible" role="profile-button" onClick={this.onToggleProfile}>
                     <div>
                         {this.state.name}
                     </div>
-                    <img src={this.state.picture} alt="profile"/>
+                    <Image rejectClass="profile-img" src={this.state.picture} alt="profile"/>
                 </button>
                 <button className="flex-right toggle outline square-round" onClick={this.onSearchToggleState}>
-                    <i className="fa fa-search" aria-hidden="true"></i>
+                    <i className="fa fa-search normal" aria-hidden="true"></i>
                 </button>
                 <div className={`toggle no-pos ${(this.state.isSearchActive) ? '' : 'display-none'}`}>
                     <SearchBox onUpdateSearch={this.onUpdateSearch} searchTerm={this.state.searchTerm} onSubmit={this.onSubmit} />

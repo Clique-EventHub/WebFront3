@@ -4,7 +4,7 @@ const MsgPopUp = (props) => {
     return (
         <div className="modal-container">
             <article className="event-detail-fix basic-card-no-glow">
-                <button className="invisible square-round" role="event-exit" onClick={props.onExit}>
+                <button className="invisible square-round" role="event-exit" onClick={() => props.onExit(false)}>
                     <img src="../../resource/images/X.svg" />
                 </button>
                 <div className="Message-Btn-Container">
@@ -13,7 +13,7 @@ const MsgPopUp = (props) => {
                             { props.children }
                         </div>
                     </div>
-                    <button onClick={props.onExit}>
+                    <button onClick={() => props.onExit(true)}>
                         Okay
                     </button>
                 </div>

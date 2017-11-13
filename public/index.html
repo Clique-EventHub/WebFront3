@@ -52,7 +52,17 @@
 
         // Hide method from for-in loops
         Object.defineProperty(Array.prototype, "equals", {enumerable: false});
+        Date.prototype.addHours = function (h) {
+          if(h === 0) return this;
+          this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+          return this;
+        }
 
+        Date.prototype.toLocalDate = function () {
+          let value = new Date(this);
+          value.setHours(value.getHours() - (value.getTimezoneOffset() / 60));
+          return value;
+        };
         
       </script>
     <div id="root"></div>

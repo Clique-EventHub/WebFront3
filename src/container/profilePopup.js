@@ -11,6 +11,36 @@ import { hostname } from '../actions/index';
 import ReactLoading from 'react-loading';
 import _ from 'lodash';
 import Image from '../components/Image';
+import styled from 'styled-components';
+
+const ReadAll = styled.div`
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    fontSize: 0.75em;
+
+    &:hover {
+        color: #BBB;
+    }
+
+    &:active {
+        color: #777;
+    }
+`
+
+const Read = styled.div`
+    fontSize: 0.75em;
+    position: absolute;
+    right: 20px;
+
+    &:hover {
+        color: #BBB;
+    }
+
+    &:active {
+        color: #777;
+    }
+`
 
 const defaultState = {
   'firstName': '',
@@ -50,6 +80,62 @@ class profilePopup extends Component {
     constructor(props) {
         super(props);
         this.state = defaultState;
+        this.onGetUser = this.onGetUser.bind(this);
+        this.onReadAll = this.onReadAll.bind(this);
+        this.onReadNoti = this.onReadNoti.bind(this);
+    }
+
+    onReadNoti(index) {
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie("fb_sever_token")),
+                'crossDomain': true
+            }
+        }
+
+        axios.put(`${hostname}saw-noti`, {
+            notification: [this.props.user.notification.filter((item) => !item.seen)[index]]
+        }, config).then(() => {
+            this.props.forced_update_user_info();
+            if (this._isMounted) {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        notification: prevState.notification.filter((item) => !item.seen).map((item, ind) => {
+                            if(ind === index) item.seen = true;
+                            return item;
+                        })
+                    })
+                })
+            }
+        })
+    }
+
+    onReadAll() {
+        const config = {
+            'headers': {
+                'Authorization': ('JWT ' + getCookie("fb_sever_token")),
+                'crossDomain': true
+            }
+        }
+
+        axios.put(`${hostname}saw-noti`, {
+            notification: Object.keys(this.props.user.notification).map((key) => this.props.user.notification[key])
+        }, config).then(() => {
+            this.props.forced_update_user_info();
+            if (this._isMounted) {
+                this.setState((prevState) => {
+                    return ({
+                        ...prevState,
+                        notification: prevState.notification.map((item) => {
+                            item.seen = true;
+                            return item;
+                        })
+                    })
+                })
+            }
+        })
+
     }
 
     componentWillReceiveProps(nextProps) {
@@ -71,49 +157,52 @@ class profilePopup extends Component {
                     'login': true
                 })
             }
-
-            let _this = this;
-
-            getUserInfo().then((data) => {
-                if(this._isMounted) {
-                    _this.setState({
-                        ..._this.state,
-                        'firstName': data.firstName,
-                        'lastName': data.lastName,
-                        'picture': data.picture_200px,
-                        'faculty': (data.regId === null)? '99': JSON.stringify(data.regId).substring(9, 11),
-                        'join_events': data.join_events,
-                        'notification': data.notification,
-                        'n_noti': data.notification.length,
-                        'isLoading': false
-                    }, () => {
-                        this.state.join_events.forEach((id) => {
-                            getEvent(id, false).then((data) => {
-                                this.setState((prevState) => {
-                                    if(data.date_end && compareDate(new Date(data.date_end), new Date()) !== -1) {
-                                        return {
-                                            ...prevState,
-                                            'upcoming_events': prevState.upcoming_events.concat([{
-                                                'title': data.title,
-                                                'date_start': data.date_start,
-                                                'date_end': data.date_end,
-                                            }])
-                                        }
-                                    }
-                                    return {
-                                        ...prevState
-                                    }
-                                })
-                            }, (error) => {
-                                //console.log("get event error", error);
-                            });
-                        })
-                    })
-                }
-            }, (error) => {
-                //console.log(error);
-            });
+            this.onGetUser();
         }
+    }
+
+    onGetUser() {
+        let _this = this;
+
+        getUserInfo().then((data) => {
+            if (this._isMounted) {
+                _this.setState({
+                    ..._this.state,
+                    'firstName': data.firstName,
+                    'lastName': data.lastName,
+                    'picture': data.picture_200px,
+                    'faculty': (data.regId === null) ? '99' : JSON.stringify(data.regId).substring(9, 11),
+                    'join_events': data.join_events,
+                    'notification': data.notification,
+                    'n_noti': data.notification.length,
+                    'isLoading': false
+                }, () => {
+                    this.state.join_events.forEach((id) => {
+                        getEvent(id, false).then((data) => {
+                            this.setState((prevState) => {
+                                if (data.date_end && compareDate(new Date(data.date_end), new Date()) !== -1) {
+                                    return {
+                                        ...prevState,
+                                        'upcoming_events': prevState.upcoming_events.concat([{
+                                            'title': data.title,
+                                            'date_start': data.date_start,
+                                            'date_end': data.date_end,
+                                        }])
+                                    }
+                                }
+                                return {
+                                    ...prevState
+                                }
+                            })
+                        }, (error) => {
+                            //console.log("get event error", error);
+                        });
+                    })
+                })
+            }
+        }, (error) => {
+            //console.log(error);
+        });
     }
 
     onLogin() {
@@ -130,23 +219,7 @@ class profilePopup extends Component {
 
                 let _this = this;
 
-                getUserInfo().then((data) => {
-                    if(this._isMounted) {
-                        _this.setState({
-                            ..._this.state,
-                            'firstName': data.firstName,
-                            'lastName': data.lastName,
-                            'picture': data.picture_200px,
-                            'faculty': (data.regId === null)? '99': JSON.stringify(data.regId).substring(9, 11),
-                            'join_events': data.join_events,
-                            'notification': data.notification,
-                            'n_noti': data.notification.length,
-                            'isLoading': false
-                        })
-                    }
-                }, (error) => {
-                    //console.log("get user error", error);
-                });
+                this.onGetUser();
 
                 if(typeof(this.props.onLogin) === "function") this.props.onLogin(true);
             }
@@ -167,14 +240,15 @@ class profilePopup extends Component {
     }
 
     render() {
-        const noti_list = this.state.notification.map((item, index) => {
+        const noti_list = this.state.notification.filter((item) => !item.seen).map((item, index) => {
             return (
-                <div key={index} className="noti">
-                    <Image src={item.photo} />
+                <div key={index} className="noti" title={item.title}>
+                    <Image src={item.photo} rejectClass="img" />
                     <p><strong>{item.source} : </strong>
                     {_.truncate(item.title, {
                         'length': 30
                     })}</p>
+                    <Read onClick={() => this.onReadNoti(index)}>Read</Read>
                 </div>
             );
         });
@@ -238,8 +312,11 @@ class profilePopup extends Component {
                         }
                     </div>
 
-                    <div className="profile-section">
+                    <div className="profile-section" style={{'position': 'relative'}}>
                         <h4>NOTIFICATION</h4>
+                    <ReadAll onClick={this.onReadAll}>
+                            Read All
+                        </ReadAll>
                         <div className="my-noti profile-scroll">
                             {noti_list}
                         </div>

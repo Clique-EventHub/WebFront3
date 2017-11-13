@@ -166,7 +166,7 @@ class Calendar extends Component {
                     }
                 );
             })
-        });
+        })
     }
 
     compareDate(day1, day2) {
