@@ -1,1 +1,39 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/style/style.css"><link rel="stylesheet" href="/style/style.min.css"><link rel="stylesheet" href="/resource/slick-1.6.0/slick/slick-theme.css"/><link rel="stylesheet" href="/resource/slick-1.6.0/slick/slick.css"/><link rel="stylesheet" href="/resource/font-awesome-4.7-1.0/css/font-awesome.min.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"/><title>Event Hub</title><link href="/static/css/main.e65d325c.css" rel="stylesheet"></head><body><div id="root"></div><script type="text/javascript" src="/static/js/main.f38fc011.js"></script></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/style/style.css"><link rel="stylesheet" href="/style/style.min.css"><link rel="stylesheet" href="/resource/slick-1.6.0/slick/slick-theme.css"/><link rel="stylesheet" href="/resource/slick-1.6.0/slick/slick.css"/><link rel="stylesheet" href="/resource/font-awesome-4.7-1.0/css/font-awesome.min.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"/><title>Event Hub</title><link href="/static/css/main.be710dc2.css" rel="stylesheet"></head><body><script type="application/javascript">if(Array.prototype.equals) console.warn("Overriding existing Array.prototype.equals. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
+        // attach the .equals method to Array's prototype to call it on any array
+
+        Array.prototype.equals = function (array) {
+            // if the other array is a falsy value, return
+            if (!array) return false;
+
+            // compare lengths - can save a lot of time
+            if (this.length != array.length)
+            return false;
+
+            for (var i = 0, l=this.length; i < l; i++) {
+                // Check if we have nested arrays
+                if (this[i] instanceof Array && array[i] instanceof Array) {
+                    // recurse into the nested arrays
+                    if (!this[i].equals(array[i]))
+                        return false;
+                }
+                else if (this[i] != array[i]) {
+                    // Warning - two different object instances will never be equal: {x:20} != {x:20}
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Hide method from for-in loops
+        Object.defineProperty(Array.prototype, "equals", {enumerable: false});
+        Date.prototype.addHours = function (h) {
+          if(h === 0) return this;
+          this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+          return this;
+        }
+
+        Date.prototype.toLocalDate = function () {
+          let value = new Date(this);
+          value.setHours(value.getHours() - (value.getTimezoneOffset() / 60));
+          return value;
+        };</script><div id="root"></div><script type="text/javascript" src="/static/js/main.d62e5126.js"></script></body></html>
