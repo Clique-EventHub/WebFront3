@@ -482,3 +482,13 @@ export function promiseSerial(arrayOfFuncPromises) {
     }
     return Promise.reject("Incorrect format");
 }
+
+
+export function getAuthorizationConfig() {
+    return {
+        'headers': {
+            'Authorization': ('JWT ' + getCookie("fb_sever_token")),
+            'crossOrigin': true
+        }
+    }
+}

@@ -35,6 +35,23 @@ const monthName = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP"
 *   Add Error PopUp - Need to change project            [Remove from this scope]
 */
 
+const MsgBox = styled.div`
+    margin-top: 20px;
+    input {
+        display: block;
+        margin-bottom: 10px;
+        margin-right: 20px;
+        width: calc(100% - 20px);
+        padding: 0px 10px;
+        box-sizing: border-box;
+        outline: none;
+        font-size: 1em;
+        border: 1px solid rgba(0,0,0,0.1);
+        height: calc(1em + 25px);
+        border-radius: 10px !important;
+    }
+`;
+
 const CloseThin = styled.div`
     position: relative;
     display: inline-block;
@@ -294,7 +311,9 @@ class Table extends Component {
         this.onRowSelected = this.onRowSelected.bind(this);
         this.onSetNewValues = this.onSetNewValues.bind(this);
         this.onFilterWord = this.onFilterWord.bind(this);
-        this.onMessage = this.onMessage.bind(this);
+        this.onMessageSentSelect = this.onMessageSentSelect.bind(this);
+        this.onMessageSentJoin = this.onMessageSentJoin.bind(this);
+        this.onMessageSentAll = this.onMessageSentAll.bind(this);
         this.onChangeFilterField = this.onChangeFilterField.bind(this);
         this.onCSVDataCal = this.onCSVDataCal.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
@@ -444,10 +463,27 @@ class Table extends Component {
         this.onSetNewValues(new_values);
     }
 
-    onMessage() {
+    onMessageSentSelect() {
         try {
             let Sample = Object.keys(_.get(this.state, 'values', {})).filter((key) => _.get(this.state, `values[${key}].row_selected`, false))
             this.props.onMessageSent(Sample, this._message_input.value);
+        } catch (e) {
+            this.props.onErrorMsg("Oh! Ow! Something went wrong", "Cannot Sent Message at this time");
+        }
+    }
+
+    onMessageSentJoin() {
+        try {
+            let Sample = Array.from(new Set(this.props.peopleList.join.concat(this.props.peopleList.accept)));
+            this.props.onMessageSent(Sample, this._message_input.value);
+        } catch (e) {
+            this.props.onErrorMsg("Oh! Ow! Something went wrong", "Cannot Sent Message at this time");
+        }
+    }
+
+    onMessageSentAll() {
+        try {
+            this.props.onMessageSentAll(this._message_input.value);
         } catch (e) {
             this.props.onErrorMsg("Oh! Ow! Something went wrong", "Cannot Sent Message at this time");
         }
@@ -570,9 +606,9 @@ class Table extends Component {
         }
     }
 
-    componentDidUpdate() {
-        console.log(this.state)
-    }
+    // componentDidUpdate() {
+    //     console.log(this.state)
+    // }
 
     componentDidMount() {
         this._isMounted = true;
@@ -731,9 +767,6 @@ class Table extends Component {
                 <button className="Btn-green" onClick={this.onCheckIn}>
                     Check In
                 </button>
-                <button className="Btn-red" onClick={this.onDeCheckIn}>
-                    Not Check In
-                </button>
             </BtnGroup>
         );
         const FilterField = (
@@ -792,12 +825,16 @@ class Table extends Component {
             </div>
         );
         const MessageBox = (
-            <InputGroup>
-                <form onSubmit={(e) => { e.preventDefault(); this.onMessage(); return false; }}>
+            <MsgBox>
+                <form onSubmit={(e) => { e.preventDefault(); return false; }}>
                     <input placeholder="Message" type="text" ref={(input) => this._message_input = input} />
-                    <button type="submit">Sent</button>
+                    <BtnGroup>
+                        <button type="submit" onClick={this.onMessageSentSelect}>Sent In Selection</button>
+                        <button type="submit" onClick={this.onMessageSentJoin}>Sent All Join</button>
+                        <button type="submit" onClick={this.onMessageSentAll}>Sent All Join & Interest</button>
+                    </BtnGroup>
                 </form>
-            </InputGroup>
+            </MsgBox>
         );
         const CSVData = (
             <BtnGroup>
@@ -855,7 +892,7 @@ Table.propTypes = {
     fields: PropTypes.arrayOf(PropTypes.string).isRequired,
     values: PropTypes.objectOf(PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool]))).isRequired,
     onMessageSent: PropTypes.func.isRequired,
-    onCSVDataChange: PropTypes.func.isRequired,
+    onMessageSentAll: PropTypes.func.isRequired,
     onErrorMsg: PropTypes.func.isRequired,
     onSentAccepted: PropTypes.func.isRequired,
     onSentCheckIn: PropTypes.func.isRequired
@@ -867,226 +904,10 @@ TableLoad.PropTypes = {
     fields: PropTypes.arrayOf(PropTypes.string).isRequired,
     values: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)).isRequired,
     onMessageSent: PropTypes.func.isRequired,
-    onCSVDataChange: PropTypes.func.isRequired,
+    onMessageSentAll: PropTypes.func.isRequired,
     onErrorMsg: PropTypes.func.isRequired,
     onSentAccepted: PropTypes.func.isRequired,
     onSentCheckIn: PropTypes.func.isRequired
-}
-
-TableLoad.defaultProps = {
-    'loadingComponent': (<Loader />),
-    'onMessageSent': (ids, message) => {
-        console.log(ids, message)
-    },
-    'onCSVDataChange': (CSVData) => {
-        console.log(CSVData);
-    },
-    'onErrorMsg': (errorMsg, errorDetail) => {
-        console.log(errorMsg, errorDetail)
-    },
-    'onSentAccepted': (accepted_ids, rejected_ids) => {
-        console.log(accepted_ids, rejected_ids)
-    },
-    'onSentCheckIn': (accepted_ids, rejected_ids) => {
-        console.log(accepted_ids, rejected_ids)
-    },
-    'fields': fields,
-    questions: [
-        {
-            _id: "59ddba1f7def72001036461d",
-            question: "\"คำถามที่ใครต่างคนหาความหมาย ที่แท้ของคำว่าความรัก\" เป็นเพลงของใคร",
-            choices: null,
-            type: "short answer"
-        },
-        {
-            _id: "59ddba1f7def72001036461c",
-            question: "ชอบกินอาหารอะไร (ตอบไ้มากกว่า 1 ประเภท)",
-            choices: [
-                "อาหารเส้น",
-                "อาหารเนื้อ",
-                "อาหารผัก",
-                "อาหารทอด",
-                "อาหารหรูๆ",
-                "อาหารอะไรก็ได้",
-                "อาหารที่ไม่ต้องจ่ายตังค์เอง",
-                "อาหารในจานเพื่อน",
-                "อาหารตา",
-                "อาหารสด",
-                "อาหารปิ๊ง ย่าง",
-                "ไม่แดกงับ เก็บตังค์",
-                "การบ้าน การเรียน การงาน"
-            ],
-            type: "check box"
-        },
-        {
-            _id: "59ddba1f7def72001036461b",
-            question: "ชอบเล่นเกมประเภทอะไรมากที่สุด (1 ประเภท)",
-            choices: [
-                "Puzzle",
-                "Platformer",
-                "Adventure",
-                "Increment",
-                "FPS",
-                "Action",
-                "RPG",
-                "Anime"
-            ],
-            type: "bullet"
-        },
-        {
-            _id: "59ddba1f7def72001036461a",
-            question: "อายุเท่าไหร่",
-            choices: [
-                "17",
-                "18",
-                "19",
-                "20",
-                "21",
-                "22",
-                "23",
-                "24",
-                "25",
-                "26",
-                "27",
-                "28",
-                "29",
-                "30",
-                "31",
-                "32",
-                "33",
-                "34",
-                "35",
-                "36",
-                "37",
-                "38",
-                "39",
-                "40"
-            ],
-            type: "spinner"
-        }
-    ],
-    'response': {
-        'Bar1RAQpbeAkdNw': {
-            'answers': {
-                'responses': [
-                    {
-                        question: "\"คำถามที่ใครต่างคนหาความหมาย ที่แท้ของคำว่าความรัก\" เป็นเพลงของใคร",
-                        answer: "ท๊อฟฟี่ นิชาภา โพธิ์งาม"
-                    },
-                    {
-                        question: "ชอบกินอาหารอะไร (ตอบไ้มากกว่า 1 ประเภท)",
-                        answer: "อาหารเส้น, อาหารหรูๆ, อาหารที่ไม่ต้องจ่ายตังค์เอง, อาหารในจานเพื่อน, อาหารตา, อาหารสด, อาหารปิ๊ง ย่าง, การบ้าน การเรียน การงาน"
-                    },
-                    {
-                        question: "ชอบเล่นเกมประเภทอะไรมากที่สุด (1 ประเภท)",
-                        answer: "Puzzle"
-                    },
-                    {
-                        question: "อายุเท่าไหร่",
-                        answer: "20"
-                    }
-                ]
-            }
-        }
-    },
-    'values': {
-        'Bar1RAQpbeAkdNw': {
-            'Firstname': 'Thipok',
-            'Lastname': 'Thammakulangkul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Sand',
-            'Student Id': '5831030021'
-        },
-        '92zypO7jcNw4Ynz': {
-            'Firstname': 'Thipok',
-            'Lastname': 'Thammakulangkul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Sand',
-            'Student Id': '5831040021'
-        },
-        'xJcdRZeEfe7ykpf': {
-            'Firstname': 'Thipok',
-            'Lastname': 'Thammakulangkul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Sand',
-            'Student Id': '5831050021'
-        },
-        'EQL4Mke59s29ZqP': {
-            'Firstname': 'Thipok',
-            'Lastname': 'Thammakulangkul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Sand',
-            'Student Id': '5831060021'
-        },
-        'GWwWq8jhnn0dmYU': {
-            'Firstname': 'Thipok',
-            'Lastname': 'Thammakulangkul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Sand',
-            'Student Id': '5831070021'
-        },
-        'lq8RQYuHY3xWiOT': {
-            'Firstname': 'Thipok',
-            'Lastname': 'Thammakulangkul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Sand',
-            'Student Id': '5831080021'
-        },
-        'OwP0KD7kh2dCQIj': {
-            'Firstname': 'Thipok',
-            'Lastname': 'Thammakulangkul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Sand',
-            'Student Id': '5831031021'
-        },
-        '6eUmCc12vPkJblR': {
-            'Firstname': 'Thipok',
-            'Lastname': 'Thammakulangkul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Sand',
-            'Student Id': '5831041021'
-        },
-        'cyQLpyGMy5ztlHz': {
-            'Firstname': 'Thipok',
-            'Lastname': 'Thammakulangkul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Sand',
-            'Student Id': '5831051021'
-        },
-        'fND1gyLGly2pQgS': {
-            'Firstname': 'Tuntawat',
-            'Lastname': 'Savahnachatjul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Food Shortage',
-            'Student Id': '5831061021'
-        },
-        'ereE1v5j5KWxgyo': {
-            'Firstname': 'Sookmongkol',
-            'Lastname': 'Chivitjitborisutepngsai',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Algorithm Design',
-            'Student Id': '5831032321'
-        },
-        'kiQPbGJYaCSWFEG': {
-            'Firstname': 'Thipok',
-            'Lastname': 'Thammakulangkul',
-            'Gender': 'Male',
-            'Faculty': 'Engineering',
-            'Allergic': 'Sand',
-            'Student Id': '5831081021'
-        }
-    }
 }
 
 export default TableLoad;

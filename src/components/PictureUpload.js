@@ -240,7 +240,9 @@ PictureUpload.defaultProps = {
     'srcs': [],
     'showFilesNumber': true,
     'persistentImg': true,
-    'onUpdate': (pictures, fileInput) => console.log(pictures, fileInput),
+    'onUpdate': (pictures, fileInput) => {
+        // console.log(pictures, fileInput)
+    },
     'isMultiple': false
 }
 

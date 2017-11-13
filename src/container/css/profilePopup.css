@@ -172,6 +172,14 @@ div.btn-profile button[alt="btn-logout"]:hover {
 
 div.noti p:hover {
   color: #999999;
-
   position: relative;
+}
+
+div.noti {
+  display: flex;
+  align-items: center;
+}
+
+div.noti div.Large {
+  flex: 1;
 }

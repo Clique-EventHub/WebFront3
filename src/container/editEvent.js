@@ -319,11 +319,11 @@ class EditEvent extends Component {
 
         axios.delete(`${hostname}event?id=${this.props.eventId}`, config).then((data) => {
             this.onShowFeedback("Delete Complete", false);
-            console.log("Delete Complete")
+            // console.log("Delete Complete")
             return true;
         }).then(() => this.props.toggle_pop_item()).catch((e) => {
             this.onShowFeedback("Delete Error", true);
-            console.log("Delete Error")
+            // console.log("Delete Error")
         });
     }
 
@@ -921,7 +921,7 @@ class EditEvent extends Component {
     //"a[1].b[2].c[3].d[4]".split(/\[[0-9]+]\.*/g).filter((item) => item.length !== 0)
 
     componentDidUpdate() {
-        console.log(this.state);
+        // console.log(this.state);
         this.onTextAreaChange();
     }
 

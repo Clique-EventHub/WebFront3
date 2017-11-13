@@ -4,7 +4,7 @@ import normalPage from '../hoc/normPage';
 import './css/tablePage.css';
 import axios from 'axios';
 import { hostname } from '../actions/index';
-import { getRandomShade, getCookie, getEvent, ServerToClientFields, getUserIdInfo } from '../actions/common';
+import { getRandomShade, getCookie, getEvent, ServerToClientFields, getUserIdInfo, getAuthorizationConfig } from '../actions/common';
 import ErrorPopUp from '../components/ErrorPopUp';
 import ReactLoading from 'react-loading';
 import _ from 'lodash';
@@ -31,34 +31,15 @@ class tablePage extends Component {
         this.onSentAccepted = this.onSentAccepted.bind(this);
         this.onSentCheckIn = this.onSentCheckIn.bind(this);
         this.onMessageSent = this.onMessageSent.bind(this);
+        this.onMessageSentAll = this.onMessageSentAll.bind(this);
         this.onErrorMsg = this.onErrorMsg.bind(this);
-
-        // getEvent(this.props.location.query.eid).then(() => {
-        //     setTimeout(() => {
-        //         if (this._isMounted) {
-        //             this.setState((prevState) => {
-        //                 return ({
-        //                     ...prevState,
-        //                     'isLoad': true
-        //                 });
-        //             })
-        //         }
-        //     }, 1500);
-        // });
     }
 
     onGetStat(eventId) {
 
-        const config = {
-            'headers': {
-                'Authorization': ('JWT ' + getCookie('fb_sever_token')),
-                'crossDomain': true
-            }
-        }
-
         const eid = eventId || _.get(this.props, 'location.query.eid');
         if(eid) {
-            axios.get(`${hostname}event/stat?id=${eid}`, config).then(
+            axios.get(`${hostname}event/stat?id=${eid}`, getAuthorizationConfig()).then(
                 (data) => data.data
             ).then((data) => {
                 let DataProcess = [];
@@ -67,14 +48,14 @@ class tablePage extends Component {
                     return getUserIdInfo(mongoId);
                 });
                 let whoAccepted = data.who_join.map((mongoId) => {
-                    return data.who_accepted.indexOf(mongoId) !== -1;
+                    return data.who_accepted.indexOf(mongoId) !== -1 || data.who_completed.indexOf(mongoId) !== -1;
                 });
                 let whoCheckIn = data.who_join.map((mongoId, index) => {
                     return whoAccepted[index] && data.who_completed.indexOf(mongoId) !== -1;
                 });
 
                 if (_.get(data, 'forms', []).length > 0) {
-                    DataProcess.push(axios.get(`${hostname}form?id=${data.forms[data.forms.length - 1].id}&opt=responses`, config)
+                    DataProcess.push(axios.get(`${hostname}form?id=${data.forms[data.forms.length - 1].id}&opt=responses`, getAuthorizationConfig())
                         .then((dat) => dat.data.form)
                         .then((dat) => {
                             return {
@@ -110,6 +91,11 @@ class tablePage extends Component {
                                     ...prevState,
                                     fields: data.require_field.map((item) => ServerToClientFields[item]).map((text) => text + ' *').concat(data.optional_field.map((item) => ServerToClientFields[item])),
                                     peopleData: Dat[1],
+                                    peopleList: {
+                                        join: data.who_join,
+                                        interest: data.who_interest,
+                                        accept: data.who_completed
+                                    },
                                     questions: Dat[0].questions,
                                     responses: Dat[0].responses,
                                     isLoad: true
@@ -119,6 +105,11 @@ class tablePage extends Component {
                                 ...prevState,
                                 fields: data.require_field.map((item) => ServerToClientFields[item]).map((text) => text + ' *').concat(data.optional_field.map((item) => ServerToClientFields[item])),
                                 peopleData: Dat[0],
+                                peopleList: {
+                                    join: data.who_joined,
+                                    interest: data.who_interest,
+                                    accept: data.who_completed
+                                },
                                 isLoad: true
                             });
                         })
@@ -140,6 +131,7 @@ class tablePage extends Component {
 
     componentDidMount() {
         this._isMounted = true
+        getEvent(this.props.location.query.eid)
     }
 
     componentWillUnmount() {
@@ -176,22 +168,47 @@ class tablePage extends Component {
 
     onSentAccepted(accepted_ids, rejected_ids) {
         if(accepted_ids.length > 0 || rejected_ids.length > 0) {
-            console.log(accepted_ids, rejected_ids);
-            this.onPopUpMsg([`Accept: Accepted: ${accepted_ids.length} and Rejected: ${rejected_ids.length}`]);
+            axios.put(`${hostname}admin/event/choose?id=${this.props.location.query.eid}`, {
+                yes: accepted_ids,
+                no: rejected_ids
+            }, getAuthorizationConfig()).then(() => {
+                this.onPopUpMsg([`Accept: Accepted: ${accepted_ids.length} and Rejected: ${rejected_ids.length}`]);
+            }).catch((e) => {
+                this.onErrorMsg('Oh! Ow! Something went wrong!', `[Error code: ${_.get(e, 'response.status', 500)}] ${_.get(e, 'response.data.msg', 'Internal server error')}`)
+            })
         }
     }
-
+    
     onSentCheckIn(accepted_ids, rejected_ids) {
         if (accepted_ids.length > 0 || rejected_ids.length > 0) {
-            console.log(accepted_ids, rejected_ids);
-            this.onPopUpMsg([`Check In: Accepted: ${accepted_ids.length} and Rejected: ${rejected_ids.length}`]);
+            axios.put(`${hostname}admin/check-in?id=${this.props.location.query.eid}`, {
+                users: accepted_ids
+            }, getAuthorizationConfig()).then(() => {
+                this.onPopUpMsg([`Check In: ${accepted_ids.length}`]);
+            }).catch((e) => {
+                this.onErrorMsg('Oh! Ow! Something went wrong!', `[Error code: ${_.get(e, 'response.status', 500)}] ${_.get(e, 'response.data.msg', 'Internal server error')}`)
+            })
         }
     }
 
     onMessageSent(ids, message) {
         if(ids.length > 0 && message.length > 0) {
-            console.log(message);
-            this.onPopUpMsg([`Message '${message}' is sent!`]);
+            axios.post(`${hostname}event/join/message?id=${this.props.location.query.eid}`, {
+                'description': message,
+                'people': ids
+            }, getAuthorizationConfig()).then(() => {
+                this.onPopUpMsg([`Message '${message}' is sent!`]);
+            })
+        }
+    }
+
+    onMessageSentAll(message) {
+        if(message.length > 0) {
+            axios.post(`${hostname}event/join/message?id=${this.props.location.query.eid}`, {
+                'description': message
+            }, getAuthorizationConfig()).then(() => {
+                this.onPopUpMsg([`Message '${message}' is sent!`]);
+            })
         }
     }
     
@@ -224,6 +241,7 @@ class tablePage extends Component {
                 </section>
             );
         }
+
         return (
             <section role="main-content" style={{'backgroundColor': '#FFF', 'borderTop': '1px solid #F1F1F1'}}>
                 <Table
@@ -232,11 +250,13 @@ class tablePage extends Component {
                     onSentAccepted={this.onSentAccepted}
                     onSentCheckIn={this.onSentCheckIn}
                     onMessageSent={this.onMessageSent}
+                    onMessageSentAll={this.onMessageSentAll}
                     onErrorMsg={this.onErrorMsg}
                     eventData={this.props.map.events[this.props.location.query.eid]}
                     values={this.state.peopleData}
                     questions={this.state.questions}
                     response={this.state.responses}
+                    peopleList={this.state.peopleList}
                 />
             </section>
         );

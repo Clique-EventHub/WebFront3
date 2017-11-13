@@ -200,7 +200,6 @@ function updateActivities(dispatch) {
     requestWithAuthorization(`${hostname}user/subscribe`, {
         'method': 'get'
     }).then((res) => {
-        console.log(res.data);
         dispatch({
             type: types.UPDATE_USER_EVENTS_INFO_SUBSCRIBE,
             payload: {
@@ -528,8 +527,8 @@ export function fbGetSeverToken(dispatch) {
                 });
                 resolve(true);
             }).catch((err) => {
-                console.log(err);
-                console.log(err.toString());
+                // console.log(err);
+                // console.log(err.toString());
             })
         } else {
             dispatch({

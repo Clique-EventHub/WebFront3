@@ -147,7 +147,7 @@ class MultipleChoice extends Component {
 MultipleChoice.defaultProps = {
     initialValue: {},
     isLoad: true,
-    onUpdate: (res) => { console.log(res);}
+    onUpdate: (res) => {}
 }
 
 export default MultipleChoice;

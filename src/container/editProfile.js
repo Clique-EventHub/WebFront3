@@ -431,7 +431,7 @@ class editProfile extends Component {
             this.state.reg_id.value = '';
             this.state.reg_password.value = '';
         }).catch((e) => {
-            console.log(e);
+            // console.log(e);
             this.setState((prevState) => {
                 if(e.response && e.response.status) {
                     return ({

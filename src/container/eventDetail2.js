@@ -233,7 +233,8 @@ class eventDetailFix extends Component {
     onClickInterest() {
         const config = {
             'headers': {
-                'Authorization': ('JWT ' + getCookie("fb_sever_token"))
+                'Authorization': ('JWT ' + getCookie("fb_sever_token")),
+                'crossOrigin': true
             }
         }
         axios.put(`${hostname}user/interest?id=${this.props.eventId}`, {}, config).then((data) => {

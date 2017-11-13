@@ -46,7 +46,6 @@ const InputGroup = styled.div`
     button:last-child {
         border-radius: 0px 10px 10px 0px !important;
         border-left: none !important;
-        min-width: 50px;
     }
 
     input {
@@ -72,6 +71,8 @@ const InputGroup = styled.div`
         color: #878787 !important;
         border: 1px solid #E7E7E7 !important;
         margin-left: 0px;
+        box-sizing: border-box;
+        padding: 0px 20px;
     }
 `;
 

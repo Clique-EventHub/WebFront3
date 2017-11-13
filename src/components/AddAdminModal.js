@@ -6,6 +6,33 @@ import AddList from '../container/EditEvent2/AddList';
 import { getUserIdInfo, compareArray, promiseSerial, getCookie, getChannel, forceUpdateEvent, forceUpdateChannel } from '../actions/common';
 import { hostname } from '../actions/index';
 import axios from 'axios';
+import MsgFeedBack from './MsgFeedback';
+
+const CancelBtn = styled.button`
+    position: relative;
+    border: 1.8px solid;
+    border-radius: 20px;
+    width: 120px;
+    height: 35px;
+    font-size: 1em;
+    border-color: #AAAAAA;
+    color: #888888;
+    background-color: #FFFFFF;
+    margin-right: 15px;
+`;
+
+const SaveBtn = styled.button`
+position: relative;
+    border: 1.8px solid;
+    border-radius: 20px;
+    width: 120px;
+    height: 35px;
+    font-size: 1em;
+    margin-right: 15px;
+    border-color: #00BFF0;
+    color: #FFFFFF;
+    background-color: #00BFF0;
+`
 
 class AddAdminModal extends Component {
     constructor(props) {
@@ -13,13 +40,54 @@ class AddAdminModal extends Component {
         this.state = {
             isLoad: true,
             admins: [],
-            new_admins: []
+            new_admins: [],
+            Feedback: {
+                isShow: false,
+                isError: false,
+                Children: <div />
+            }
         }
 
         this.onUpdateEvent = this.onUpdateEvent.bind(this);
         this.onSaveEvent = this.onSaveEvent.bind(this);
         this.onSaveChannel = this.onSaveChannel.bind(this);
         this.onExit = this.onExit.bind(this);
+        this.onShowFeedback = this.onShowFeedback.bind(this);
+        this.onExitFeedback = this.onExitFeedback.bind(this);
+    }
+
+    onShowFeedback(MsgText, isError) {
+        this.setState((prevState) => {
+            return ({
+                ...prevState,
+                'Feedback': {
+                    ...prevState.Feedback,
+                    'isShow': true,
+                    'isError': isError,
+                    'Children': (
+                        <span>
+                            {MsgText}
+                        </span>
+                    ),
+                    'Error': {
+                        'Msg': 'Oh! Ow! Something is wrong',
+                        'Detail': ''
+                    }
+                }
+            });
+        })
+    }
+
+    onExitFeedback() {
+        this.setState((prevState) => {
+            return ({
+                ...prevState,
+                'Feedback': {
+                    ...prevState.Feedback,
+                    'isShow': false
+                }
+            });
+        })
     }
 
     onUpdateEvent(eventIndex) {
@@ -102,9 +170,7 @@ class AddAdminModal extends Component {
                                 }
                             })
                         });
-                    })).then(() => {
-                        alert("Delete Complete")
-                    })
+                    }))
                 }),
                 Promise.all(promiseAdds).then((datas) => {
                     //Serialize Promises
@@ -114,14 +180,14 @@ class AddAdminModal extends Component {
                                 "user": String(regId)
                             }, config)
                         });
-                    })).then(() => {
-                        alert("Added Complete")
-                    })
+                    }))
                 })]).then(() => {
+                    this.onShowFeedback("Updated Completed!", false);
                     setTimeout(() => {
                         forceUpdateChannel(cid, true);
                     }, 500);
                 }).catch((e) => {
+                    this.onShowFeedback("Some error occured while updating!", true);
                     setTimeout(() => {
                         forceUpdateChannel(cid, true);
                     }, 500);
@@ -170,9 +236,7 @@ class AddAdminModal extends Component {
                                     }
                                 })
                             });
-                        })).then(() => {
-                            alert("Delete Complete")
-                        })
+                        }))
                     }),
                     Promise.all(promiseAdds).then((datas) => {
                         //Serialize Promises
@@ -182,15 +246,15 @@ class AddAdminModal extends Component {
                                     "user": String(regId)
                                 }, config)
                             });
-                        })).then(() => {
-                            alert("Added Complete")
-                        })
+                        }))
                     })
                 ]).then(() => {
+                    this.onShowFeedback("Updated Completed!", false);
                     setTimeout(() => {
                         forceUpdateEvent(eid, true);
                     }, 500);
                 }).catch((e) => {
+                    this.onShowFeedback("Some error occured while updating!", true);
                     setTimeout(() => {
                         forceUpdateEvent(eid, true);
                     }, 500);
@@ -294,8 +358,13 @@ class AddAdminModal extends Component {
                     />
                 </div>
                 <hr />
-                <button onClick={this.onExit}>Cancel</button>
-                <button onClick={() => this.onSaveEvent(this._sel.value)}>Save</button>
+                <div style={{
+                    'display': 'flex',
+                    'justifyContent': 'flex-end'
+                }}>
+                    <CancelBtn onClick={this.onExit}>Cancel</CancelBtn>
+                    <SaveBtn onClick={() => this.onSaveEvent(this._sel.value)}>Save</SaveBtn>
+                </div>
             </div>
         ) : (
             <div>
@@ -312,8 +381,13 @@ class AddAdminModal extends Component {
                     />
                 </div>
                 <hr />
-                <button onClick={this.onExit}>Cancel</button>
-                <button onClick={this.onSaveChannel}>Save</button>
+                <div style={{
+                    'display': 'flex',
+                    'justifyContent': 'flex-end'
+                }}>
+                    <CancelBtn onClick={this.onExit}>Cancel</CancelBtn>
+                    <SaveBtn onClick={this.onSaveChannel}>Save</SaveBtn>
+                </div>
             </div>
         );
         return (
@@ -325,6 +399,12 @@ class AddAdminModal extends Component {
                     {content}
                 </article>
                 <div className="background-overlay" />
+                <MsgFeedBack
+                    isShow={this.state.Feedback.isShow}
+                    onExit={this.onExitFeedback}
+                    children={this.state.Feedback.Children}
+                    isError={this.state.Feedback.isError}
+                />
             </div>
         );
     }

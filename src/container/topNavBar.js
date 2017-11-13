@@ -317,7 +317,11 @@ class topNavBar extends Component {
                     <SearchResult className={(this.state.searchTerm.length > 0 && this.state.isSearchActive) ? '' : 'display-none'} keyword={this.state.searchTerm} onToggle={this.onToggle} onSetItem={this.props.set_pop_up_item} />
                 </div>
                 <div className="profile-menu-inactive" style={(this.props.fb.isLogin) ? {'height': 'auto'} : {'height': '300px'}}>
-                    <ProfilePopUp onLogin={this.onLogin.bind(this)} fbLogin={this.props.fbLogin} fbGetSeverToken={this.props.fbGetSeverToken} />
+                    <ProfilePopUp
+                        onLogin={this.onLogin.bind(this)}
+                        fbLogin={this.props.fbLogin}
+                        fbGetSeverToken={this.props.fbGetSeverToken}
+                    />
                 </div>
                 <div className="tags-menu-inactive">
                     <Bubble />

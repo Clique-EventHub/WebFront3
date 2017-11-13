@@ -308,7 +308,7 @@ DatePicker.defaultProps = {
     'showSelectedDate': true,
     'controlEnable': true,
     'onSetDates': function(result) {
-        console.log(result);
+        // console.log(result);
     },
     'isLoad': true
 }

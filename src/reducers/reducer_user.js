@@ -123,7 +123,7 @@ export default ( state = initalState, action ) => {
                     ...state.events,
                     'general': {
                         ...state.events.general,
-                        'join': action.payload.join_events,
+                        'join': Array.from(new Set(action.payload.join_events.concat(action.payload.accepted_events))),
                     },
                     'admin': {
                         ...state.events.admin,
@@ -146,9 +146,9 @@ export default ( state = initalState, action ) => {
 
             const new_general_1 = (state.events && state.events.general) ? {
                 ...state.events.general,
-                'join': action.payload.join
+                'join': Array.from(new Set(action.payload.join.concat(state.refObj.accepted_events))),
             } : {
-                'join': action.payload.join
+                'join': Array.from(new Set(action.payload.join.concat(state.refObj.accepted_events)))
             }
 
             return ({

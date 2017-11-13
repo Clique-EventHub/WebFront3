@@ -909,7 +909,7 @@ class EditEvent extends Component {
                     <p className="l1"></p>
                     <div className="admin">
                         <h1>ADD EVENT ADMIN</h1>
-                        <AddAdmin user={this.props.user} onSelected={(d) => {console.log(d)}}/>
+                        <AddAdmin user={this.props.user} onSelected={(d) => {}}/>
                     </div>
                     <div>
                         <button className="bt blue">PUBLIC</button>

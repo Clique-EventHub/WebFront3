@@ -272,7 +272,7 @@ CustomRadio.defaultProps = {
     'colorActive': '#777',
     'isLoad': true,
     'initialValue': 'state-0',
-    'onClick': (data) => { console.log(data) }
+    'onClick': (data) => {  }
 }
 
 export default CustomRadio;

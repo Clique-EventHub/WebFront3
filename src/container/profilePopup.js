@@ -30,9 +30,8 @@ const ReadAll = styled.div`
 
 const Read = styled.div`
     fontSize: 0.75em;
-    position: absolute;
-    right: 20px;
-
+    margin-right: 20px;
+    
     &:hover {
         color: #BBB;
     }
@@ -94,7 +93,13 @@ class profilePopup extends Component {
         }
 
         axios.put(`${hostname}saw-noti`, {
-            notification: [this.props.user.notification.filter((item) => !item.seen)[index]]
+            notification: [this.props.user.notification.filter((item) => !item.seen)[index]].map((item) => {
+                return ({
+                    'title': item.title,
+                    'link': item.link,
+                    'timestamp': item.timestamp
+                });
+            })
         }, config).then(() => {
             this.props.forced_update_user_info();
             if (this._isMounted) {
@@ -120,7 +125,13 @@ class profilePopup extends Component {
         }
 
         axios.put(`${hostname}saw-noti`, {
-            notification: Object.keys(this.props.user.notification).map((key) => this.props.user.notification[key])
+            notification: Object.keys(this.props.user.notification).map((key) => this.props.user.notification[key]).filter((item) => !item.seen).map((item) => {
+                return ({
+                    'title': item.title,
+                    'link': item.link,
+                    'timestamp': item.timestamp
+                });
+            })
         }, config).then(() => {
             this.props.forced_update_user_info();
             if (this._isMounted) {
@@ -243,11 +254,13 @@ class profilePopup extends Component {
         const noti_list = this.state.notification.filter((item) => !item.seen).map((item, index) => {
             return (
                 <div key={index} className="noti" title={item.title}>
-                    <Image src={item.photo} rejectClass="img" />
-                    <p><strong>{item.source} : </strong>
-                    {_.truncate(item.title, {
-                        'length': 30
-                    })}</p>
+                    <div className="Large">
+                        <Image src={item.photo} rejectClass="img" />
+                        <p><strong>{item.source} : </strong>
+                        {_.truncate(item.title, {
+                            'length': 30
+                        })}</p>
+                    </div>
                     <Read onClick={() => this.onReadNoti(index)}>Read</Read>
                 </div>
             );

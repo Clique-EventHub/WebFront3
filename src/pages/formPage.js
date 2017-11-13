@@ -130,7 +130,7 @@ class formPage extends Component {
                 }
             })
             
-            console.log(this._isMounted)
+            // console.log(this._isMounted)
             if(this._isMounted) {
                 this.setState((prevState) => {
                     return ({
