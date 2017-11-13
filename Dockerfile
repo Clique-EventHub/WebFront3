@@ -1,4 +1,4 @@
-FROM node
+FROM node:boron
 
 RUN mkdir -p /usr/app
 ADD . /usr/app
