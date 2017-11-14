@@ -1,4 +1,4 @@
-FROM node
+FROM node:7
 
 RUN mkdir -p /usr/app
 ADD . /usr/app
